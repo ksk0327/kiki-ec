@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blend — KIKI Coffee</title>
+  <meta name="description" content="KIKIのブレンド哲学。産地・比率をすべて公開したスマイルカップ ブレンド。コロンビア・エチオピア・ブラジルの3産地で作る、華やかでフルーティな一杯。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Shippori+Mincho+B1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: #0d0600; }
+    body { background: #0d0600; color: #fff; font-family: 'Inter', sans-serif; font-weight: 300; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    /* NAV */
+    .idx-nav { position: fixed; top: 0; left: 0; right: 0; height: 60px; display: flex; align-items: center; justify-content: center; background: transparent; z-index: 100; transition: background .35s ease; }
+    .idx-nav.scrolled { background: rgba(10,4,0,.88); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .idx-nav-logo-img { height: 34px; width: auto; filter: brightness(0) invert(1); display: block; }
+    .idx-ham { position: absolute; right: 28px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; background: none; border: none; cursor: pointer; display: flex; flex-direction: column; justify-content: center; gap: 7px; padding: 0; }
+    .idx-ham span { display: block; width: 22px; height: 1px; background: rgba(255,255,255,.75); transition: transform .3s, opacity .3s; transform-origin: center; }
+    .idx-ham.open span:nth-child(1) { transform: translateY(4px) rotate(45deg); }
+    .idx-ham.open span:nth-child(2) { transform: translateY(-4px) rotate(-45deg); }
+
+    /* OVERLAY */
+    .idx-overlay { display: none; position: fixed; inset: 0; background: #0a0806; z-index: 99; flex-direction: column; align-items: center; justify-content: center; gap: 44px; }
+    .idx-overlay.open { display: flex; }
+    .idx-overlay a { font-family: 'Shippori Mincho B1', serif; font-size: clamp(28px,5vw,44px); color: #fff; text-decoration: none; letter-spacing: .08em; transition: color .25s; }
+    .idx-overlay a:hover { color: #c09a3e; }
+    .idx-overlay .nav-shop { color: #c09a3e; }
+
+    /* CURSOR */
+    .idx-cursor { position: fixed; z-index: 9998; pointer-events: none; width: 8px; height: 8px; background: #c09a3e; border-radius: 50%; transform: translate(-50%,-50%); transition: width .25s cubic-bezier(.16,1,.3,1), height .25s cubic-bezier(.16,1,.3,1), background .25s, opacity .2s; opacity: 0; will-change: left,top; }
+    .idx-cursor.active { opacity: 1; }
+    .idx-cursor.hover { width: 32px; height: 32px; background: transparent; border: 1px solid rgba(192,154,62,.75); }
+
+    /* COVER */
+    #idx-cover { position: fixed; inset: 0; background: #0d0600; z-index: 9997; pointer-events: none; opacity: 1; transition: opacity .8s ease; }
+
+    /* FOOTER */
+    .idx-footer { background: #0a0806; padding: 52px 32px; display: flex; flex-direction: column; align-items: center; gap: 18px; border-top: 1px solid rgba(255,255,255,.06); }
+    .idx-footer-logo { height: 28px; width: auto; filter: brightness(0) invert(1); opacity: .6; }
+    .idx-footer-ig { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300; letter-spacing: .14em; color: #c09a3e; text-decoration: none; transition: opacity .25s; }
+    .idx-footer-ig:hover { opacity: .6; }
+    .idx-footer-copy { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 300; letter-spacing: .1em; color: rgba(255,255,255,.18); }
+
+    /* REVEAL */
+    .bl-reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
+    .bl-reveal.in { opacity: 1; transform: translateY(0); }
+    .bl-reveal.d1 { transition-delay: .12s; }
+    .bl-reveal.d2 { transition-delay: .24s; }
+
+    /* HERO */
+    .bl-hero { position: relative; height: 55vh; min-height: 420px; display: flex; align-items: flex-end; overflow: hidden; }
+    .bl-hero-bg { position: absolute; inset: 0; }
+    .bl-hero-bg img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .bl-hero-overlay { position: absolute; inset: 0; background: rgba(13,6,0,.65); }
+    .bl-hero-content { position: relative; z-index: 2; padding: 0 64px 56px; }
+    .bl-hero-back { display: inline-flex; align-items: center; gap: 8px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300; letter-spacing: .14em; color: rgba(255,255,255,.5); text-decoration: none; margin-bottom: 20px; transition: color .25s; }
+    .bl-hero-back:hover { color: #c09a3e; }
+    .bl-hero-eyebrow { display: block; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 300; letter-spacing: .24em; text-transform: uppercase; color: #c09a3e; margin-bottom: 16px; }
+    .bl-hero-h1 { font-family: 'Shippori Mincho B1', serif; font-size: clamp(52px,9vw,100px); font-weight: 400; letter-spacing: -.01em; line-height: 1; color: #fff; }
+    .bl-hero-sub { margin-top: 20px; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 300; letter-spacing: .08em; color: rgba(255,255,255,.5); }
+
+    /* SHARED */
+    .bl-section-label { display: block; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 300; letter-spacing: .28em; text-transform: uppercase; color: #c09a3e; margin-bottom: 24px; }
+    .bl-h2 { font-family: 'Shippori Mincho B1', serif; font-size: clamp(26px,3.5vw,40px); font-weight: 400; letter-spacing: .02em; line-height: 1.45; color: #fff; margin-bottom: 32px; }
+    .bl-body { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 300; line-height: 1.9; letter-spacing: .04em; color: rgba(255,255,255,.62); }
+    .bl-body p + p { margin-top: 20px; }
+
+    /* PHILOSOPHY */
+    .bl-philosophy { background: #0d0600; padding: 100px 64px; }
+    .bl-philosophy-inner { max-width: 860px; margin: 0 auto; }
+
+    /* FLAVOR MAP */
+    .bl-map { background: #0a0500; padding: 100px 64px; }
+    .bl-map-inner { max-width: 900px; margin: 0 auto; }
+    .bl-map-header { text-align: center; margin-bottom: 52px; }
+    .bl-map-title { font-family: 'Shippori Mincho B1', serif; font-size: clamp(24px,3vw,36px); color: #fff; letter-spacing: .04em; margin-bottom: 10px; }
+    .bl-map-sub { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300; letter-spacing: .18em; color: rgba(255,255,255,.3); }
+    .bl-map-wrap { position: relative; width: 100%; max-width: 640px; margin: 0 auto; aspect-ratio: 1/1; border: 1px solid rgba(192,154,62,.12); }
+    .bl-map-axis { position: absolute; font-family: 'Inter', sans-serif; font-size: 9px; font-weight: 300; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.28); }
+    .bl-map-axis-top    { top: -24px;  left: 50%; transform: translateX(-50%); }
+    .bl-map-axis-bottom { bottom: -24px; left: 50%; transform: translateX(-50%); }
+    .bl-map-axis-left   { left: -44px;  top: 50%; transform: translateY(-50%) rotate(-90deg); }
+    .bl-map-axis-right  { right: -44px; top: 50%; transform: translateY(-50%) rotate(90deg); }
+    .bl-map-area { position: relative; width: 100%; height: 100%; }
+    .bl-cross-h { position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: rgba(255,255,255,.07); }
+    .bl-cross-v { position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,.07); }
+    .bl-dot { position: absolute; transform: translate(-50%,-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .bl-dot-flag { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.18); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+    .bl-dot-label { font-family: 'Inter', sans-serif; font-size: 9px; font-weight: 300; letter-spacing: .12em; color: rgba(255,255,255,.55); white-space: nowrap; }
+    .bl-dot--blend .bl-dot-flag { background: rgba(192,154,62,.15); border-color: #c09a3e; font-size: 14px; color: #c09a3e; box-shadow: 0 0 12px rgba(192,154,62,.25); }
+    .bl-dot--blend .bl-dot-label { color: #c09a3e; font-weight: 400; }
+    .bl-map-caption { text-align: center; margin-top: 40px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 300; letter-spacing: .05em; color: rgba(255,255,255,.38); line-height: 1.8; }
+
+    /* PRODUCT DETAIL */
+    .bl-product { background: #0d0600; padding: 100px 64px; }
+    .bl-product-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .bl-product-img { width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block; }
+    .bl-product-body {}
+    .bl-blend-rows { border-top: 1px solid rgba(255,255,255,.08); margin-bottom: 36px; }
+    .bl-blend-row { padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,.06); display: grid; grid-template-columns: 44px 1fr auto; gap: 16px; align-items: start; }
+    .bl-blend-pct { font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .3em; text-transform: uppercase; color: #c09a3e; padding-top: 3px; }
+    .bl-blend-origin { font-family: 'Shippori Mincho B1', serif; font-size: 14px; color: #fff; letter-spacing: .03em; line-height: 1.6; margin-bottom: 3px; }
+    .bl-blend-farm { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 300; letter-spacing: .03em; color: rgba(255,255,255,.4); line-height: 1.6; }
+    .bl-blend-country { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 300; color: rgba(255,255,255,.25); letter-spacing: .06em; white-space: nowrap; }
+    .bl-tags-label { font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .35em; text-transform: uppercase; color: rgba(255,255,255,.3); display: block; margin-bottom: 12px; }
+    .bl-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 28px; }
+    .bl-tag { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 300; letter-spacing: .07em; color: rgba(192,154,62,.7); border: 1px solid rgba(192,154,62,.25); padding: 4px 12px; border-radius: 14px; }
+    .bl-roast-note { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 300; line-height: 1.9; letter-spacing: .04em; color: rgba(255,255,255,.5); margin-bottom: 36px; }
+    .bl-buy-btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 32px; background: #c09a3e; color: #0a0806; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: .24em; text-transform: uppercase; text-decoration: none; transition: background .2s, box-shadow .2s; }
+    .bl-buy-btn:hover { background: #d4ac48; box-shadow: 0 0 24px rgba(192,154,62,.3); }
+
+    /* NAV LINKS */
+    .bl-nav-section { background: #0a0500; padding: 80px 64px; border-top: 1px solid rgba(255,255,255,.06); }
+    .bl-nav-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .bl-nav-link { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 300; letter-spacing: .2em; text-transform: uppercase; text-decoration: none; transition: color .25s; }
+    .bl-nav-link-back { color: rgba(255,255,255,.45); }
+    .bl-nav-link-back:hover { color: #fff; }
+    .bl-nav-link-fwd { color: #c09a3e; }
+    .bl-nav-link-fwd:hover { opacity: .7; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .bl-hero-content { padding: 0 24px 40px; }
+      .bl-hero-h1 { font-size: clamp(42px,12vw,64px); }
+      .bl-philosophy { padding: 64px 24px; }
+      .bl-map { padding: 64px 24px; }
+      .bl-map-wrap { max-width: 100%; }
+      .bl-map-axis-left  { left: -38px; font-size: 8px; }
+      .bl-map-axis-right { right: -38px; font-size: 8px; }
+      .bl-product { padding: 64px 24px; }
+      .bl-product-inner { grid-template-columns: 1fr; gap: 40px; }
+      .bl-nav-section { padding: 56px 24px; }
+      .bl-nav-inner { flex-direction: column; gap: 24px; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="idx-nav">
+  <a href="index.html"><img src="img/logo.png" alt="KIKI" class="idx-nav-logo-img"></a>
+  <button class="idx-ham" id="idx-ham"><span></span><span></span></button>
+</nav>
+<div class="idx-overlay" id="idx-overlay">
+  <a href="coffee.html">Coffee</a>
+  <a href="apparel.html">Apparel</a>
+  <a href="outdoor.html">Outdoor</a>
+  <a href="about.html">Story</a>
+  <a href="shop.html" class="nav-shop">Shop</a>
+</div>
+
+<!-- HERO -->
+<section class="bl-hero">
+  <div class="bl-hero-bg">
+    <img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=1600&q=90" alt="Blend" loading="eager">
+  </div>
+  <div class="bl-hero-overlay"></div>
+  <div class="bl-hero-content bl-reveal">
+    <a href="qualities.html" class="bl-hero-back">&#8592; Our Qualities</a>
+    <span class="bl-hero-eyebrow">Our Qualities · Blend</span>
+    <h1 class="bl-hero-h1">Blend</h1>
+    <p class="bl-hero-sub">産地をまたいで、新しい味を設計する。</p>
+  </div>
+</section>
+
+<!-- PHILOSOPHY -->
+<section class="bl-philosophy">
+  <div class="bl-philosophy-inner">
+    <div class="bl-reveal">
+      <span class="bl-section-label">Philosophy</span>
+      <h2 class="bl-h2">「隠す」ためではなく、<br>「表現する」ために作る。</h2>
+      <div class="bl-body">
+        <p>一般的なブレンドコーヒーは、品質の異なる豆を混ぜてコストを下げるためや、低品質な豆の欠点を隠すために使われることがあります。KIKIのブレンドは、その逆です。</p>
+        <p>複数の産地が持つそれぞれの個性が、互いを引き立て合うように設計する——それがKIKIのブレンド哲学です。コロンビアの甘酸っぱさ、エチオピアの華やかなフローラル、ブラジルのまろやかなボディ。3つが合わさることで、どれか一つのシングルオリジンでは作れない複雑な美しさが生まれます。</p>
+        <p>そしてKIKIは、使用している産地・農園・比率をすべて公開します。何が入っているかわからないコーヒーは、KIKIには存在しない。その透明性こそが、信頼の根拠です。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FLAVOR MAP -->
+<section class="bl-map">
+  <div class="bl-map-inner">
+    <div class="bl-map-header bl-reveal">
+      <span class="bl-section-label">Flavor Map</span>
+      <h2 class="bl-map-title">Coffee Beans</h2>
+      <p class="bl-map-sub">原産地の風味マップ</p>
+    </div>
+    <div class="bl-reveal d1" style="padding: 32px 48px;">
+      <div class="bl-map-wrap">
+        <span class="bl-map-axis bl-map-axis-top">酸味</span>
+        <span class="bl-map-axis bl-map-axis-bottom">コク</span>
+        <span class="bl-map-axis bl-map-axis-left">甘み</span>
+        <span class="bl-map-axis bl-map-axis-right">苦味</span>
+        <div class="bl-map-area">
+          <div class="bl-cross-h"></div>
+          <div class="bl-cross-v"></div>
+          <div class="bl-dot" style="left:24%; top:24%;">
+            <div class="bl-dot-flag">🇨🇴</div>
+            <span class="bl-dot-label">Colombia</span>
+          </div>
+          <div class="bl-dot" style="left:46%; top:30%;">
+            <div class="bl-dot-flag">🇪🇹</div>
+            <span class="bl-dot-label">Ethiopia</span>
+          </div>
+          <div class="bl-dot" style="left:68%; top:68%;">
+            <div class="bl-dot-flag">🇧🇷</div>
+            <span class="bl-dot-label">Brazil</span>
+          </div>
+          <div class="bl-dot bl-dot--blend" style="left:36%; top:40%;">
+            <div class="bl-dot-flag">★</div>
+            <span class="bl-dot-label">Smile Cup Blend</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="bl-map-caption bl-reveal">3産地の個性が重なり合う★がスマイルカップ ブレンドの味わいの位置づけです。</p>
+  </div>
+</section>
+
+<!-- SMILE CUP BLEND DETAIL -->
+<section class="bl-product">
+  <div class="bl-product-inner">
+    <div class="bl-reveal">
+      <img src="img/colombia.jpg" alt="スマイルカップ ブレンド" class="bl-product-img" loading="lazy">
+    </div>
+    <div class="bl-reveal d1">
+      <span class="bl-section-label">Smile Cup Blend</span>
+      <h2 class="bl-h2">スマイルカップ<br>ブレンド</h2>
+      <div class="bl-body" style="margin-bottom: 36px;">
+        <p>KIKIを代表するブレンド。スマイルカップ大会でも使用した、華やかさと飲みやすさを両立した一杯です。コーヒーが苦手な方、普段は紅茶派の方にこそ、まず試していただきたい味わいです。</p>
+      </div>
+
+      <div class="bl-blend-rows">
+        <div class="bl-blend-row">
+          <span class="bl-blend-pct">45%</span>
+          <div>
+            <p class="bl-blend-origin">Colombia</p>
+            <p class="bl-blend-farm">ピーチ クエブラディタス農園 / 標高 1,600〜1,850m</p>
+          </div>
+          <span class="bl-blend-country">Colombia</span>
+        </div>
+        <div class="bl-blend-row">
+          <span class="bl-blend-pct">45%</span>
+          <div>
+            <p class="bl-blend-origin">Ethiopia</p>
+            <p class="bl-blend-farm">ゲシャ・カルマチ農園 / 標高 1,800〜1,980m</p>
+          </div>
+          <span class="bl-blend-country">Ethiopia</span>
+        </div>
+        <div class="bl-blend-row">
+          <span class="bl-blend-pct">10%</span>
+          <div>
+            <p class="bl-blend-origin">Brazil</p>
+            <p class="bl-blend-farm">イエローブルボン他 / 標高 1,100〜1,150m</p>
+          </div>
+          <span class="bl-blend-country">Brazil</span>
+        </div>
+      </div>
+
+      <span class="bl-tags-label">Taste Profile</span>
+      <div class="bl-tags">
+        <span class="bl-tag">華やか</span>
+        <span class="bl-tag">フルーティ</span>
+        <span class="bl-tag">甘さ</span>
+        <span class="bl-tag">飲みやすい</span>
+        <span class="bl-tag">フローラル</span>
+        <span class="bl-tag">ピーチ</span>
+      </div>
+
+      <p class="bl-roast-note">焙煎度: 中煎り。ホット・アイスどちらでも楽しめます。コーヒーの苦味が苦手な方、紅茶やフルーツ系ドリンクがお好きな方にも特におすすめです。</p>
+
+      <a href="shop.html" class="bl-buy-btn">スマイルカップ ブレンドを購入する &#8594;</a>
+    </div>
+  </div>
+</section>
+
+<!-- NAVIGATION LINKS -->
+<div class="bl-nav-section">
+  <div class="bl-nav-inner bl-reveal">
+    <a href="qualities.html" class="bl-nav-link bl-nav-link-back">&#8592; Our Qualities に戻る</a>
+    <a href="shop.html" class="bl-nav-link bl-nav-link-fwd">コーヒーを購入する &#8594;</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="idx-footer">
+  <img src="img/logo.png" alt="KIKI" class="idx-footer-logo">
+  <a href="https://www.instagram.com/ki_ki_asobi" target="_blank" class="idx-footer-ig">@ki_ki_asobi</a>
+  <span class="idx-footer-copy">© 2026 KIKI（奇輝）</span>
+</footer>
+<div id="idx-cover"></div>
+
+<script>
+  const ham = document.getElementById('idx-ham');
+  const ov  = document.getElementById('idx-overlay');
+  ham.addEventListener('click', () => { ham.classList.toggle('open'); ov.classList.toggle('open'); });
+  ov.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { ham.classList.remove('open'); ov.classList.remove('open'); }));
+
+  const cover = document.getElementById('idx-cover');
+  requestAnimationFrame(() => { cover.style.opacity = '0'; });
+  window.addEventListener('pageshow', () => {
+    const c = document.getElementById('idx-cover'); if (!c) return;
+    c.style.transition = 'none'; c.style.opacity = '0'; c.style.pointerEvents = 'none';
+    requestAnimationFrame(() => { c.style.transition = 'opacity .8s ease'; });
+  });
+
+  document.querySelectorAll('a[href]').forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('mailto:') || link.target === '_blank') return;
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      cover.style.transition = 'opacity .4s ease'; cover.style.opacity = '1'; cover.style.pointerEvents = 'auto';
+      setTimeout(() => { window.location.href = href; }, 420);
+    });
+  });
+
+  window.addEventListener('scroll', () => { document.querySelector('.idx-nav').classList.toggle('scrolled', window.scrollY > 40); }, { passive: true });
+
+  const revealIO = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revealIO.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.bl-reveal').forEach(el => revealIO.observe(el));
+
+  if (!window.matchMedia('(hover: none)').matches) {
+    const cur = document.createElement('div'); cur.className = 'idx-cursor'; document.body.appendChild(cur);
+    let mx = 0, my = 0, cx = 0, cy = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cur.classList.add('active'); });
+    document.addEventListener('mouseleave', () => cur.classList.remove('active'));
+    (function lerp() { cx += (mx-cx)*.14; cy += (my-cy)*.14; cur.style.left = cx+'px'; cur.style.top = cy+'px'; requestAnimationFrame(lerp); })();
+    document.querySelectorAll('a, button').forEach(el => { el.addEventListener('mouseenter', () => cur.classList.add('hover')); el.addEventListener('mouseleave', () => cur.classList.remove('hover')); });
+  }
+</script>
+</body>
+</html>

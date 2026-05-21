@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rank — KIKI Coffee</title>
+  <meta name="description" content="KIKIコーヒーの品質ランク。スペシャルティグレードとは何か。選定基準を開示します。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Shippori+Mincho+B1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: #0d0600; }
+    body { background: #0d0600; color: #fff; font-family: 'Inter', sans-serif; font-weight: 300; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    /* ===== NAV ===== */
+    .idx-nav { position: fixed; top: 0; left: 0; right: 0; height: 60px; display: flex; align-items: center; justify-content: center; background: transparent; z-index: 100; transition: background .35s ease; }
+    .idx-nav.scrolled { background: rgba(10,4,0,.88); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .idx-nav-logo-img { height: 34px; width: auto; filter: brightness(0) invert(1); display: block; }
+    .idx-ham { position: absolute; right: 28px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; background: none; border: none; cursor: pointer; display: flex; flex-direction: column; justify-content: center; gap: 7px; padding: 0; }
+    .idx-ham span { display: block; width: 22px; height: 1px; background: rgba(255,255,255,.75); transition: transform .3s, opacity .3s; transform-origin: center; }
+    .idx-ham.open span:nth-child(1) { transform: translateY(4px) rotate(45deg); }
+    .idx-ham.open span:nth-child(2) { transform: translateY(-4px) rotate(-45deg); }
+
+    /* ===== OVERLAY ===== */
+    .idx-overlay { display: none; position: fixed; inset: 0; background: #0a0806; z-index: 99; flex-direction: column; align-items: center; justify-content: center; gap: 44px; }
+    .idx-overlay.open { display: flex; }
+    .idx-overlay a { font-family: 'Shippori Mincho B1', serif; font-size: clamp(28px,5vw,44px); color: #fff; text-decoration: none; letter-spacing: .08em; transition: color .25s; }
+    .idx-overlay a:hover { color: #c09a3e; }
+    .idx-overlay .nav-shop { color: #c09a3e; }
+
+    /* ===== CURSOR ===== */
+    .idx-cursor { position: fixed; z-index: 9998; pointer-events: none; width: 8px; height: 8px; background: #c09a3e; border-radius: 50%; transform: translate(-50%,-50%); transition: width .25s cubic-bezier(.16,1,.3,1), height .25s cubic-bezier(.16,1,.3,1), background .25s, opacity .2s; opacity: 0; will-change: left,top; }
+    .idx-cursor.active { opacity: 1; }
+    .idx-cursor.hover { width: 32px; height: 32px; background: transparent; border: 1px solid rgba(192,154,62,.75); }
+
+    /* ===== COVER ===== */
+    #idx-cover { position: fixed; inset: 0; background: #0d0600; z-index: 9997; pointer-events: none; opacity: 1; transition: opacity .8s ease; }
+
+    /* ===== FOOTER ===== */
+    .idx-footer { background: #0a0806; padding: 52px 32px; display: flex; flex-direction: column; align-items: center; gap: 18px; border-top: 1px solid rgba(255,255,255,.06); }
+    .idx-footer-logo { height: 28px; width: auto; filter: brightness(0) invert(1); opacity: .6; }
+    .idx-footer-ig { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300; letter-spacing: .14em; color: #c09a3e; text-decoration: none; transition: opacity .25s; }
+    .idx-footer-ig:hover { opacity: .6; }
+    .idx-footer-copy { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 300; letter-spacing: .1em; color: rgba(255,255,255,.18); }
+
+    /* ===== REVEAL ===== */
+    .rk-reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); }
+    .rk-reveal.in { opacity: 1; transform: translateY(0); }
+    .rk-reveal.d1 { transition-delay: .12s; }
+    .rk-reveal.d2 { transition-delay: .24s; }
+    .rk-reveal.d3 { transition-delay: .36s; }
+
+    /* ===== HERO ===== */
+    .rk-hero { position: relative; height: 55vh; min-height: 420px; display: flex; align-items: flex-end; overflow: hidden; }
+    .rk-hero-bg { position: absolute; inset: 0; }
+    .rk-hero-bg img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .rk-hero-overlay { position: absolute; inset: 0; background: rgba(13,6,0,.72); }
+    .rk-hero-content { position: relative; z-index: 2; padding: 0 64px 56px; }
+    .rk-hero-back { display: inline-flex; align-items: center; gap: 8px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300; letter-spacing: .14em; color: rgba(255,255,255,.5); text-decoration: none; margin-bottom: 20px; transition: color .25s; }
+    .rk-hero-back:hover { color: #c09a3e; }
+    .rk-hero-eyebrow { display: block; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 300; letter-spacing: .24em; text-transform: uppercase; color: #c09a3e; margin-bottom: 16px; }
+    .rk-hero-h1 { font-family: 'Shippori Mincho B1', serif; font-size: clamp(52px,9vw,100px); font-weight: 400; letter-spacing: -.01em; line-height: 1; color: #fff; }
+    .rk-hero-sub { margin-top: 20px; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 300; letter-spacing: .08em; color: rgba(255,255,255,.5); }
+
+    /* ===== SECTION: WHAT IS SPECIALTY ===== */
+    .rk-specialty { background: #0d0600; padding: 100px 64px; }
+    .rk-specialty-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .rk-section-label { display: block; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 300; letter-spacing: .28em; text-transform: uppercase; color: #c09a3e; margin-bottom: 24px; }
+    .rk-h2 { font-family: 'Shippori Mincho B1', serif; font-size: clamp(26px,3.5vw,40px); font-weight: 400; letter-spacing: .02em; line-height: 1.45; color: #fff; margin-bottom: 32px; }
+    .rk-body { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 300; line-height: 1.9; letter-spacing: .04em; color: rgba(255,255,255,.62); }
+    .rk-body p + p { margin-top: 20px; }
+    .rk-specialty-img { width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block; }
+
+    /* ===== SECTION: GRADING ===== */
+    .rk-grading { background: #0a0500; padding: 100px 64px; }
+    .rk-grading-inner { max-width: 900px; margin: 0 auto; }
+    .rk-grading-header { text-align: center; margin-bottom: 64px; }
+    .rk-grade-row { display: flex; align-items: flex-start; gap: 32px; padding: 36px 40px; border: 1px solid rgba(255,255,255,.06); margin-bottom: 16px; transition: border-color .3s; }
+    .rk-grade-row.gold { border-color: #c09a3e; background: rgba(192,154,62,.04); }
+    .rk-grade-row.dim { opacity: .38; }
+    .rk-grade-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+    .rk-grade-dot.gold { background: #c09a3e; }
+    .rk-grade-dot.silver { background: rgba(255,255,255,.25); }
+    .rk-grade-dot.muted { background: rgba(255,255,255,.1); }
+    .rk-grade-body { flex: 1; }
+    .rk-grade-name { font-family: 'Shippori Mincho B1', serif; font-size: 22px; letter-spacing: .04em; color: #fff; margin-bottom: 6px; }
+    .rk-grade-row.gold .rk-grade-name { color: #c09a3e; }
+    .rk-grade-score { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300; letter-spacing: .2em; color: rgba(255,255,255,.4); margin-bottom: 12px; }
+    .rk-grade-tag { display: inline-block; font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .22em; text-transform: uppercase; color: #c09a3e; border: 1px solid rgba(192,154,62,.4); padding: 3px 10px; margin-bottom: 14px; }
+    .rk-grade-desc { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 300; line-height: 1.8; color: rgba(255,255,255,.55); }
+    .rk-grade-bar { width: 100%; max-width: 220px; }
+    .rk-score-bar { height: 2px; background: rgba(255,255,255,.08); position: relative; margin-top: 12px; }
+    .rk-score-fill { height: 2px; background: #c09a3e; }
+    .rk-score-fill.dim-fill { background: rgba(255,255,255,.2); }
+    .rk-score-fill.muted-fill { background: rgba(255,255,255,.08); }
+    .rk-score-label { font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .14em; color: rgba(255,255,255,.3); margin-top: 6px; display: block; }
+
+    /* ===== SECTION: SELECTION CRITERIA ===== */
+    .rk-criteria { background: #0d0600; padding: 100px 64px; }
+    .rk-criteria-inner { max-width: 1200px; margin: 0 auto; }
+    .rk-criteria-header { margin-bottom: 64px; }
+    .rk-criteria-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; }
+    .rk-criteria-item { }
+    .rk-criteria-num { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300; letter-spacing: .24em; color: #c09a3e; display: block; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid rgba(192,154,62,.2); }
+    .rk-criteria-title { font-family: 'Shippori Mincho B1', serif; font-size: 20px; letter-spacing: .04em; color: #fff; margin-bottom: 16px; }
+    .rk-criteria-desc { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 300; line-height: 1.85; color: rgba(255,255,255,.55); }
+
+    /* ===== NAVIGATION LINKS ===== */
+    .rk-nav-links { background: #0a0500; padding: 80px 64px; display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
+    .rk-nav-section { background: #0a0500; padding: 80px 64px; border-top: 1px solid rgba(255,255,255,.06); }
+    .rk-nav-section-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .rk-link { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 300; letter-spacing: .2em; text-transform: uppercase; text-decoration: none; transition: color .25s; }
+    .rk-link-back { color: rgba(255,255,255,.45); }
+    .rk-link-back:hover { color: #fff; }
+    .rk-link-fwd { color: #c09a3e; }
+    .rk-link-fwd:hover { opacity: .7; }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .rk-hero-content { padding: 0 24px 40px; }
+      .rk-hero-h1 { font-size: clamp(42px,12vw,64px); }
+      .rk-specialty { padding: 64px 24px; }
+      .rk-specialty-inner { grid-template-columns: 1fr; gap: 40px; }
+      .rk-grading { padding: 64px 24px; }
+      .rk-grade-row { flex-direction: column; gap: 20px; padding: 28px 24px; }
+      .rk-grade-bar { max-width: 100%; }
+      .rk-criteria { padding: 64px 24px; }
+      .rk-criteria-grid { grid-template-columns: 1fr; gap: 36px; }
+      .rk-nav-section { padding: 56px 24px; }
+      .rk-nav-section-inner { flex-direction: column; gap: 24px; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="idx-nav">
+  <a href="index.html"><img src="img/logo.png" alt="KIKI" class="idx-nav-logo-img"></a>
+  <button class="idx-ham" id="idx-ham"><span></span><span></span></button>
+</nav>
+<div class="idx-overlay" id="idx-overlay">
+  <a href="coffee.html">Coffee</a>
+  <a href="apparel.html">Apparel</a>
+  <a href="outdoor.html">Outdoor</a>
+  <a href="about.html">Story</a>
+  <a href="shop.html" class="nav-shop">Shop</a>
+</div>
+
+<!-- HERO -->
+<section class="rk-hero">
+  <div class="rk-hero-bg">
+    <img src="https://images.unsplash.com/photo-1509785307050-d4066910ec1e?w=1800&q=90" alt="Coffee beans close-up" loading="eager">
+  </div>
+  <div class="rk-hero-overlay"></div>
+  <div class="rk-hero-content rk-reveal">
+    <a href="qualities.html" class="rk-hero-back">&#8592; Our Qualities</a>
+    <span class="rk-hero-eyebrow">Our Qualities · Rank</span>
+    <h1 class="rk-hero-h1">Rank</h1>
+    <p class="rk-hero-sub">品質スコアで選んだ豆だけを届ける</p>
+  </div>
+</section>
+
+<!-- WHAT IS SPECIALTY -->
+<section class="rk-specialty">
+  <div class="rk-specialty-inner">
+    <div class="rk-reveal">
+      <span class="rk-section-label">What is Specialty</span>
+      <h2 class="rk-h2">スペシャルティグレードとは何か。</h2>
+      <div class="rk-body">
+        <p>スペシャルティコーヒーとは、国際的なカッパー（評価専門家）による厳密な審査で100点満点中80点以上を獲得したコーヒーです。世界の全コーヒー生産量のうち、わずか数%のみがこの基準を満たします。</p>
+        <p>評価基準には、フレーバー・アロマ・酸の質・口当たり・後味・バランスなど複数の項目があります。</p>
+        <p>KIKIはすべての豆についてスペシャルティグレード以上を取り扱い基準としています。</p>
+      </div>
+    </div>
+    <div class="rk-reveal d1">
+      <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=900&q=90" alt="Specialty coffee grading" class="rk-specialty-img" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- GRADING SYSTEM -->
+<section class="rk-grading">
+  <div class="rk-grading-inner">
+    <div class="rk-grading-header rk-reveal">
+      <span class="rk-section-label">Grading</span>
+      <h2 class="rk-h2">KIKIの選定基準</h2>
+    </div>
+
+    <!-- Specialty Tier -->
+    <div class="rk-grade-row gold rk-reveal">
+      <div class="rk-grade-bar">
+        <div class="rk-grade-dot gold"></div>
+        <div class="rk-score-bar">
+          <div class="rk-score-fill" style="width:100%"></div>
+        </div>
+        <span class="rk-score-label">80–100点</span>
+      </div>
+      <div class="rk-grade-body">
+        <p class="rk-grade-name">Specialty</p>
+        <p class="rk-grade-score">80 – 100 pts</p>
+        <span class="rk-grade-tag">KIKIが取り扱う最低ライン</span>
+        <p class="rk-grade-desc">最も品質が高く、個性豊かなフレーバーを持つ。産地の個性が最大限に表れる。</p>
+      </div>
+    </div>
+
+    <!-- Premium Tier -->
+    <div class="rk-grade-row dim rk-reveal d1">
+      <div class="rk-grade-bar">
+        <div class="rk-grade-dot silver"></div>
+        <div class="rk-score-bar">
+          <div class="rk-score-fill dim-fill" style="width:70%"></div>
+        </div>
+        <span class="rk-score-label">75–79点</span>
+      </div>
+      <div class="rk-grade-body">
+        <p class="rk-grade-name">Premium</p>
+        <p class="rk-grade-score">75 – 79 pts</p>
+        <p class="rk-grade-desc" style="color:rgba(255,255,255,.25)">取り扱い対象外 — 一般的なスペシャルティコーヒーショップの平均ライン。</p>
+      </div>
+    </div>
+
+    <!-- Commercial Tier -->
+    <div class="rk-grade-row dim rk-reveal d2">
+      <div class="rk-grade-bar">
+        <div class="rk-grade-dot muted"></div>
+        <div class="rk-score-bar">
+          <div class="rk-score-fill muted-fill" style="width:35%"></div>
+        </div>
+        <span class="rk-score-label">74点以下</span>
+      </div>
+      <div class="rk-grade-body">
+        <p class="rk-grade-name">Commercial</p>
+        <p class="rk-grade-score">74 pts 以下</p>
+        <p class="rk-grade-desc" style="color:rgba(255,255,255,.2)">取り扱い対象外 — 一般的な市場流通品。大量生産・低価格。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SELECTION CRITERIA -->
+<section class="rk-criteria">
+  <div class="rk-criteria-inner">
+    <div class="rk-criteria-header rk-reveal">
+      <h2 class="rk-h2">選定のプロセス</h2>
+    </div>
+    <div class="rk-criteria-grid">
+      <div class="rk-criteria-item rk-reveal">
+        <span class="rk-criteria-num">01</span>
+        <h3 class="rk-criteria-title">テイスティング</h3>
+        <p class="rk-criteria-desc">専門のカッパーがカッピング（評価）を行い、スペシャルティグレードを確認します。</p>
+      </div>
+      <div class="rk-criteria-item rk-reveal d1">
+        <span class="rk-criteria-num">02</span>
+        <h3 class="rk-criteria-title">産地の選定</h3>
+        <p class="rk-criteria-desc">同じ産地でも農園・クロップイヤー（収穫年）によって品質は変わります。毎シーズン厳選。</p>
+      </div>
+      <div class="rk-criteria-item rk-reveal d2">
+        <span class="rk-criteria-num">03</span>
+        <h3 class="rk-criteria-title">焙煎後評価</h3>
+        <p class="rk-criteria-desc">焙煎後もカッピングを実施。品質が保たれているかを最終確認してからお届けします。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NAVIGATION LINKS -->
+<div class="rk-nav-section">
+  <div class="rk-nav-section-inner rk-reveal">
+    <a href="qualities.html" class="rk-link rk-link-back">&#8592; Our Qualities に戻る</a>
+    <a href="coffee.html" class="rk-link rk-link-fwd">コーヒーを見る &#8594;</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="idx-footer">
+  <img src="img/logo.png" alt="KIKI" class="idx-footer-logo">
+  <a href="https://www.instagram.com/ki_ki_asobi" target="_blank" class="idx-footer-ig">@ki_ki_asobi</a>
+  <span class="idx-footer-copy">© 2026 KIKI（奇輝）</span>
+</footer>
+<div id="idx-cover"></div>
+
+<script>
+  const ham = document.getElementById('idx-ham');
+  const ov  = document.getElementById('idx-overlay');
+  ham.addEventListener('click', () => { ham.classList.toggle('open'); ov.classList.toggle('open'); });
+  ov.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { ham.classList.remove('open'); ov.classList.remove('open'); }));
+
+  const cover = document.getElementById('idx-cover');
+  requestAnimationFrame(() => { cover.style.opacity = '0'; });
+  window.addEventListener('pageshow', () => {
+    const c = document.getElementById('idx-cover'); if (!c) return;
+    c.style.transition = 'none'; c.style.opacity = '0'; c.style.pointerEvents = 'none';
+    requestAnimationFrame(() => { c.style.transition = 'opacity .8s ease'; });
+  });
+
+  document.querySelectorAll('a[href]').forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('mailto:') || link.target === '_blank') return;
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      cover.style.transition = 'opacity .4s ease'; cover.style.opacity = '1'; cover.style.pointerEvents = 'auto';
+      setTimeout(() => { window.location.href = href; }, 420);
+    });
+  });
+
+  window.addEventListener('scroll', () => { document.querySelector('.idx-nav').classList.toggle('scrolled', window.scrollY > 40); }, { passive: true });
+
+  const revealIO = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revealIO.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.rk-reveal').forEach(el => revealIO.observe(el));
+
+  if (!window.matchMedia('(hover: none)').matches) {
+    const cur = document.createElement('div'); cur.className = 'idx-cursor'; document.body.appendChild(cur);
+    let mx = 0, my = 0, cx = 0, cy = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cur.classList.add('active'); });
+    document.addEventListener('mouseleave', () => cur.classList.remove('active'));
+    (function lerp() { cx += (mx-cx)*.14; cy += (my-cy)*.14; cur.style.left = cx+'px'; cur.style.top = cy+'px'; requestAnimationFrame(lerp); })();
+    document.querySelectorAll('a, button').forEach(el => { el.addEventListener('mouseenter', () => cur.classList.add('hover')); el.addEventListener('mouseleave', () => cur.classList.remove('hover')); });
+  }
+</script>
+</body>
+</html>

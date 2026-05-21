@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Qualities — KIKI Coffee</title>
+  <meta name="description" content="KIKIコーヒーの5つの品質基準。Single Origin・Rank・Roaster・Blend・KIKI Break Stand。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Shippori+Mincho+B1&display=swap" rel="stylesheet">
+  <style>
+    /* ─── RESET / BASE ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: #0d0600; }
+    body { background: #0d0600; color: #fff; }
+
+    /* ─── NAV ─── */
+    .idx-nav { position: fixed; top: 0; left: 0; right: 0; height: 60px; display: flex; align-items: center; justify-content: center; background: transparent; z-index: 100; transition: background .35s ease; }
+    .idx-nav.scrolled { background: rgba(10,4,0,.88); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .idx-nav-logo-img { height: 34px; width: auto; filter: brightness(0) invert(1); display: block; }
+    .idx-ham { position: absolute; right: 28px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; background: none; border: none; cursor: pointer; display: flex; flex-direction: column; justify-content: center; gap: 7px; padding: 0; }
+    .idx-ham span { display: block; width: 22px; height: 1px; background: rgba(255,255,255,.75); transition: transform .3s, opacity .3s; transform-origin: center; }
+    .idx-ham.open span:nth-child(1) { transform: translateY(4px) rotate(45deg); }
+    .idx-ham.open span:nth-child(2) { transform: translateY(-4px) rotate(-45deg); }
+    .idx-overlay { display: none; position: fixed; inset: 0; background: #0a0806; z-index: 99; flex-direction: column; align-items: center; justify-content: center; gap: 44px; }
+    .idx-overlay.open { display: flex; }
+    .idx-overlay a { font-family: 'Shippori Mincho B1', serif; font-size: clamp(28px,5vw,44px); color: #fff; text-decoration: none; letter-spacing: .08em; transition: color .25s; }
+    .idx-overlay a:hover { color: #c09a3e; }
+    .idx-overlay .nav-shop { color: #c09a3e; }
+
+    /* ─── CURSOR ─── */
+    .idx-cursor { position: fixed; z-index: 9998; pointer-events: none; width: 8px; height: 8px; background: #c09a3e; border-radius: 50%; transform: translate(-50%,-50%); transition: width .25s cubic-bezier(.16,1,.3,1), height .25s cubic-bezier(.16,1,.3,1), background .25s, opacity .2s; opacity: 0; will-change: left,top; }
+    .idx-cursor.active { opacity: 1; }
+    .idx-cursor.hover { width: 32px; height: 32px; background: transparent; border: 1px solid rgba(192,154,62,.75); }
+
+    /* ─── PAGE COVER ─── */
+    #idx-cover { position: fixed; inset: 0; background: #0d0600; z-index: 9997; pointer-events: none; opacity: 1; transition: opacity .8s ease; }
+
+    /* ─── SCROLL REVEAL ─── */
+    .ql-reveal { opacity: 0; transform: translateY(22px); transition: opacity .85s cubic-bezier(.16,1,.3,1), transform .85s cubic-bezier(.16,1,.3,1); }
+    .ql-reveal.in { opacity: 1; transform: none; }
+    .ql-reveal.d1 { transition-delay: .10s; }
+    .ql-reveal.d2 { transition-delay: .20s; }
+    .ql-reveal.d3 { transition-delay: .30s; }
+
+    /* ─── FOOTER ─── */
+    .idx-footer { background: #0a0806; padding: 52px 32px; display: flex; flex-direction: column; align-items: center; gap: 18px; border-top: 1px solid rgba(255,255,255,.06); }
+    .idx-footer-logo { height: 28px; width: auto; filter: brightness(0) invert(1); opacity: .6; }
+    .idx-footer-ig { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300; letter-spacing: .14em; color: #c09a3e; text-decoration: none; transition: opacity .25s; }
+    .idx-footer-ig:hover { opacity: .6; }
+    .idx-footer-copy { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 300; letter-spacing: .1em; color: rgba(255,255,255,.18); }
+
+    /* ─── HERO ─── */
+    .ql-hero {
+      position: relative;
+      height: 50vh;
+      min-height: 360px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .ql-hero-bg { position: absolute; inset: 0; }
+    .ql-hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
+    .ql-hero-overlay { position: absolute; inset: 0; background: rgba(13,6,0,.7); }
+    .ql-hero-body { position: relative; z-index: 2; text-align: center; padding: 0 24px; }
+    .ql-hero-eyebrow {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      letter-spacing: .5em;
+      text-transform: uppercase;
+      color: #c09a3e;
+      margin-bottom: 20px;
+    }
+    .ql-hero-title {
+      font-family: 'Shippori Mincho B1', serif;
+      font-size: clamp(44px, 7vw, 88px);
+      color: #fff;
+      letter-spacing: .08em;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .ql-hero-sub {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(11px, 1.2vw, 13px);
+      font-weight: 300;
+      letter-spacing: .12em;
+      color: rgba(255,255,255,.45);
+    }
+
+    /* ─── MAIN SECTION ─── */
+    .ql-section {
+      background: #0d0600;
+      padding: 80px 64px;
+    }
+    .ql-intro {
+      font-family: 'Shippori Mincho B1', serif;
+      font-size: 16px;
+      color: rgba(255,255,255,.55);
+      line-height: 2.5;
+      max-width: 640px;
+      margin: 0 auto 72px;
+      text-align: center;
+      letter-spacing: .05em;
+    }
+
+    /* ─── CARDS GRID ─── */
+    .ql-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .ql-card {
+      display: block;
+      text-decoration: none;
+      background: #0d0600;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid transparent;
+      transition: border-color .35s ease;
+    }
+    .ql-card:hover { border-color: rgba(192,154,62,.45); }
+
+    .ql-card--full { grid-column: 1 / -1; }
+
+    .ql-card-img {
+      overflow: hidden;
+      aspect-ratio: 16/10;
+    }
+    .ql-card--full .ql-card-img { aspect-ratio: 21/9; }
+    .ql-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .7s cubic-bezier(.25,.46,.45,.94);
+      display: block;
+    }
+    .ql-card:hover .ql-card-img img { transform: scale(1.04); }
+
+    .ql-card-body {
+      padding: 32px 36px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .ql-card--full .ql-card-body { max-width: 720px; }
+
+    .ql-card-num {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: .35em;
+      color: rgba(192,154,62,.5);
+    }
+    .ql-card-title {
+      font-family: 'Shippori Mincho B1', serif;
+      font-size: clamp(22px, 2.6vw, 34px);
+      color: #fff;
+      letter-spacing: .06em;
+      line-height: 1.3;
+    }
+    .ql-card-desc {
+      font-family: 'Shippori Mincho B1', serif;
+      font-size: 13px;
+      color: rgba(255,255,255,.45);
+      line-height: 2;
+      letter-spacing: .04em;
+    }
+    .ql-card-arrow {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: #c09a3e;
+      margin-top: 6px;
+      transition: transform .25s ease;
+    }
+    .ql-card:hover .ql-card-arrow { transform: translateX(6px); }
+
+    /* ─── BACK LINK ─── */
+    .ql-back-wrap {
+      background: #0d0600;
+      padding: 48px 64px 72px;
+      text-align: center;
+    }
+    .ql-back-link {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: rgba(192,154,62,.6);
+      text-decoration: none;
+      transition: color .25s;
+    }
+    .ql-back-link:hover { color: #c09a3e; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      .ql-section { padding: 60px 32px; }
+      .ql-card-body { padding: 24px 24px 32px; }
+    }
+    @media (max-width: 768px) {
+      .idx-ham { right: 20px; }
+      .ql-hero { height: 46vh; min-height: 300px; }
+      .ql-section { padding: 52px 20px; }
+      .ql-grid { grid-template-columns: 1fr; }
+      .ql-card--full { grid-column: 1; }
+      .ql-card--full .ql-card-img { aspect-ratio: 16/10; }
+      .ql-card-body { padding: 20px 20px 28px; }
+      .ql-back-wrap { padding: 40px 20px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="idx-nav">
+  <a href="index.html"><img src="img/logo.png" alt="KIKI" class="idx-nav-logo-img"></a>
+  <button class="idx-ham" id="idx-ham"><span></span><span></span></button>
+</nav>
+<div class="idx-overlay" id="idx-overlay">
+  <a href="coffee.html">Coffee</a>
+  <a href="apparel.html">Apparel</a>
+  <a href="outdoor.html">Outdoor</a>
+  <a href="about.html">Story</a>
+  <a href="shop.html" class="nav-shop">Shop</a>
+</div>
+
+<!-- HERO -->
+<section class="ql-hero">
+  <div class="ql-hero-bg">
+    <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1800&q=90" alt="KIKI Coffee Qualities">
+  </div>
+  <div class="ql-hero-overlay"></div>
+  <div class="ql-hero-body">
+    <span class="ql-hero-eyebrow">Coffee</span>
+    <h1 class="ql-hero-title">Our Qualities</h1>
+    <p class="ql-hero-sub">KIKIが届けるコーヒーの5つの約束</p>
+  </div>
+</section>
+
+<!-- QUALITIES MAIN SECTION -->
+<section class="ql-section">
+
+  <p class="ql-intro ql-reveal">
+    産地を開示する。農園を開示する。品質スコアで選ぶ。<br>これがKIKIのコーヒーに対する答えです。
+  </p>
+
+  <div class="ql-grid">
+
+    <!-- 01 Single Origin -->
+    <a href="single-origin.html" class="ql-card ql-reveal">
+      <div class="ql-card-img">
+        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=90" alt="Single Origin" loading="lazy">
+      </div>
+      <div class="ql-card-body">
+        <span class="ql-card-num">01</span>
+        <h2 class="ql-card-title">Single Origin</h2>
+        <p class="ql-card-desc">産地・農園・品種をすべて開示。その豆だけが持つ個性をそのままカップに。</p>
+        <span class="ql-card-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- 02 Rank -->
+    <a href="rank.html" class="ql-card ql-reveal d1">
+      <div class="ql-card-img">
+        <img src="https://images.unsplash.com/photo-1509785307050-d4066910ec1e?w=800&q=90" alt="Rank" loading="lazy">
+      </div>
+      <div class="ql-card-body">
+        <span class="ql-card-num">02</span>
+        <h2 class="ql-card-title">Rank</h2>
+        <p class="ql-card-desc">品質スコアで厳選したスペシャルティグレードの豆だけをお届けします。</p>
+        <span class="ql-card-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- 03 Roaster -->
+    <a href="roaster.html" class="ql-card ql-reveal">
+      <div class="ql-card-img">
+        <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=800&q=90" alt="Roaster" loading="lazy">
+      </div>
+      <div class="ql-card-body">
+        <span class="ql-card-num">03</span>
+        <h2 class="ql-card-title">Roaster</h2>
+        <p class="ql-card-desc">KIKIの焙煎士が豆の個性を最大限に引き出す温度・時間で丁寧に焼き上げます。</p>
+        <span class="ql-card-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- 04 Blend -->
+    <a href="blend.html" class="ql-card ql-reveal d1">
+      <div class="ql-card-img">
+        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&q=90" alt="Blend" loading="lazy">
+      </div>
+      <div class="ql-card-body">
+        <span class="ql-card-num">04</span>
+        <h2 class="ql-card-title">Blend</h2>
+        <p class="ql-card-desc">複数の産地を絶妙にブレンド。飲み飽きない日常の一杯を追求します。</p>
+        <span class="ql-card-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- 05 KIKI Break Stand (full width) -->
+    <a href="break-stand.html" class="ql-card ql-card--full ql-reveal d2">
+      <div class="ql-card-img">
+        <img src="https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?w=1800&q=90" alt="KIKI Break Stand" loading="lazy">
+      </div>
+      <div class="ql-card-body">
+        <span class="ql-card-num">05</span>
+        <h2 class="ql-card-title">KIKI Break Stand</h2>
+        <p class="ql-card-desc">毎日飲みたくなる、日常の定番コーヒー。価格も品質も、妥協しない。</p>
+        <span class="ql-card-arrow">→</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- BACK LINK -->
+<div class="ql-back-wrap">
+  <a href="coffee.html" class="ql-back-link">← コーヒー一覧に戻る</a>
+</div>
+
+<!-- FOOTER -->
+<footer class="idx-footer">
+  <img src="img/logo.png" alt="KIKI" class="idx-footer-logo">
+  <a href="https://www.instagram.com/ki_ki_asobi" target="_blank" class="idx-footer-ig">@ki_ki_asobi</a>
+  <span class="idx-footer-copy">© 2026 KIKI（奇輝）</span>
+</footer>
+
+<div id="idx-cover"></div>
+
+<script>
+  /* ── Hamburger ── */
+  const ham = document.getElementById('idx-ham');
+  const ov  = document.getElementById('idx-overlay');
+  ham.addEventListener('click', () => { ham.classList.toggle('open'); ov.classList.toggle('open'); });
+  ov.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { ham.classList.remove('open'); ov.classList.remove('open'); }));
+
+  /* ── Page load ── */
+  const cover = document.getElementById('idx-cover');
+  requestAnimationFrame(() => { cover.style.opacity = '0'; });
+
+  /* ── pageshow BFCache ── */
+  window.addEventListener('pageshow', () => {
+    const c = document.getElementById('idx-cover'); if (!c) return;
+    c.style.transition = 'none'; c.style.opacity = '0'; c.style.pointerEvents = 'none';
+    requestAnimationFrame(() => { c.style.transition = 'opacity .8s ease'; });
+  });
+
+  /* ── Page transitions ── */
+  document.querySelectorAll('a[href]').forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('mailto:') || link.target === '_blank') return;
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      cover.style.transition = 'opacity .4s ease'; cover.style.opacity = '1'; cover.style.pointerEvents = 'auto';
+      setTimeout(() => { window.location.href = href; }, 420);
+    });
+  });
+
+  /* ── Nav scroll ── */
+  window.addEventListener('scroll', () => { document.querySelector('.idx-nav').classList.toggle('scrolled', window.scrollY > 40); }, { passive: true });
+
+  /* ── Scroll reveal ── */
+  const revealIO = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revealIO.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.ql-reveal').forEach(el => revealIO.observe(el));
+
+  /* ── Custom cursor ── */
+  if (!window.matchMedia('(hover: none)').matches) {
+    const cur = document.createElement('div'); cur.className = 'idx-cursor'; document.body.appendChild(cur);
+    let mx = 0, my = 0, cx = 0, cy = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cur.classList.add('active'); });
+    document.addEventListener('mouseleave', () => cur.classList.remove('active'));
+    (function lerp() { cx += (mx-cx)*.14; cy += (my-cy)*.14; cur.style.left = cx+'px'; cur.style.top = cy+'px'; requestAnimationFrame(lerp); })();
+    document.querySelectorAll('a, button').forEach(el => { el.addEventListener('mouseenter', () => cur.classList.add('hover')); el.addEventListener('mouseleave', () => cur.classList.remove('hover')); });
+  }
+</script>
+</body>
+</html>

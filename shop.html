@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop — KIKI</title>
+  <meta name="description" content="KIKIオンラインショップ。コーヒー・アパレル・アウトドアの全商品。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Shippori+Mincho+B1:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: #0a0806; }
+    body { background: #0a0806; color: #fff; overflow-x: hidden; }
+
+    /* ── NAV ── */
+    .idx-nav {
+      position: fixed; top: 0; left: 0; right: 0; height: 60px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(10,8,6,.88); backdrop-filter: blur(8px);
+      z-index: 200; border-bottom: 1px solid rgba(192,154,62,.08);
+    }
+    .idx-nav-logo-img { height: 34px; width: auto; filter: brightness(0) invert(1); display: block; }
+    .idx-ham {
+      position: absolute; right: 28px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      display: flex; flex-direction: column; gap: 7px; padding: 6px;
+    }
+    .idx-ham span {
+      display: block; width: 22px; height: 1px; background: rgba(255,255,255,.75);
+      transition: transform .3s, opacity .3s;
+    }
+    .idx-ham.open span:first-child { transform: translateY(8px) rotate(45deg); }
+    .idx-ham.open span:last-child  { transform: translateY(-8px) rotate(-45deg); }
+    .idx-overlay {
+      display: none; position: fixed; inset: 0; z-index: 190;
+      background: #0a0806; flex-direction: column; align-items: center; justify-content: center; gap: 44px;
+    }
+    .idx-overlay.open { display: flex; }
+    .idx-overlay a {
+      font-family: 'Shippori Mincho B1', serif; font-size: clamp(28px,5vw,44px);
+      color: #fff; letter-spacing: .06em; text-decoration: none; transition: color .2s;
+    }
+    .idx-overlay a:hover { color: #c09a3e; }
+    .idx-overlay .nav-shop { color: #c09a3e; }
+
+    /* ── HERO ── */
+    .sh-hero { padding: 130px 64px 52px; border-bottom: 1px solid rgba(192,154,62,.1); }
+    .sh-hero-eyebrow {
+      display: block; font-family: 'Inter', sans-serif; font-size: 9px;
+      letter-spacing: .45em; text-transform: uppercase; color: #c09a3e; margin-bottom: 18px;
+    }
+    .sh-hero-title {
+      font-family: 'Shippori Mincho B1', serif; font-size: clamp(40px,6vw,80px);
+      color: #fff; letter-spacing: .1em; line-height: 1.1; margin-bottom: 16px;
+    }
+    .sh-hero-sub {
+      font-family: 'Shippori Mincho B1', serif; font-size: 14px;
+      color: rgba(255,255,255,.38); letter-spacing: .06em; line-height: 2;
+    }
+
+    /* ── FILTER ── */
+    .sh-filter {
+      padding: 36px 64px 0;
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    }
+    .sh-filter-btn {
+      font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .3em; text-transform: uppercase;
+      color: rgba(255,255,255,.42); background: none;
+      border: 1px solid rgba(255,255,255,.12); padding: 9px 20px;
+      cursor: pointer; transition: color .2s, border-color .2s, background .2s;
+    }
+    .sh-filter-btn:hover { color: #c09a3e; border-color: rgba(192,154,62,.4); }
+    .sh-filter-btn.active { color: #0a0806; background: #c09a3e; border-color: #c09a3e; }
+
+    /* ── PRODUCT GRID ── */
+    .sh-products { padding: 40px 64px 100px; }
+    .sh-meta { display: flex; align-items: baseline; margin-bottom: 32px; }
+    .sh-count { font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .3em; color: rgba(255,255,255,.28); }
+    .sh-prod-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; }
+
+    /* ── PRODUCT CARD ── */
+    .sh-prod-card {
+      background: #0d0a07;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1),
+                  box-shadow .3s ease;
+    }
+    .sh-prod-card.in { opacity: 1; transform: none; }
+    .sh-prod-card:nth-child(1)  { transition-delay:.04s; }
+    .sh-prod-card:nth-child(2)  { transition-delay:.12s; }
+    .sh-prod-card:nth-child(3)  { transition-delay:.20s; }
+    .sh-prod-card:nth-child(4)  { transition-delay:.06s; }
+    .sh-prod-card:nth-child(5)  { transition-delay:.14s; }
+    .sh-prod-card:nth-child(6)  { transition-delay:.22s; }
+    .sh-prod-card:nth-child(7)  { transition-delay:.08s; }
+    .sh-prod-card.hidden-cat { display: none; }
+    .sh-prod-card.detail-open { box-shadow: inset 0 0 0 1px rgba(192,154,62,.55); }
+
+    .sh-card-img { overflow: hidden; aspect-ratio: 1/1; position: relative; }
+    .sh-card-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform .7s cubic-bezier(.25,.46,.45,.94);
+    }
+    .sh-card-img.contain img { object-fit: contain; background: #1a1410; }
+    .sh-prod-card:hover .sh-card-img img { transform: scale(1.04); }
+
+    /* Image hover overlay */
+    .sh-card-img-overlay {
+      position: absolute; inset: 0; background: rgba(10,8,6,.52);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .35s; pointer-events: none;
+    }
+    .sh-card-img-overlay span {
+      font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .28em;
+      text-transform: uppercase; color: rgba(255,255,255,.85);
+    }
+    .sh-prod-card:hover .sh-card-img-overlay { opacity: 1; }
+    /* Card-wide clickable areas */
+    .sh-prod-card .sh-card-img,
+    .sh-prod-card .sh-card-cat,
+    .sh-prod-card .sh-card-name,
+    .sh-prod-card .sh-roast,
+    .sh-prod-card .sh-flavor-tags { cursor: pointer; }
+
+    .sh-card-body { padding: 24px 22px 28px; display: flex; flex-direction: column; }
+    .sh-card-cat { font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .28em; text-transform: uppercase; color: rgba(192,154,62,.65); margin-bottom: 8px; }
+    .sh-card-name { font-family: 'Shippori Mincho B1', serif; font-size: clamp(16px,1.7vw,21px); color: #fff; letter-spacing: .04em; line-height: 1.45; margin-bottom: 10px; }
+
+    /* Roast bar */
+    .sh-roast { margin-bottom: 10px; }
+    .sh-roast-label { font-family: 'Inter', sans-serif; font-size: 8px; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.25); display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .sh-roast-lv { color: rgba(192,154,62,.65); letter-spacing: .12em; }
+    .sh-roast-dots { display: flex; gap: 6px; }
+    .sh-roast-dot { width: 8px; height: 8px; border-radius: 50%; border: 1px solid rgba(192,154,62,.3); background: transparent; }
+    .sh-roast-dot.on { background: #c09a3e; border-color: #c09a3e; box-shadow: 0 0 4px rgba(192,154,62,.4); }
+
+    /* Flavor tags */
+    .sh-flavor-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+    .sh-flavor-tag { font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .07em; color: rgba(192,154,62,.65); border: 1px solid rgba(192,154,62,.22); padding: 3px 9px; border-radius: 14px; }
+
+    /* Price & badge */
+    .sh-card-footer { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+    .sh-card-price { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 300; color: #c09a3e; letter-spacing: .05em; }
+    .sh-card-price small { font-size: 10px; color: rgba(192,154,62,.55); }
+    .sh-badge { font-family: 'Inter', sans-serif; font-size: 8px; letter-spacing: .2em; text-transform: uppercase; padding: 3px 10px; border-radius: 2px; }
+    .sh-badge-in  { background: rgba(74,163,87,.12); color: #6ecb7a; border: 1px solid rgba(74,163,87,.25); }
+    .sh-badge-low { background: rgba(192,154,62,.1); color: #c09a3e; border: 1px solid rgba(192,154,62,.25); }
+    .sh-badge-cs  { background: rgba(255,255,255,.05); color: rgba(255,255,255,.3); border: 1px solid rgba(255,255,255,.1); }
+
+    /* Card buttons */
+    .sh-card-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .sh-card-btn-detail {
+      padding: 11px 10px; border: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.55); font-family: 'Inter', sans-serif; font-size: 9px;
+      letter-spacing: .18em; text-transform: uppercase; background: none;
+      cursor: pointer; transition: border-color .2s, color .2s;
+    }
+    .sh-card-btn-detail:hover { border-color: rgba(192,154,62,.45); color: #c09a3e; }
+    .sh-card-btn-detail.open { border-color: rgba(192,154,62,.6); color: #c09a3e; }
+    .sh-card-btn-buy {
+      padding: 11px 10px; background: #c09a3e; color: #0a0806;
+      font-family: 'Inter', sans-serif; font-size: 9px; font-weight: 600;
+      letter-spacing: .2em; text-transform: uppercase; border: 1px solid #c09a3e;
+      cursor: pointer; transition: background .2s, box-shadow .2s;
+    }
+    .sh-card-btn-buy:hover { background: #d4ac48; box-shadow: 0 0 18px rgba(192,154,62,.3); }
+    .sh-card-btn-full { grid-column: 1/-1; }
+
+    /* ── DETAIL ROW (injected, grid-column: 1/-1) ── */
+    .sh-detail-row {
+      grid-column: 1 / -1;
+      background: #110700;
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height .55s cubic-bezier(.16,1,.3,1);
+      border-top: 1px solid rgba(192,154,62,.15);
+    }
+    .sh-detail-inner { padding: 56px 64px 64px; }
+    .sh-detail-layout { display: grid; grid-template-columns: 1fr 320px; gap: 64px; margin-bottom: 52px; }
+
+    /* Detail left */
+    .sh-dt-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; margin-bottom: 36px; }
+    .sh-dt-img.contain { object-fit: contain; background: #1e160d; }
+    .sh-dt-sec-label { font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .4em; text-transform: uppercase; color: rgba(192,154,62,.5); margin-bottom: 16px; display: block; }
+    .sh-dt-spec { border-top: 1px solid rgba(192,154,62,.12); margin-bottom: 36px; }
+    .sh-dt-spec-row { display: grid; grid-template-columns: 90px 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(192,154,62,.06); }
+    .sh-dt-spec-key { font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.22); }
+    .sh-dt-spec-val { font-family: 'Shippori Mincho B1', serif; font-size: 13px; color: rgba(255,255,255,.62); letter-spacing: .04em; line-height: 1.7; }
+    .sh-dt-story { font-family: 'Shippori Mincho B1', serif; font-size: 14px; color: rgba(255,255,255,.45); line-height: 2.4; letter-spacing: .05em; }
+
+    /* Detail right: purchase box */
+    .sh-dt-purchase { position: sticky; top: 80px; height: fit-content; }
+    .sh-dt-price-box { background: #0a0806; border: 1px solid rgba(192,154,62,.2); padding: 32px 26px; }
+    .sh-dt-price-label { font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .3em; text-transform: uppercase; color: rgba(192,154,62,.5); margin-bottom: 8px; display: block; }
+    .sh-dt-price { font-family: 'Inter', sans-serif; font-size: 26px; font-weight: 300; color: #c09a3e; letter-spacing: .04em; margin-bottom: 4px; }
+    .sh-dt-price-unit { font-family: 'Shippori Mincho B1', serif; font-size: 12px; color: rgba(192,154,62,.5); margin-bottom: 22px; display: block; }
+    .sh-dt-gram-btns { display: flex; gap: 5px; margin-bottom: 20px; flex-wrap: wrap; }
+    .sh-dt-gram-btn {
+      flex: 1; min-width: 48px; font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: .1em;
+      padding: 9px 6px; border: 1px solid rgba(192,154,62,.3); background: transparent;
+      color: rgba(192,154,62,.6); cursor: pointer; text-align: center;
+      transition: background .2s, color .2s, border-color .2s;
+    }
+    .sh-dt-gram-btn:hover { border-color: rgba(192,154,62,.7); color: #c09a3e; }
+    .sh-dt-gram-btn.active { background: #c09a3e; border-color: #c09a3e; color: #0a0806; }
+    .sh-dt-buy-btn {
+      display: block; width: 100%; padding: 15px;
+      background: #c09a3e; color: #0a0806; border: 1px solid #c09a3e;
+      font-family: 'Inter', sans-serif; font-size: 9px; font-weight: 600;
+      letter-spacing: .28em; text-transform: uppercase; text-align: center; cursor: pointer;
+      transition: background .2s, box-shadow .2s;
+    }
+    .sh-dt-buy-btn:hover { background: #d4ac48; box-shadow: 0 0 24px rgba(192,154,62,.3); }
+    @keyframes price-flash { 0%{color:#c09a3e} 40%{color:#ffe08a;text-shadow:0 0 14px rgba(255,224,138,.7)} 100%{color:#c09a3e;text-shadow:none} }
+    .sh-dt-price.flash { animation: price-flash .5s ease; }
+
+    /* Comparison table */
+    .sh-dt-compare { border-top: 1px solid rgba(192,154,62,.1); padding-top: 44px; }
+    .sh-dt-compare-head { text-align: center; margin-bottom: 36px; }
+    .sh-dt-compare-eyebrow { display: block; font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .4em; text-transform: uppercase; color: #c09a3e; margin-bottom: 14px; }
+    .sh-dt-compare-title { font-family: 'Shippori Mincho B1', serif; font-size: clamp(18px,2.5vw,30px); color: #fff; letter-spacing: .08em; }
+    .sh-dt-compare-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .sh-dt-compare-table { width: 100%; min-width: 560px; border-collapse: separate; border-spacing: 0; }
+    .sh-dt-compare-table th,
+    .sh-dt-compare-table td { padding: 14px 18px; border-bottom: 1px solid rgba(192,154,62,.07); }
+    .sh-dt-compare-table th { text-align: left; }
+    .sh-dt-rh { font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.2); width: 120px; white-space: nowrap; }
+    .sh-dt-ch { font-family: 'Shippori Mincho B1', serif; font-size: 13px; color: rgba(255,255,255,.38); text-align: center; padding-bottom: 18px; }
+    .sh-dt-cv { font-family: 'Shippori Mincho B1', serif; font-size: 12px; color: rgba(255,255,255,.52); text-align: center; line-height: 1.6; }
+    .sh-dt-compare-dots { display: flex; gap: 4px; justify-content: center; margin-top: 4px; }
+    .sh-dt-cdot { width: 7px; height: 7px; border-radius: 50%; border: 1px solid rgba(192,154,62,.3); background: transparent; }
+    .sh-dt-cdot.on { background: #c09a3e; border-color: #c09a3e; }
+    thead th.sh-dt-col-cur { color: #c09a3e; border-top: 1px solid rgba(192,154,62,.4); border-left: 1px solid rgba(192,154,62,.4); border-right: 1px solid rgba(192,154,62,.4); background: rgba(192,154,62,.06); }
+    tbody td.sh-dt-col-cur { border-left: 1px solid rgba(192,154,62,.4); border-right: 1px solid rgba(192,154,62,.4); background: rgba(192,154,62,.06); color: rgba(255,255,255,.82); }
+    tbody tr:last-child td.sh-dt-col-cur { border-bottom: 1px solid rgba(192,154,62,.4); }
+    .sh-dt-compare-btn {
+      font-family: 'Shippori Mincho B1', serif; font-size: 13px; color: rgba(255,255,255,.38);
+      background: none; border: none; cursor: pointer; display: block; width: 100%;
+      text-align: center; padding: 0; line-height: 1.5; transition: color .2s;
+    }
+    .sh-dt-compare-btn:hover { color: #c09a3e; text-decoration: underline; text-underline-offset: 5px; text-decoration-color: rgba(192,154,62,.5); }
+
+    /* Gift box contents */
+    .sh-dt-contents { margin-bottom: 32px; }
+    .sh-dt-content-card { background: rgba(255,255,255,.03); border: 1px solid rgba(192,154,62,.12); padding: 18px 22px; margin-bottom: 8px; display: flex; gap: 18px; }
+    .sh-dt-content-num { font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .3em; color: rgba(192,154,62,.45); flex-shrink: 0; padding-top: 2px; }
+    .sh-dt-content-name { font-family: 'Shippori Mincho B1', serif; font-size: 14px; color: #fff; margin-bottom: 4px; }
+    .sh-dt-content-desc { font-family: 'Shippori Mincho B1', serif; font-size: 12px; color: rgba(255,255,255,.35); line-height: 1.8; }
+
+    /* Origin note (giftbox) */
+    .sh-dt-origin-note { background: rgba(192,154,62,.05); border: 1px solid rgba(192,154,62,.18); padding: 22px 26px; margin-bottom: 32px; }
+    .sh-dt-origin-note-label { font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .35em; text-transform: uppercase; color: rgba(192,154,62,.55); margin-bottom: 12px; display: block; }
+    .sh-dt-origin-note-main { font-family: 'Shippori Mincho B1', serif; font-size: 14px; color: rgba(255,255,255,.72); letter-spacing: .04em; line-height: 1.9; margin-bottom: 8px; }
+    .sh-dt-origin-note-sub { font-family: 'Shippori Mincho B1', serif; font-size: 12px; color: rgba(255,255,255,.35); line-height: 2; }
+
+    /* Blend bars */
+    .sh-dt-blend-bars { margin-bottom: 32px; }
+    .sh-dt-blend-bar { margin-bottom: 12px; }
+    .sh-dt-blend-bar-label { display: flex; justify-content: space-between; margin-bottom: 5px; }
+    .sh-dt-blend-bar-name { font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.38); }
+    .sh-dt-blend-bar-pct { font-family: 'Inter', sans-serif; font-size: 10px; color: rgba(192,154,62,.6); }
+    .sh-dt-blend-bar-track { height: 2px; background: rgba(255,255,255,.07); }
+    .sh-dt-blend-bar-fill { height: 2px; background: linear-gradient(to right, rgba(192,154,62,.8), rgba(192,154,62,.4)); }
+
+    /* WHY KIKI */
+    .sh-why { background: #100c09; padding: 96px 64px; border-top: 1px solid rgba(192,154,62,.08); }
+    .sh-why-header { margin-bottom: 56px; }
+    .sh-why-eyebrow { font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .4em; text-transform: uppercase; color: #c09a3e; margin-bottom: 18px; display: block; }
+    .sh-why-title { font-family: 'Shippori Mincho B1', serif; font-size: clamp(22px,3vw,38px); color: #fff; letter-spacing: .08em; }
+    .sh-why-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; }
+    .sh-why-card { background: #0a0806; padding: 40px 28px; opacity: 0; transform: translateY(18px); transition: opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1); }
+    .sh-why-card.in { opacity: 1; transform: none; }
+    .sh-why-card:nth-child(2) { transition-delay: .12s; }
+    .sh-why-card:nth-child(3) { transition-delay: .24s; }
+    .sh-why-num { font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .3em; color: rgba(192,154,62,.4); margin-bottom: 20px; display: block; }
+    .sh-why-card-title { font-family: 'Shippori Mincho B1', serif; font-size: 17px; color: #fff; letter-spacing: .06em; margin-bottom: 14px; }
+    .sh-why-card-text { font-family: 'Shippori Mincho B1', serif; font-size: 13px; color: rgba(255,255,255,.4); letter-spacing: .04em; line-height: 2.1; }
+
+    /* FOOTER */
+    .idx-footer { background: #0a0806; padding: 52px 32px; display: flex; flex-direction: column; align-items: center; gap: 18px; border-top: 1px solid rgba(255,255,255,.06); }
+    .idx-footer-logo { height: 28px; width: auto; filter: brightness(0) invert(1); opacity: .60; }
+    .idx-footer-ig { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300; letter-spacing: .14em; color: #c09a3e; text-decoration: none; transition: opacity .2s; }
+    .idx-footer-ig:hover { opacity: .6; }
+    .idx-footer-copy { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 300; letter-spacing: .1em; color: rgba(255,255,255,.18); }
+
+    /* PURCHASE MODAL */
+    .sh-modal-bg { display: none; position: fixed; inset: 0; z-index: 9990; background: rgba(0,0,0,.75); align-items: center; justify-content: center; padding: 24px; }
+    .sh-modal-bg.open { display: flex; }
+    .sh-modal { background: #0d0a07; border: 1px solid rgba(192,154,62,.25); max-width: 480px; width: 100%; padding: 52px 44px; position: relative; }
+    .sh-modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; cursor: pointer; font-size: 18px; color: rgba(255,255,255,.35); line-height: 1; transition: color .2s; }
+    .sh-modal-close:hover { color: #fff; }
+    .sh-modal-eyebrow { font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .4em; text-transform: uppercase; color: #c09a3e; margin-bottom: 14px; display: block; }
+    .sh-modal-name { font-family: 'Shippori Mincho B1', serif; font-size: clamp(20px,2.8vw,26px); color: #fff; letter-spacing: .06em; margin-bottom: 6px; }
+    .sh-modal-price { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 300; color: rgba(192,154,62,.75); letter-spacing: .05em; margin-bottom: 32px; }
+    .sh-modal-divider { width: 28px; height: 1px; background: rgba(192,154,62,.3); margin-bottom: 24px; }
+    .sh-modal-lead { font-family: 'Shippori Mincho B1', serif; font-size: 13px; color: rgba(255,255,255,.45); letter-spacing: .05em; line-height: 2; margin-bottom: 28px; }
+    .sh-modal-btns { display: flex; gap: 8px; }
+    .sh-modal-ig { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 12px; background: #c09a3e; color: #0a0806; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; text-decoration: none; transition: background .2s; }
+    .sh-modal-ig:hover { background: #d4ac48; }
+    .sh-modal-mail { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 12px; border: 1px solid rgba(192,154,62,.6); color: #c09a3e; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 300; letter-spacing: .2em; text-transform: uppercase; text-decoration: none; transition: border-color .2s, background .2s; }
+    .sh-modal-mail:hover { background: rgba(192,154,62,.08); }
+    .sh-modal-note { font-family: 'Inter', sans-serif; font-size: 10px; color: rgba(255,255,255,.2); letter-spacing: .06em; text-align: center; margin-top: 18px; line-height: 1.8; }
+
+    /* CURSOR */
+    .idx-cursor { position: fixed; z-index: 9998; pointer-events: none; width: 8px; height: 8px; background: #c09a3e; border-radius: 50%; transform: translate(-50%,-50%); transition: width .25s cubic-bezier(.16,1,.3,1), height .25s cubic-bezier(.16,1,.3,1), background .25s, opacity .2s; opacity: 0; will-change: left,top; }
+    .idx-cursor.active { opacity: 1; }
+    .idx-cursor.hover { width: 32px; height: 32px; background: transparent; border: 1px solid rgba(192,154,62,.75); }
+
+    /* PAGE COVER */
+    #idx-cover { position: fixed; inset: 0; background: #0a0806; z-index: 9997; pointer-events: none; opacity: 1; transition: opacity .8s ease; }
+
+    /* REVEAL */
+    .sh-reveal { opacity: 0; transform: translateY(18px); transition: opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1); }
+    .sh-reveal.in { opacity: 1; transform: none; }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .sh-hero { padding: 118px 40px 48px; }
+      .sh-filter { padding: 32px 40px 0; }
+      .sh-products { padding: 36px 40px 80px; }
+      .sh-why { padding: 72px 40px; }
+      .sh-prod-grid { grid-template-columns: repeat(2,1fr); }
+      .sh-detail-inner { padding: 44px 40px 52px; }
+      .sh-detail-layout { grid-template-columns: 1fr 280px; gap: 40px; }
+    }
+    @media (max-width: 768px) {
+      .sh-hero { padding: 108px 24px 44px; }
+      .sh-filter { padding: 24px 20px 0; }
+      .sh-products { padding: 28px 20px 64px; }
+      .sh-prod-grid { grid-template-columns: 1fr; }
+      .sh-card-btns { grid-template-columns: 1fr; }
+      .sh-why { padding: 60px 24px; }
+      .sh-why-grid { grid-template-columns: 1fr; }
+      .sh-detail-inner { padding: 36px 20px 44px; }
+      .sh-detail-layout { grid-template-columns: 1fr; gap: 32px; }
+      .sh-dt-purchase { position: static; }
+      .sh-modal { padding: 40px 24px; }
+      .sh-modal-btns { flex-direction: column; }
+      .idx-ham { right: 20px; }
+    }
+    @media (max-width: 480px) {
+      .sh-modal-btns { flex-direction: column; }
+      .sh-dt-gram-btns { flex-wrap: nowrap; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="idx-nav">
+  <a href="index.html"><img src="img/logo.png" alt="KIKI" class="idx-nav-logo-img"></a>
+  <button class="idx-ham" id="idx-ham" aria-label="Menu"><span></span><span></span></button>
+</nav>
+<div class="idx-overlay" id="idx-overlay">
+  <a href="coffee.html">Coffee</a>
+  <a href="apparel.html">Apparel</a>
+  <a href="outdoor.html">Outdoor</a>
+  <a href="about.html">Story</a>
+  <a href="shop.html" class="nav-shop">Shop</a>
+</div>
+
+<!-- HERO -->
+<div class="sh-hero">
+  <span class="sh-hero-eyebrow">Online Shop</span>
+  <h1 class="sh-hero-title">Shop</h1>
+  <p class="sh-hero-sub">コーヒー、アパレル、アウトドア。KIKIのすべてがここに。</p>
+</div>
+
+<!-- FILTER -->
+<div class="sh-filter">
+  <button class="sh-filter-btn active" data-cat="all">All</button>
+  <button class="sh-filter-btn" data-cat="coffee">Coffee</button>
+  <button class="sh-filter-btn" data-cat="apparel">Apparel</button>
+  <button class="sh-filter-btn" data-cat="outdoor">Outdoor</button>
+</div>
+
+<!-- PRODUCTS -->
+<section class="sh-products">
+  <div class="sh-meta"><p class="sh-count" id="sh-count">7 Products</p></div>
+  <div class="sh-prod-grid" id="sh-prod-grid"><!-- JS generated --></div>
+</section>
+
+<!-- WHY KIKI -->
+<section class="sh-why">
+  <div class="sh-why-header sh-reveal">
+    <span class="sh-why-eyebrow">Why KIKI</span>
+    <h2 class="sh-why-title">常識の外側に、生き方を創る。</h2>
+  </div>
+  <div class="sh-why-grid">
+    <div class="sh-why-card">
+      <span class="sh-why-num">01</span>
+      <h3 class="sh-why-card-title">本物の品質</h3>
+      <p class="sh-why-card-text">産地・農園・品種を完全開示したスペシャルティコーヒー。素材と製法に妥協しないアパレル。すべてに確かな根拠があります。</p>
+    </div>
+    <div class="sh-why-card">
+      <span class="sh-why-num">02</span>
+      <h3 class="sh-why-card-title">生き方としてのスタイル</h3>
+      <p class="sh-why-card-text">KIKIは商品を売るのではなく、生き方を提案します。コーヒーの一杯から、アウトドアの一泊まで。</p>
+    </div>
+    <div class="sh-why-card">
+      <span class="sh-why-num">03</span>
+      <h3 class="sh-why-card-title">少量・誠実</h3>
+      <p class="sh-why-card-text">大量生産ではなく、一点一点に意味があるものだけを届けます。在庫が少ないのは、それだけの理由があります。</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="idx-footer">
+  <img src="img/logo.png" alt="KIKI" class="idx-footer-logo">
+  <a href="https://www.instagram.com/ki_ki_asobi" target="_blank" class="idx-footer-ig">@ki_ki_asobi</a>
+  <span class="idx-footer-copy">© 2026 KIKI（奇輝）</span>
+</footer>
+
+<!-- PURCHASE MODAL -->
+<div class="sh-modal-bg" id="sh-modal-bg">
+  <div class="sh-modal">
+    <button class="sh-modal-close" id="sh-modal-close">✕</button>
+    <span class="sh-modal-eyebrow">Purchase</span>
+    <h2 class="sh-modal-name" id="sh-modal-name"></h2>
+    <p class="sh-modal-price" id="sh-modal-price"></p>
+    <div class="sh-modal-divider"></div>
+    <p class="sh-modal-lead">現在、InstagramのDMまたはメールにてご注文を承っております。商品名と数量をお知らせください。</p>
+    <div class="sh-modal-btns">
+      <a href="https://www.instagram.com/ki_ki_asobi" target="_blank" class="sh-modal-ig">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6" fill="currentColor" stroke="none"/></svg>
+        Instagram DM
+      </a>
+      <a href="" class="sh-modal-mail" id="sh-modal-mail-a">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+        メールで問い合わせ
+      </a>
+    </div>
+    <p class="sh-modal-note">ご注文確認後、2〜3営業日以内にご連絡いたします。</p>
+  </div>
+</div>
+
+<div id="idx-cover"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   PRODUCT DATA
+═══════════════════════════════════════════════════ */
+const PRODUCTS = [
+  {
+    id: 'ethiopia', cat: 'coffee', catLabel: 'Coffee · Single Origin',
+    image: 'https://static.wixstatic.com/media/cf11d4_6077d27aad4f40bba1bad569f80d9582~mv2.png/v1/crop/x_0,y_77,w_2847,h_2847/fill/w_600,h_600,al_c,q_85/MAME_edited.png',
+    imageContain: true,
+    detailImage: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=900&q=90',
+    name: 'Ethiopia Yirgacheffe',
+    origin: 'エチオピア・イルガチェフェ',
+    roast: 1, roastLabel: 'Light Roast',
+    flavors: ['ブルーベリー', 'ジャスミン', 'はちみつ'],
+    basePrice: 2000, priceUnit: '/ 100g',
+    badge: { label: '在庫あり', cls: 'sh-badge-in' },
+    gram: [{ g:100, price:2000 }, { g:200, price:3800 }, { g:500, price:8500 }],
+    specs: [
+      { k:'産地',    v:'エチオピア・イルガチェフェ' },
+      { k:'農園',    v:'Kochere農園' },
+      { k:'品種',    v:'Heirloom' },
+      { k:'精製方法', v:'ナチュラル' },
+      { k:'標高',    v:'1,800〜2,200m' },
+      { k:'収穫期',  v:'10月〜1月' },
+    ],
+    story: 'エチオピア南部、標高2,000mを超えるイルガチェフェの高地に、Kochere農園はあります。霧がたちこめる急峻な山腹で、古来より受け継がれてきたHeirloom種のコーヒーの木は、野生の花々と共に育ちます。ナチュラル精製によって、豆は果肉の甘みと香りを存分に吸収します。カップに注がれた一口目、ブルーベリーを思わせる鮮やかな果実の酸味が広がります。続いてジャスミンの繊細なフローラルが鼻をくすぐり、最後にはちみつのような柔らかな余韻が口の中に長く残ります。',
+    hasCompare: true,
+  },
+  {
+    id: 'blend', cat: 'coffee', catLabel: 'Coffee · Original Blend',
+    image: 'https://static.wixstatic.com/media/cf11d4_70117e27792f4bd0b5efce7a5948b827~mv2.png/v1/crop/x_0,y_38,w_1949,h_1773/fill/w_600,h_600,al_c,q_85/%E3%83%A9%E3%82%A4%E3%83%B3%E3%83%8A%E3%83%83%E3%97%E3%80%80%E9%80%8F%E9%81%8E_edited.png',
+    imageContain: true,
+    detailImage: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=900&q=90',
+    name: 'スマイルカップ ブレンド',
+    origin: 'コロンビア・エチオピア・ブラジル',
+    roast: 2, roastLabel: 'Medium Roast',
+    flavors: ['キャラメル', 'オレンジ', 'ナッツ'],
+    basePrice: 2000, priceUnit: '/ 100g',
+    badge: { label: '在庫あり', cls: 'sh-badge-in' },
+    gram: [{ g:100, price:2000 }, { g:200, price:3800 }, { g:500, price:8500 }],
+    specs: [
+      { k:'産地',    v:'コロンビア・エチオピア・ブラジル' },
+      { k:'農園',    v:'複数農園' },
+      { k:'品種',    v:'ブレンド' },
+      { k:'精製方法', v:'ウォッシュド・ナチュラル' },
+      { k:'焙煎度',  v:'Medium Roast' },
+    ],
+    blendBars: [
+      { name:'Colombia', pct:40 },
+      { name:'Ethiopia', pct:35 },
+      { name:'Brazil',   pct:25 },
+    ],
+    story: '「飲んだ人が思わず笑顔になる」——そのコンセプト一つで、KIKIの焙煎士が産地を選び、比率を重ね、何度も試行を繰り返して完成させたのがスマイルカップ ブレンドです。コロンビアのキャラメルの甘みを土台に、エチオピアの明るい酸味と果実感、ブラジルのナッツの香ばしさが全体をまとめます。朝の最初の一杯に、午後の気分転換に。飲み飽きない絶妙なバランスは、毎日手に取りたくなる「日常の定番」を目指しています。',
+    hasCompare: true,
+  },
+  {
+    id: 'giftbox', cat: 'coffee', catLabel: 'Coffee · Gift Set',
+    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=85',
+    detailImage: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=900&q=90',
+    name: 'GIFT BOX',
+    origin: '選りすぐりの産地（季節変動）',
+    roast: 0,
+    flavors: ['2種セット', 'ギフトバッグ付'],
+    basePrice: 4000, priceUnit: '/ セット',
+    badge: { label: '在庫あり', cls: 'sh-badge-in' },
+    gram: null,
+    specs: [
+      { k:'内容量',  v:'各100g × 2種' },
+      { k:'焙煎度',  v:'季節により変動（Light〜Medium）' },
+      { k:'産地',    v:'季節の厳選農園（変動）' },
+      { k:'賞味期限', v:'焙煎後30日以内' },
+      { k:'同梱物',  v:'産地ストーリーカード・KIKIオリジナルBOX' },
+    ],
+    giftContents: [
+      { num:'01', name:'季節の厳選コーヒー × 2種', desc:'その季節に最もおいしいスペシャルティコーヒーを2種類セレクト。産地・農園・精製方法を記した説明カード付き。' },
+      { num:'02', name:'KIKIオリジナルBOX', desc:'ブランドカラーのマットなギフトボックス。そのまま贈れるパッケージデザイン。' },
+      { num:'03', name:'産地ストーリーカード', desc:'それぞれの豆の産地・農園・フレーバーノートを丁寧に記したオリジナルカード。' },
+    ],
+    story: '大切な人へ、コーヒーの物語を贈る。KIKIのGIFT BOXは、「コーヒーが好きな人への贈り物に、何を選べばいいかわからない」という声から生まれました。産地・農園・精製方法が書かれた説明カードが同封されているので、受け取った方はその豆の旅路を知ることができます。誕生日、記念日、感謝の気持ち、自分へのご褒美。どんな場面でも受け取った方の日常を少しだけ特別なものにします。',
+    hasCompare: true,
+  },
+  {
+    id: 'logo-tee', cat: 'apparel', catLabel: 'Apparel',
+    image: 'https://static.wixstatic.com/media/cf11d4_3fb2172b18d64a3ba969e3dc65406527~mv2.jpg/v1/fill/w_600,h_600,al_c,q_80/P8060456.JPG',
+    detailImage: 'https://static.wixstatic.com/media/cf11d4_3fb2172b18d64a3ba969e3dc65406527~mv2.jpg/v1/fill/w_600,h_600,al_c,q_80/P8060456.JPG',
+    name: 'ロゴTシャツ', origin: 'KIKI Original Apparel',
+    roast: -1,
+    flavors: ['KIKI Logo', 'Unisex'],
+    basePrice: null, priceUnit: '',
+    badge: { label: '在庫あり', cls: 'sh-badge-in' },
+    gram: null,
+    specs: [ { k:'素材', v:'100% コットン' }, { k:'サイズ', v:'S / M / L / XL' }, { k:'カラー', v:'ブラック' } ],
+    story: 'KIKIのアイデンティティを纏う一枚。極限まで研ぎ澄まされたシルエットに、ブランドロゴを配した定番Tシャツです。',
+    hasCompare: false,
+  },
+  {
+    id: 'apparel2', cat: 'apparel', catLabel: 'Apparel',
+    image: 'https://static.wixstatic.com/media/cf11d4_3c9d62cb56ca4df4a27874c08bf43922~mv2.png/v1/fill/w_600,h_600,al_c,q_85/IMG_1029.png',
+    detailImage: 'https://static.wixstatic.com/media/cf11d4_3c9d62cb56ca4df4a27874c08bf43922~mv2.png/v1/fill/w_600,h_600,al_c,q_85/IMG_1029.png',
+    name: 'アパレル商品2', origin: 'KIKI Streetwear',
+    roast: -1,
+    flavors: ['KIKI', 'Streetwear'],
+    basePrice: null, priceUnit: '',
+    badge: { label: '在庫あり', cls: 'sh-badge-in' },
+    gram: null,
+    specs: [ { k:'素材', v:'詳細お問い合わせください' }, { k:'カラー', v:'詳細お問い合わせください' } ],
+    story: '日常と非日常を横断するKIKIのストリートウェア。どんな場面でも、自分らしくいるための一枚。',
+    hasCompare: false,
+  },
+  {
+    id: 'apparel3', cat: 'apparel', catLabel: 'Apparel',
+    image: 'https://static.wixstatic.com/media/cf11d4_e405f9cfd1e847e1b4aae0333c9417da~mv2.jpg/v1/fill/w_600,h_600,al_c,q_80/apparel3.jpg',
+    detailImage: 'https://static.wixstatic.com/media/cf11d4_e405f9cfd1e847e1b4aae0333c9417da~mv2.jpg/v1/fill/w_600,h_600,al_c,q_80/apparel3.jpg',
+    name: 'アパレル商品3', origin: 'KIKI Limited',
+    roast: -1,
+    flavors: ['KIKI', 'Limited'],
+    basePrice: null, priceUnit: '',
+    badge: { label: '在庫あり', cls: 'sh-badge-in' },
+    gram: null,
+    specs: [ { k:'素材', v:'詳細お問い合わせください' }, { k:'カラー', v:'詳細お問い合わせください' } ],
+    story: '数量限定のKIKIコレクション。独自のシルエットと素材感で、手に入れた人だけが持てる特別な一枚。',
+    hasCompare: false,
+  },
+  {
+    id: 'outdoor1', cat: 'outdoor', catLabel: 'Outdoor · Gear',
+    image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=600&q=90',
+    detailImage: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=900&q=90',
+    name: 'アウトドア商品', origin: 'KIKI Outdoor',
+    roast: -1,
+    flavors: ['KIKI', 'Outdoor'],
+    basePrice: null, priceUnit: '',
+    badge: { label: 'Coming Soon', cls: 'sh-badge-cs' },
+    gram: null,
+    specs: [ { k:'詳細', v:'準備中' } ],
+    story: 'KIKI Outdoorのギアは、自然の中で本物の体験をするために設計されています。詳細は近日公開予定。',
+    hasCompare: false,
+    comingSoon: true,
+  },
+];
+
+const COFFEE_COMPARE_ROWS = [
+  { label: '産地', values: { ethiopia:'エチオピア・イルガチェフェ', blend:'コロンビア・エチオピア・ブラジル', giftbox:'季節の厳選産地' } },
+  { label: '焙煎度', values: {
+    ethiopia: '<span class="sh-dt-compare-dots"><span class="sh-dt-cdot on"></span><span class="sh-dt-cdot"></span><span class="sh-dt-cdot"></span></span>Light Roast',
+    blend:    '<span class="sh-dt-compare-dots"><span class="sh-dt-cdot on"></span><span class="sh-dt-cdot on"></span><span class="sh-dt-cdot"></span></span>Medium Roast',
+    giftbox:  '選べる'
+  }, isHtml: true },
+  { label: 'フレーバー', values: { ethiopia:'ブルーベリー・ジャスミン・はちみつ', blend:'キャラメル・オレンジ・ナッツ', giftbox:'季節のセレクション' } },
+  { label: '価格',     values: { ethiopia:'¥2,000〜 / 100g', blend:'¥2,000〜 / 100g', giftbox:'¥4,000 / セット' } },
+  { label: '飲み方',   values: { ethiopia:'ハンドドリップ・フレンチプレス', blend:'ドリップ・エスプレッソ', giftbox:'ドリップ全般' } },
+];
+const COFFEE_COMPARE_NAMES = { ethiopia:'Ethiopia<br>Yirgacheffe', blend:'スマイルカップ<br>ブレンド', giftbox:'GIFT BOX' };
+
+/* ═══════════════════════════════════════════════════
+   RENDER HELPERS
+═══════════════════════════════════════════════════ */
+function roastHtml(p) {
+  if (p.roast < 0) return '';
+  if (p.roast === 0) return `<div class="sh-roast"><div class="sh-roast-label"><span>Roast</span><span class="sh-roast-lv">選べる焙煎度</span></div></div>`;
+  let dots = '';
+  for (let i=1;i<=3;i++) dots += `<span class="sh-roast-dot${i<=p.roast?' on':''}"></span>`;
+  return `<div class="sh-roast"><div class="sh-roast-label"><span>Roast</span><span class="sh-roast-lv">${p.roastLabel}</span></div><div class="sh-roast-dots">${dots}</div></div>`;
+}
+function flavorTagsHtml(p) {
+  if (p.roast < 0) return '';
+  return `<div class="sh-flavor-tags">${p.flavors.map(f=>`<span class="sh-flavor-tag">${f}</span>`).join('')}</div>`;
+}
+function priceLabel(p) {
+  if (p.basePrice == null) return '価格お問い合わせください';
+  return `¥${p.basePrice.toLocaleString('ja-JP')} <small>${p.priceUnit}（税込）</small>`;
+}
+function priceLabelPlain(p) {
+  if (p.basePrice == null) return '';
+  return `¥${p.basePrice.toLocaleString('ja-JP')} ${p.priceUnit}（税込）`;
+}
+
+function renderCard(p) {
+  const btns = p.comingSoon
+    ? `<div class="sh-card-btns"><button class="sh-card-btn-detail sh-card-btn-full" id="detail-btn-${p.id}">詳細を見る ▼</button></div>`
+    : `<div class="sh-card-btns">
+        <button class="sh-card-btn-detail" id="detail-btn-${p.id}">詳細を見る ▼</button>
+        <button class="sh-card-btn-buy" onclick="openModal('${p.id}')">購入する</button>
+       </div>`;
+  return `
+    <div class="sh-prod-card" data-id="${p.id}" data-cat="${p.cat}">
+      <div class="sh-card-img${p.imageContain?' contain':''}">
+        <img src="${p.image}" alt="${p.name}" loading="lazy">
+        <div class="sh-card-img-overlay"><span>詳細を見る ↓</span></div>
+      </div>
+      <div class="sh-card-body">
+        <p class="sh-card-cat">${p.catLabel}</p>
+        <h2 class="sh-card-name">${p.name}</h2>
+        ${roastHtml(p)}
+        ${flavorTagsHtml(p)}
+        <div class="sh-card-footer">
+          <p class="sh-card-price">${priceLabel(p)}</p>
+          <span class="sh-badge ${p.badge.cls}">${p.badge.label}</span>
+        </div>
+        ${btns}
+      </div>
+    </div>`;
+}
+
+function renderCompare(currentId) {
+  const ids = ['ethiopia','blend','giftbox'];
+  let ths = ids.map(id => id === currentId
+    ? `<th class="sh-dt-ch sh-dt-col-cur">${COFFEE_COMPARE_NAMES[id]}</th>`
+    : `<th class="sh-dt-ch"><button class="sh-dt-compare-btn" onclick="switchDetail('${id}')">${COFFEE_COMPARE_NAMES[id]}</button></th>`
+  ).join('');
+  let trs = COFFEE_COMPARE_ROWS.map(row => {
+    let tds = ids.map(id => {
+      const v = row.isHtml ? row.values[id] : row.values[id].replace(/・/g,'・<br>');
+      const cur = id === currentId ? ' sh-dt-col-cur' : '';
+      return `<td class="sh-dt-cv${cur}">${v}</td>`;
+    }).join('');
+    return `<tr><th class="sh-dt-rh">${row.label}</th>${tds}</tr>`;
+  }).join('');
+  return `
+    <div class="sh-dt-compare">
+      <div class="sh-dt-compare-head">
+        <span class="sh-dt-compare-eyebrow">Compare</span>
+        <h3 class="sh-dt-compare-title">他の豆と比較する</h3>
+      </div>
+      <div class="sh-dt-compare-wrap">
+        <table class="sh-dt-compare-table">
+          <thead><tr><th class="sh-dt-rh"></th>${ths}</tr></thead>
+          <tbody>${trs}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+
+function renderDetail(p) {
+  const specRows = p.specs.map(s=>`<div class="sh-dt-spec-row"><span class="sh-dt-spec-key">${s.k}</span><span class="sh-dt-spec-val">${s.v}</span></div>`).join('');
+  const blendBarsHtml = p.blendBars
+    ? `<span class="sh-dt-sec-label">Blend Ratio</span>
+       <div class="sh-dt-blend-bars">
+         ${p.blendBars.map(b=>`
+           <div class="sh-dt-blend-bar">
+             <div class="sh-dt-blend-bar-label"><span class="sh-dt-blend-bar-name">${b.name}</span><span class="sh-dt-blend-bar-pct">${b.pct}%</span></div>
+             <div class="sh-dt-blend-bar-track"><div class="sh-dt-blend-bar-fill" style="width:${b.pct}%"></div></div>
+           </div>`).join('')}
+       </div>` : '';
+  const giftContentsHtml = p.giftContents
+    ? `<span class="sh-dt-sec-label">セット内容</span>
+       <div class="sh-dt-contents">
+         ${p.giftContents.map(c=>`
+           <div class="sh-dt-content-card">
+             <span class="sh-dt-content-num">${c.num}</span>
+             <div><p class="sh-dt-content-name">${c.name}</p><p class="sh-dt-content-desc">${c.desc}</p></div>
+           </div>`).join('')}
+       </div>
+       <div class="sh-dt-origin-note">
+         <span class="sh-dt-origin-note-label">Seasonal Selection</span>
+         <p class="sh-dt-origin-note-main">毎回異なる産地の豆をお届けします。</p>
+         <p class="sh-dt-origin-note-sub">季節ごとに世界各地の農園から品質の高い豆を厳選。エチオピア・コロンビア・ブラジル・ケニアなど、その時期に最もおいしい産地を選び抜いてお届けします。</p>
+       </div>` : '';
+  const gramBtnsHtml = p.gram
+    ? `<div class="sh-dt-gram-btns">
+        ${p.gram.map((g,i)=>`<button class="sh-dt-gram-btn${i===0?' active':''}" data-price="${g.price}" data-g="${g.g}">${g.g}g</button>`).join('')}
+       </div>` : '';
+  const initPrice = p.gram ? `¥${p.gram[0].price.toLocaleString('ja-JP')}` : (p.basePrice ? `¥${p.basePrice.toLocaleString('ja-JP')}` : 'お問い合わせ');
+  const initUnit  = p.gram ? `/ ${p.gram[0].g}g（税込）` : (p.priceUnit ? `${p.priceUnit}（税込）` : '');
+  const buyBtnHtml = p.comingSoon
+    ? `<button class="sh-dt-buy-btn" style="opacity:.4;pointer-events:none">Coming Soon</button>`
+    : `<button class="sh-dt-buy-btn" onclick="openModal('${p.id}')">購入する</button>`;
+  const compareHtml = p.hasCompare ? renderCompare(p.id) : '';
+
+  return `
+    <div class="sh-detail-inner">
+      <div class="sh-detail-layout">
+        <div class="sh-detail-left">
+          <img src="${p.detailImage}" alt="${p.name}" class="sh-dt-img${p.imageContain?' contain':''}" loading="lazy">
+          ${giftContentsHtml}
+          <span class="sh-dt-sec-label">Product Details</span>
+          <div class="sh-dt-spec">${specRows}</div>
+          ${blendBarsHtml}
+          <span class="sh-dt-sec-label">Story</span>
+          <p class="sh-dt-story">${p.story}</p>
+        </div>
+        <div class="sh-detail-right">
+          <div class="sh-dt-purchase">
+            <div class="sh-dt-price-box">
+              <span class="sh-dt-price-label">Price</span>
+              <p class="sh-dt-price" id="dt-price-${p.id}">${initPrice}</p>
+              <span class="sh-dt-price-unit" id="dt-unit-${p.id}">${initUnit}</span>
+              ${gramBtnsHtml}
+              ${buyBtnHtml}
+            </div>
+          </div>
+        </div>
+      </div>
+      ${compareHtml}
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════════════
+   RENDER GRID
+═══════════════════════════════════════════════════ */
+const grid = document.getElementById('sh-prod-grid');
+grid.innerHTML = PRODUCTS.map(p => renderCard(p)).join('');
+
+grid.addEventListener('click', function(e) {
+  if (e.target.closest('.sh-card-btn-buy, .sh-detail-row')) return;
+  const card = e.target.closest('.sh-prod-card');
+  if (!card) return;
+  openDetail(card.dataset.id);
+});
+
+/* ═══════════════════════════════════════════════════
+   DETAIL OPEN/CLOSE
+═══════════════════════════════════════════════════ */
+let openDetailId = null;
+
+function getColumns() {
+  if (window.innerWidth >= 1024) return 3;
+  if (window.innerWidth >= 641)  return 2;
+  return 1;
+}
+
+function getVisibleCards() {
+  return [...grid.querySelectorAll('.sh-prod-card:not(.hidden-cat)')];
+}
+
+function removeExistingDetail() {
+  const ex = grid.querySelector('.sh-detail-row');
+  if (ex) ex.remove();
+  if (openDetailId) {
+    const btn = document.getElementById('detail-btn-' + openDetailId);
+    if (btn) { btn.textContent = '詳細を見る ▼'; btn.classList.remove('open'); }
+    const card = document.querySelector(`.sh-prod-card[data-id="${openDetailId}"]`);
+    if (card) card.classList.remove('detail-open');
+  }
+  openDetailId = null;
+}
+
+function openDetail(id) {
+  const wasSame = openDetailId === id;
+  removeExistingDetail();
+  if (wasSame) return;
+
+  const card = grid.querySelector(`.sh-prod-card[data-id="${id}"]`);
+  if (!card) return;
+
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+
+  openDetailId = id;
+  card.classList.add('detail-open');
+  const btn = document.getElementById('detail-btn-' + id);
+  if (btn) { btn.textContent = '詳細を閉じる ▲'; btn.classList.add('open'); }
+
+  // Find last card in same visual row
+  const visibleCards = getVisibleCards();
+  const ci = visibleCards.indexOf(card);
+  const cols = getColumns();
+  const rowEnd = Math.min(Math.ceil((ci+1)/cols)*cols - 1, visibleCards.length-1);
+  const lastInRow = visibleCards[rowEnd];
+
+  // Create panel
+  const panel = document.createElement('div');
+  panel.className = 'sh-detail-row';
+  panel.dataset.for = id;
+  panel.innerHTML = renderDetail(p);
+
+  lastInRow.insertAdjacentElement('afterend', panel);
+
+  // Animate
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      panel.style.maxHeight = panel.scrollHeight + 'px';
+      setTimeout(() => { panel.style.maxHeight = 'none'; }, 600);
+    });
+  });
+
+  // Scroll into view
+  setTimeout(() => {
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 150);
+
+  // Init gram buttons inside detail
+  panel.querySelectorAll('.sh-dt-gram-btn').forEach(gb => {
+    gb.addEventListener('click', () => {
+      panel.querySelectorAll('.sh-dt-gram-btn').forEach(b => b.classList.remove('active'));
+      gb.classList.add('active');
+      const prEl = document.getElementById('dt-price-' + id);
+      const unEl = document.getElementById('dt-unit-'  + id);
+      if (prEl) {
+        prEl.textContent = '¥' + Number(gb.dataset.price).toLocaleString('ja-JP');
+        prEl.classList.remove('flash'); void prEl.offsetWidth; prEl.classList.add('flash');
+      }
+      if (unEl) unEl.textContent = `/ ${gb.dataset.g}g（税込）`;
+    });
+  });
+
+  // Add cursor hover for newly created buttons
+  panel.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => cur && cur.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cur && cur.classList.remove('hover'));
+  });
+}
+
+function switchDetail(id) {
+  removeExistingDetail();
+  setTimeout(() => openDetail(id), 20);
+}
+
+/* ═══════════════════════════════════════════════════
+   CATEGORY FILTER
+═══════════════════════════════════════════════════ */
+document.querySelectorAll('.sh-filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    removeExistingDetail();
+    document.querySelectorAll('.sh-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const cat = btn.dataset.cat;
+    const cards = grid.querySelectorAll('.sh-prod-card');
+    let visible = 0;
+    cards.forEach(c => {
+      const show = cat === 'all' || c.dataset.cat === cat;
+      c.classList.toggle('hidden-cat', !show);
+      if (show) visible++;
+    });
+    document.getElementById('sh-count').textContent = visible + ' Product' + (visible !== 1 ? 's' : '');
+  });
+});
+
+/* ═══════════════════════════════════════════════════
+   PURCHASE MODAL
+═══════════════════════════════════════════════════ */
+const modalBg   = document.getElementById('sh-modal-bg');
+const modalName = document.getElementById('sh-modal-name');
+const modalPr   = document.getElementById('sh-modal-price');
+const modalMail = document.getElementById('sh-modal-mail-a');
+
+function openModal(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+  // Get current price from detail panel if open, else base
+  let priceStr = priceLabelPlain(p);
+  const prEl = document.getElementById('dt-price-' + id);
+  const unEl = document.getElementById('dt-unit-'  + id);
+  if (prEl && unEl) priceStr = prEl.textContent + ' ' + unEl.textContent;
+
+  modalName.textContent = p.name;
+  modalPr.textContent   = priceStr;
+  const subj = encodeURIComponent('【KIKI購入希望】' + p.name);
+  const body = encodeURIComponent('商品名：' + p.name + '\n数量：\nお名前：\nご連絡先：');
+  modalMail.href = `mailto:project.kiki0715@gmail.com?subject=${subj}&body=${body}`;
+  modalBg.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  modalBg.classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('sh-modal-close').addEventListener('click', closeModal);
+modalBg.addEventListener('click', e => { if (e.target === modalBg) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* ═══════════════════════════════════════════════════
+   NAV / PAGE TRANSITIONS
+═══════════════════════════════════════════════════ */
+const ham = document.getElementById('idx-ham');
+const ov  = document.getElementById('idx-overlay');
+ham.addEventListener('click', () => { ham.classList.toggle('open'); ov.classList.toggle('open'); });
+ov.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { ham.classList.remove('open'); ov.classList.remove('open'); }));
+
+const cover = document.getElementById('idx-cover');
+requestAnimationFrame(() => { cover.style.opacity = '0'; });
+
+window.addEventListener('pageshow', () => {
+  cover.style.transition = 'none';
+  cover.style.opacity = '0';
+  cover.style.pointerEvents = 'none';
+  requestAnimationFrame(() => { cover.style.transition = 'opacity .8s ease'; });
+});
+
+document.querySelectorAll('a[href]').forEach(link => {
+  const href = link.getAttribute('href');
+  if (!href || href.startsWith('#') || href.startsWith('mailto:') || link.target === '_blank') return;
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    cover.style.transition = 'opacity .4s ease';
+    cover.style.opacity = '1';
+    cover.style.pointerEvents = 'auto';
+    setTimeout(() => { window.location.href = href; }, 420);
+  });
+});
+
+/* ═══════════════════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════════════════ */
+const revealIO = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revealIO.unobserve(e.target); } });
+}, { threshold: 0.06 });
+document.querySelectorAll('.sh-prod-card, .sh-why-card, .sh-reveal').forEach(el => revealIO.observe(el));
+
+/* ═══════════════════════════════════════════════════
+   CUSTOM CURSOR
+═══════════════════════════════════════════════════ */
+let cur = null;
+if (!window.matchMedia('(hover: none)').matches) {
+  cur = document.createElement('div');
+  cur.className = 'idx-cursor';
+  document.body.appendChild(cur);
+  let mx=0,my=0,cx=0,cy=0;
+  document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cur.classList.add('active'); });
+  document.addEventListener('mouseleave', () => cur.classList.remove('active'));
+  (function lerp() { cx+=(mx-cx)*.14; cy+=(my-cy)*.14; cur.style.left=cx+'px'; cur.style.top=cy+'px'; requestAnimationFrame(lerp); })();
+  document.querySelectorAll('a,button').forEach(el => {
+    el.addEventListener('mouseenter', () => cur.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cur.classList.remove('hover'));
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+   SQUARE API SYNC (apparel prices)
+═══════════════════════════════════════════════════ */
+(async function syncSquare() {
+  try {
+    const res = await fetch((window.KIKI_INVENTORY_URL || 'http://localhost:3001') + '/api/square/catalog');
+    if (!res.ok) return;
+    const { objects } = await res.json();
+    if (!objects) return;
+    objects.forEach(item => {
+      if (item.type !== 'ITEM') return;
+      const name  = (item.itemData?.name||'').toLowerCase().replace(/\s+/g,'');
+      const price = item.itemData?.variations?.[0]?.itemVariationData?.priceMoney?.amount;
+      if (!price) return;
+      const yen = '¥' + (price/100).toLocaleString('ja-JP');
+      const keyMap = { 'ロゴtシャツ':'logo-tee','logo':'logo-tee','アパレル商品2':'apparel2','アパレル商品3':'apparel3' };
+      Object.entries(keyMap).forEach(([k,id]) => {
+        if (!name.includes(k)) return;
+        const p = PRODUCTS.find(x => x.id === id);
+        if (p) { p.basePrice = price/100; p.priceUnit = '（税込）'; }
+        const card = grid.querySelector(`.sh-prod-card[data-id="${id}"]`);
+        if (card) {
+          const prEl = card.querySelector('.sh-card-price');
+          if (prEl) prEl.innerHTML = `${yen} <small>（税込）</small>`;
+        }
+      });
+    });
+  } catch(_) {}
+})();
+</script>
+</body>
+</html>

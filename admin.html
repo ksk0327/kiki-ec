@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — KIKI Inventory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: #0a0500; color: #fff; font-family: 'Inter', sans-serif; min-height: 100vh; }
+
+    /* ===== LOGIN ===== */
+    #login-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      gap: 32px;
+      padding: 48px 24px;
+    }
+    .adm-logo {
+      font-family: 'Shippori Mincho B1', serif;
+      font-size: 20px;
+      letter-spacing: .22em;
+      color: #c09a3e;
+    }
+    .adm-login-box {
+      background: #110700;
+      border: 1px solid rgba(192,154,62,.18);
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 380px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .adm-login-title {
+      font-family: 'Shippori Mincho B1', serif;
+      font-size: 18px;
+      letter-spacing: .1em;
+      color: #fff;
+      text-align: center;
+    }
+    .adm-login-input {
+      background: #1a0900;
+      border: 1px solid rgba(255,255,255,.12);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      padding: 12px 16px;
+      width: 100%;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .adm-login-input:focus { border-color: rgba(192,154,62,.5); }
+    .adm-login-btn {
+      background: transparent;
+      border: 1px solid rgba(192,154,62,.5);
+      color: #c09a3e;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      padding: 14px;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+      width: 100%;
+    }
+    .adm-login-btn:hover { background: #c09a3e; color: #0d0600; }
+    .adm-login-error {
+      font-size: 11px;
+      color: #e07070;
+      text-align: center;
+      min-height: 16px;
+    }
+
+    /* ===== DASHBOARD ===== */
+    #dashboard { display: none; padding: 80px 48px 120px; max-width: 1400px; margin: 0 auto; }
+
+    .adm-topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      background: #0a0500;
+      border-bottom: 1px solid rgba(192,154,62,.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      z-index: 100;
+    }
+    .adm-topbar-logo {
+      font-family: 'Shippori Mincho B1', serif;
+      font-size: 14px;
+      letter-spacing: .22em;
+      color: #c09a3e;
+    }
+    .adm-topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .adm-ts {
+      font-size: 10px;
+      color: rgba(255,255,255,.25);
+      letter-spacing: .1em;
+    }
+    .adm-refresh-btn {
+      background: none;
+      border: 1px solid rgba(192,154,62,.3);
+      color: #c09a3e;
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .adm-refresh-btn:hover { background: rgba(192,154,62,.12); }
+    .adm-logout-btn {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,.25);
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: .12em;
+      cursor: pointer;
+      transition: color .2s;
+    }
+    .adm-logout-btn:hover { color: rgba(255,255,255,.6); }
+
+    /* ===== FLOW ===== */
+    .adm-section-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      letter-spacing: .4em;
+      text-transform: uppercase;
+      color: #c09a3e;
+      margin-bottom: 20px;
+    }
+    .adm-flow {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 72px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .adm-flow-step {
+      background: #110700;
+      border: 1px solid rgba(192,154,62,.12);
+      padding: 20px 24px;
+      flex: 1;
+      min-width: 120px;
+      text-align: center;
+    }
+    .adm-flow-step-label {
+      font-family: 'Shippori Mincho B1', serif;
+      font-size: 11px;
+      color: rgba(255,255,255,.45);
+      letter-spacing: .06em;
+      margin-bottom: 8px;
+    }
+    .adm-flow-step-val {
+      font-family: 'Inter', sans-serif;
+      font-size: 20px;
+      font-weight: 300;
+      color: #c09a3e;
+    }
+    .adm-flow-step-unit {
+      font-size: 10px;
+      color: rgba(255,255,255,.25);
+      margin-left: 2px;
+    }
+    .adm-flow-arrow {
+      color: rgba(192,154,62,.3);
+      font-size: 18px;
+      padding: 0 8px;
+      flex-shrink: 0;
+      align-self: center;
+    }
+
+    /* ===== TABLES ===== */
+    .adm-sheets { display: flex; flex-direction: column; gap: 56px; }
+    .adm-sheet {
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .adm-sheet-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #110700;
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .adm-sheet-name {
+      font-family: 'Shippori Mincho B1', serif;
+      font-size: 15px;
+      letter-spacing: .08em;
+      color: #fff;
+    }
+    .adm-sheet-count {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      color: rgba(255,255,255,.25);
+      letter-spacing: .1em;
+    }
+    .adm-table-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th {
+      background: #0d0500;
+      color: rgba(255,255,255,.35);
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 9px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      padding: 10px 16px;
+      text-align: left;
+      white-space: nowrap;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    td {
+      padding: 11px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      color: rgba(255,255,255,.65);
+      font-family: 'Inter', sans-serif;
+      white-space: nowrap;
+    }
+    tr:hover td { background: rgba(255,255,255,.02); color: rgba(255,255,255,.85); }
+    tr:last-child td { border-bottom: none; }
+    .adm-empty {
+      padding: 32px;
+      text-align: center;
+      font-size: 11px;
+      color: rgba(255,255,255,.2);
+      letter-spacing: .2em;
+    }
+    .adm-error-msg {
+      padding: 20px;
+      font-size: 11px;
+      color: #e07070;
+      font-family: 'Inter', sans-serif;
+    }
+    .adm-loading-full {
+      text-align: center;
+      padding: 80px 0;
+      font-size: 10px;
+      letter-spacing: .35em;
+      color: rgba(255,255,255,.2);
+    }
+
+    @media (max-width: 768px) {
+      #dashboard { padding: 72px 16px 80px; }
+      .adm-topbar { padding: 0 20px; }
+      .adm-flow { gap: 0; }
+      .adm-flow-step { min-width: 100px; padding: 16px 12px; }
+      .adm-flow-step-val { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="adm-logo">KIKI — Admin</div>
+  <div class="adm-login-box">
+    <p class="adm-login-title">管理者ログイン</p>
+    <input type="password" id="pw-input" class="adm-login-input" placeholder="パスワード" autocomplete="current-password">
+    <button class="adm-login-btn" id="pw-submit">ログイン</button>
+    <p class="adm-login-error" id="pw-error"></p>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<header class="adm-topbar" style="display:none" id="adm-topbar">
+  <div class="adm-topbar-logo">KIKI — Inventory Dashboard</div>
+  <div class="adm-topbar-right">
+    <span class="adm-ts" id="adm-ts">—</span>
+    <button class="adm-refresh-btn" id="adm-refresh">Refresh</button>
+    <button class="adm-logout-btn" id="adm-logout">Logout</button>
+  </div>
+</header>
+
+<main id="dashboard">
+  <div class="adm-loading-full" id="adm-loading">— loading —</div>
+
+  <!-- FLOW -->
+  <section id="adm-flow-section" style="display:none; margin-bottom:72px;">
+    <p class="adm-section-label">Inventory Flow</p>
+    <div class="adm-flow" id="adm-flow"></div>
+  </section>
+
+  <!-- SHEETS -->
+  <section id="adm-sheets-section" style="display:none;">
+    <p class="adm-section-label" style="margin-bottom:28px;">All Sheets</p>
+    <div class="adm-sheets" id="adm-sheets"></div>
+  </section>
+</main>
+
+<script>
+const API_BASE = window.KIKI_INVENTORY_URL || 'http://localhost:3001';
+let adminPw = '';
+
+/* ===== LOGIN ===== */
+function doLogin() {
+  const pw = document.getElementById('pw-input').value.trim();
+  if (!pw) return;
+  adminPw = pw;
+  loadDashboard();
+}
+document.getElementById('pw-submit').addEventListener('click', doLogin);
+document.getElementById('pw-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+/* ===== LOGOUT ===== */
+document.getElementById('adm-logout').addEventListener('click', () => {
+  adminPw = '';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('adm-topbar').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-error').textContent = '';
+});
+
+/* ===== REFRESH ===== */
+document.getElementById('adm-refresh').addEventListener('click', loadDashboard);
+
+/* ===== LOAD DASHBOARD ===== */
+async function loadDashboard() {
+  document.getElementById('adm-loading').style.display = 'block';
+  document.getElementById('adm-flow-section').style.display = 'none';
+  document.getElementById('adm-sheets-section').style.display = 'none';
+  document.getElementById('pw-error').textContent = '';
+
+  try {
+    const r = await fetch(`${API_BASE}/api/admin/dashboard?password=${encodeURIComponent(adminPw)}`);
+    if (r.status === 401) {
+      document.getElementById('pw-error').textContent = 'パスワードが違います';
+      return;
+    }
+    if (!r.ok) throw new Error(r.status);
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error);
+
+    // Show dashboard
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('adm-topbar').style.display = 'flex';
+    document.getElementById('dashboard').style.display = 'block';
+    document.getElementById('adm-loading').style.display = 'none';
+    document.getElementById('adm-ts').textContent = '更新: ' + new Date(d.updatedAt).toLocaleString('ja-JP');
+
+    renderFlow(d.flow);
+    renderSheets(d.sheets, d.errors);
+  } catch (err) {
+    document.getElementById('adm-loading').textContent = 'エラー: ' + err.message;
+  }
+}
+
+/* ===== RENDER FLOW ===== */
+function renderFlow(flow) {
+  if (!flow) return;
+  const container = document.getElementById('adm-flow');
+  container.innerHTML = '';
+  const steps = [
+    { key: 'rawBean',  icon: '→' },
+    { key: 'roasted',  icon: '→' },
+    { key: 'blended',  icon: '→' },
+    { key: 'storage',  icon: '→' },
+    { key: 'shipped',  icon: null },
+  ];
+
+  steps.forEach(({ key, icon }) => {
+    const step = flow[key];
+    if (!step) return;
+    const el = document.createElement('div');
+    el.className = 'adm-flow-step';
+    const val = step.grams !== null ? Math.round(step.grams).toLocaleString() : '—';
+    el.innerHTML = `
+      <div class="adm-flow-step-label">${step.label}</div>
+      <div class="adm-flow-step-val">${val}<span class="adm-flow-step-unit">g</span></div>
+    `;
+    container.appendChild(el);
+    if (icon) {
+      const arr = document.createElement('div');
+      arr.className = 'adm-flow-arrow';
+      arr.textContent = icon;
+      container.appendChild(arr);
+    }
+  });
+
+  document.getElementById('adm-flow-section').style.display = 'block';
+}
+
+/* ===== RENDER SHEETS ===== */
+function renderSheets(sheets, errors) {
+  const container = document.getElementById('adm-sheets');
+  container.innerHTML = '';
+
+  const ORDER = ['STORAGE', 'LOT', 'ROAST', 'BLEND', 'USAGE'];
+  ORDER.forEach(key => {
+    const section = document.createElement('div');
+    section.className = 'adm-sheet';
+
+    if (errors && errors[key]) {
+      section.innerHTML = `
+        <div class="adm-sheet-head">
+          <span class="adm-sheet-name">${errors[key].sheetName}</span>
+          <span class="adm-sheet-count">エラー</span>
+        </div>
+        <p class="adm-error-msg">${errors[key].error}</p>
+      `;
+    } else if (sheets && sheets[key]) {
+      const s = sheets[key];
+      const head = document.createElement('div');
+      head.className = 'adm-sheet-head';
+      head.innerHTML = `
+        <span class="adm-sheet-name">${s.sheetName}</span>
+        <span class="adm-sheet-count">${s.rows.length} 行</span>
+      `;
+      section.appendChild(head);
+
+      if (!s.rows.length) {
+        const empty = document.createElement('p');
+        empty.className = 'adm-empty';
+        empty.textContent = '— データなし —';
+        section.appendChild(empty);
+      } else {
+        const wrap = document.createElement('div');
+        wrap.className = 'adm-table-wrap';
+        const table = document.createElement('table');
+        // thead
+        const thead = document.createElement('thead');
+        const trh = document.createElement('tr');
+        s.headers.forEach(h => {
+          const th = document.createElement('th');
+          th.textContent = h;
+          trh.appendChild(th);
+        });
+        thead.appendChild(trh);
+        table.appendChild(thead);
+        // tbody
+        const tbody = document.createElement('tbody');
+        s.rows.forEach(row => {
+          const tr = document.createElement('tr');
+          s.headers.forEach(h => {
+            const td = document.createElement('td');
+            td.textContent = row[h] || '';
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+        table.appendChild(tbody);
+        wrap.appendChild(table);
+        section.appendChild(wrap);
+      }
+    }
+
+    container.appendChild(section);
+  });
+
+  document.getElementById('adm-sheets-section').style.display = 'block';
+}
+
+/* ── Auto-refresh every 5 minutes ── */
+setInterval(() => {
+  if (adminPw) loadDashboard();
+}, 5 * 60 * 1000);
+</script>
+</body>
+</html>

@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Outdoor — KIKI</title>
+  <meta name="description" content="KIKIアウトドア。XTREME Life is Good. Own it. アウトドアグッズ輸入販売・イベント企画。">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── RESET & BASE ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: #070d0a;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+
+    /* ── CUSTOM CURSOR ─────────────────────────────────────────── */
+    .od-cursor-dot,
+    .od-cursor-ring {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: opacity .3s;
+    }
+    .od-cursor-dot {
+      width: 8px; height: 8px;
+      background: #c09a3e;
+    }
+    .od-cursor-ring {
+      width: 32px; height: 32px;
+      border: 1px solid rgba(192,154,62,.6);
+      transition: width .2s, height .2s, border-color .2s;
+    }
+    body.cursor-hover .od-cursor-ring {
+      width: 44px; height: 44px;
+      border-color: #c09a3e;
+    }
+
+    /* ── PAGE COVER ────────────────────────────────────────────── */
+    #idx-cover {
+      position: fixed; inset: 0;
+      background: #070d0a;
+      z-index: 9997;
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity .8s ease;
+    }
+    #idx-cover.hidden { opacity: 0; pointer-events: none; }
+
+    /* ── NAV ───────────────────────────────────────────────────── */
+    .idx-nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 60px;
+      z-index: 200;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .35s, backdrop-filter .35s;
+    }
+    .idx-nav.scrolled {
+      background: rgba(10,4,0,.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .idx-nav-logo-img {
+      height: 34px; width: auto;
+      filter: brightness(0) invert(1);
+    }
+    .idx-ham {
+      position: absolute; right: 28px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      display: flex; flex-direction: column; gap: 7px;
+      padding: 6px; z-index: 201;
+    }
+    .idx-ham span {
+      display: block; width: 22px; height: 1px;
+      background: rgba(255,255,255,.8);
+      transition: transform .3s, opacity .3s;
+    }
+    .idx-ham.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+    .idx-ham.open span:nth-child(2) { transform: translateY(-8px) rotate(-45deg); }
+
+    /* ── OVERLAY ───────────────────────────────────────────────── */
+    .idx-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 190;
+      background: #0a0806;
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 44px;
+    }
+    .idx-overlay.open { display: flex; }
+    .idx-overlay a {
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: clamp(28px, 5vw, 44px);
+      color: #fff; letter-spacing: .06em;
+      transition: color .2s;
+    }
+    .idx-overlay a:hover { color: #4a7a5a; }
+    .idx-overlay .nav-shop { color: #c09a3e; }
+
+    /* ── REVEAL ────────────────────────────────────────────────── */
+    .od-reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .od-reveal.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── HERO ──────────────────────────────────────────────────── */
+    .od-hero {
+      position: relative;
+      height: 100vh; min-height: 600px;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+    }
+    .od-hero-bg {
+      position: absolute; inset: 0;
+    }
+    .od-hero-bg img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .od-hero-overlay {
+      position: absolute; inset: 0;
+      background: rgba(7,13,10,.5);
+    }
+    .od-hero-content {
+      position: relative; z-index: 2;
+      padding: 0 clamp(24px, 6vw, 80px);
+    }
+    .od-hero-eyebrow {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 9px;
+      letter-spacing: .5em;
+      color: rgba(255,255,255,.5);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .od-hero-h1 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: clamp(52px, 9vw, 120px);
+      color: #fff;
+      letter-spacing: .04em;
+      line-height: 1.0;
+      text-transform: uppercase;
+    }
+    .od-hero-sub {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: clamp(28px, 4vw, 52px);
+      color: rgba(255,255,255,.45);
+      letter-spacing: .12em;
+      margin-top: 16px;
+    }
+    .od-hero-scroll {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 2;
+    }
+    .od-hero-scroll span {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      letter-spacing: .3em;
+      color: rgba(255,255,255,.3);
+      text-transform: uppercase;
+    }
+    .od-hero-scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, rgba(255,255,255,.3), transparent);
+      animation: od-scroll-pulse 2s ease-in-out infinite;
+    }
+    @keyframes od-scroll-pulse {
+      0%, 100% { opacity: .3; transform: scaleY(1); }
+      50% { opacity: .7; transform: scaleY(1.2); }
+    }
+
+    /* ── CONCEPT ───────────────────────────────────────────────── */
+    .od-concept {
+      background: #070d0a;
+      padding: clamp(80px, 10vw, 140px) clamp(24px, 6vw, 80px);
+    }
+    .od-concept-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(40px, 6vw, 80px);
+      max-width: 1200px;
+      margin: 0 auto;
+      align-items: center;
+    }
+    .od-concept-eyebrow {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      letter-spacing: .4em;
+      color: #c09a3e;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .od-concept-h2 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: clamp(26px, 3.5vw, 44px);
+      color: #fff;
+      letter-spacing: .04em;
+      line-height: 1.3;
+      margin-bottom: 24px;
+    }
+    .od-concept-body {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: rgba(255,255,255,.5);
+      line-height: 1.9;
+      margin-bottom: 32px;
+    }
+    .od-concept-pills {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .od-concept-pill {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      letter-spacing: .12em;
+      color: #4a7a5a;
+      border: 1px solid #4a7a5a;
+      padding: 8px 20px;
+      border-radius: 100px;
+      text-transform: uppercase;
+    }
+    .od-concept-img {
+      border-radius: 2px;
+      overflow: hidden;
+      aspect-ratio: 4/5;
+    }
+    .od-concept-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform .9s cubic-bezier(.25,.46,.45,.94);
+    }
+    .od-concept-img:hover img { transform: scale(1.03); }
+
+    /* ── GEAR ──────────────────────────────────────────────────── */
+    .od-gear {
+      background: #0a1209;
+      padding: clamp(80px, 10vw, 140px) clamp(24px, 6vw, 80px);
+    }
+    .od-gear-header {
+      max-width: 1200px;
+      margin: 0 auto 52px;
+    }
+    .od-gear-eyebrow {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      letter-spacing: .4em;
+      color: #4a7a5a;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .od-gear-h2 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: clamp(24px, 3vw, 38px);
+      color: #fff;
+      letter-spacing: .04em;
+    }
+    .od-gear-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .od-gear-card {
+      background: #0c130b;
+      border: 1px solid rgba(255,255,255,.06);
+      overflow: hidden;
+      transition: border-color .3s;
+    }
+    .od-gear-card:hover {
+      border-color: rgba(74,122,90,.4);
+    }
+    .od-gear-img {
+      position: relative;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+    }
+    .od-gear-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform .7s cubic-bezier(.25,.46,.45,.94);
+    }
+    .od-gear-img-shade {
+      position: absolute; inset: 0;
+      background: rgba(7,13,10,0);
+      transition: background .5s;
+    }
+    .od-gear-card:hover .od-gear-img img { transform: scale(1.04); }
+    .od-gear-card:hover .od-gear-img-shade { background: rgba(7,13,10,.25); }
+    .od-gear-body {
+      padding: 24px 20px 28px;
+    }
+    .od-gear-badge {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      letter-spacing: .2em;
+      color: #4a7a5a;
+      border: 1px solid rgba(74,122,90,.4);
+      padding: 3px 10px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+    .od-gear-name {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 16px;
+      color: #fff;
+      letter-spacing: .06em;
+      margin-bottom: 8px;
+    }
+    .od-gear-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: rgba(255,255,255,.4);
+      line-height: 1.8;
+    }
+
+    /* ── EVENTS ────────────────────────────────────────────────── */
+    .od-events {
+      background: #060c09;
+      padding: clamp(80px, 10vw, 140px) clamp(24px, 6vw, 80px);
+    }
+    .od-events-header {
+      max-width: 1200px;
+      margin: 0 auto 52px;
+    }
+    .od-events-eyebrow {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      letter-spacing: .4em;
+      color: #c09a3e;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .od-events-h2 {
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: clamp(24px, 3vw, 38px);
+      color: #fff;
+      letter-spacing: .04em;
+    }
+    .od-events-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .od-event-card {
+      background: #0a1209;
+      border: 1px solid rgba(255,255,255,.06);
+      padding: 44px 36px;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 14px;
+      transition: border-color .3s;
+    }
+    .od-event-card:hover {
+      border-color: rgba(74,122,90,.3);
+    }
+    .od-event-tag {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      letter-spacing: .3em;
+      color: rgba(255,255,255,.25);
+      text-transform: uppercase;
+    }
+    .od-event-title {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: clamp(18px, 2.5vw, 26px);
+      color: rgba(255,255,255,.7);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .od-event-status {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: .25em;
+      color: #4a7a5a;
+      text-transform: uppercase;
+    }
+    .od-event-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: rgba(255,255,255,.3);
+      line-height: 1.8;
+      margin-top: 4px;
+    }
+
+    /* ── INSTAGRAM CTA ─────────────────────────────────────────── */
+    .od-ig-cta {
+      position: relative;
+      min-height: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: clamp(80px, 10vw, 120px) clamp(24px, 6vw, 80px);
+      overflow: hidden;
+    }
+    .od-ig-bg {
+      position: absolute; inset: 0;
+    }
+    .od-ig-bg img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .od-ig-overlay {
+      position: absolute; inset: 0;
+      background: rgba(6,12,9,.82);
+    }
+    .od-ig-content {
+      position: relative; z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+    .od-ig-tagline {
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: clamp(24px, 4vw, 48px);
+      color: #fff;
+      letter-spacing: .04em;
+    }
+    .od-ig-handle {
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: clamp(18px, 2.5vw, 28px);
+      color: #c09a3e;
+      letter-spacing: .14em;
+    }
+    .od-ig-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.35);
+      padding: 14px 36px;
+      margin-top: 8px;
+      transition: background .25s, border-color .25s, color .25s;
+    }
+    .od-ig-btn:hover {
+      background: #4a7a5a;
+      border-color: #4a7a5a;
+      color: #fff;
+    }
+
+    /* ── FOOTER ────────────────────────────────────────────────── */
+    .idx-footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 52px 32px;
+      border-top: 1px solid rgba(255,255,255,.07);
+      background: #070d0a;
+    }
+    .idx-footer-logo {
+      height: 28px; width: auto;
+      filter: brightness(0) invert(1);
+      opacity: .45;
+    }
+    .idx-footer-ig {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      letter-spacing: .16em;
+      color: rgba(255,255,255,.35);
+      transition: color .2s;
+    }
+    .idx-footer-ig:hover { color: #4a7a5a; }
+    .idx-footer-copy {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: .1em;
+      color: rgba(255,255,255,.2);
+    }
+
+    /* ── RESPONSIVE ────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .idx-ham { right: 20px; }
+      .od-hero-h1 { font-size: clamp(44px,13vw,80px); }
+      .od-concept-inner { grid-template-columns: 1fr; }
+      .od-concept-img { order: -1; aspect-ratio: 16/9; }
+      .od-gear-grid { grid-template-columns: 1fr; }
+      .od-events-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- CUSTOM CURSOR (non-touch) -->
+<div class="od-cursor-dot" id="od-cursor-dot"></div>
+<div class="od-cursor-ring" id="od-cursor-ring"></div>
+
+<!-- PAGE COVER -->
+<div id="idx-cover"></div>
+
+<!-- NAV -->
+<nav class="idx-nav" id="idx-nav">
+  <a href="index.html"><img src="img/logo.png" alt="KIKI" class="idx-nav-logo-img"></a>
+  <button class="idx-ham" id="idx-ham"><span></span><span></span></button>
+</nav>
+<div class="idx-overlay" id="idx-overlay">
+  <a href="coffee.html">Coffee</a>
+  <a href="apparel.html">Apparel</a>
+  <a href="outdoor.html">Outdoor</a>
+  <a href="about.html">Story</a>
+  <a href="shop.html" class="nav-shop">Shop</a>
+</div>
+
+<!-- HERO -->
+<section class="od-hero">
+  <div class="od-hero-bg">
+    <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=1800&q=90" alt="KIKI Outdoor">
+  </div>
+  <div class="od-hero-overlay"></div>
+  <div class="od-hero-content od-reveal">
+    <span class="od-hero-eyebrow">KIKI OUTDOOR</span>
+    <h1 class="od-hero-h1">XTREME<br>LIFE IS GOOD.</h1>
+    <span class="od-hero-sub">Own it.</span>
+  </div>
+  <div class="od-hero-scroll">
+    <span>Scroll</span>
+    <div class="od-hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- CONCEPT -->
+<section class="od-concept">
+  <div class="od-concept-inner">
+    <div class="od-reveal">
+      <span class="od-concept-eyebrow">OUTDOOR</span>
+      <h2 class="od-concept-h2">自然の中で、<br>本当の自分に会う。</h2>
+      <p class="od-concept-body">KIKIアウトドアは、アウトドアグッズの輸入販売と、大自然を体感するイベントの企画・制作を行います。絶景の中でしか体験できないことがある。フィールドに出れば、常識の外側が見えてくる。</p>
+      <div class="od-concept-pills">
+        <span class="od-concept-pill">グッズ輸入販売</span>
+        <span class="od-concept-pill">イベント企画・制作</span>
+      </div>
+    </div>
+    <div class="od-concept-img od-reveal" style="transition-delay:.15s">
+      <img src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=900&q=90" alt="Outdoor Scene">
+    </div>
+  </div>
+</section>
+
+<!-- GEAR -->
+<section class="od-gear">
+  <div class="od-gear-header od-reveal">
+    <span class="od-gear-eyebrow">Gear</span>
+    <h2 class="od-gear-h2">フィールドのための道具</h2>
+  </div>
+  <div class="od-gear-grid">
+    <div class="od-gear-card od-reveal">
+      <div class="od-gear-img">
+        <img src="https://images.unsplash.com/photo-1473773508845-188df298d2d1?w=800&q=90" alt="Trail Pack">
+        <div class="od-gear-img-shade"></div>
+      </div>
+      <div class="od-gear-body">
+        <span class="od-gear-badge">Import</span>
+        <p class="od-gear-name">Trail Pack</p>
+        <p class="od-gear-desc">軽量・耐久性・機能美を兼ね備えたトレイルパック</p>
+      </div>
+    </div>
+    <div class="od-gear-card od-reveal" style="transition-delay:.1s">
+      <div class="od-gear-img">
+        <img src="https://images.unsplash.com/photo-1504851149312-7a075b496cc7?w=800&q=90" alt="Field Knife">
+        <div class="od-gear-img-shade"></div>
+      </div>
+      <div class="od-gear-body">
+        <span class="od-gear-badge">Import</span>
+        <p class="od-gear-name">Field Knife</p>
+        <p class="od-gear-desc">フィールドワークに欠かせない耐久性ナイフ</p>
+      </div>
+    </div>
+    <div class="od-gear-card od-reveal" style="transition-delay:.2s">
+      <div class="od-gear-img">
+        <img src="https://images.unsplash.com/photo-1484627147104-f5197bcd6651?w=800&q=90" alt="Shelter Kit">
+        <div class="od-gear-img-shade"></div>
+      </div>
+      <div class="od-gear-body">
+        <span class="od-gear-badge">Import</span>
+        <p class="od-gear-name">Shelter Kit</p>
+        <p class="od-gear-desc">設営わずか5分。悪天候に耐える緊急シェルター</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS -->
+<section class="od-events">
+  <div class="od-events-header od-reveal">
+    <span class="od-events-eyebrow">Events</span>
+    <h2 class="od-events-h2">自然の中で、集まる。</h2>
+  </div>
+  <div class="od-events-grid">
+    <div class="od-event-card od-reveal">
+      <span class="od-event-tag">2026</span>
+      <p class="od-event-title">KIKI Outdoor Event</p>
+      <span class="od-event-status">Coming Soon</span>
+      <p class="od-event-desc">アウトドアイベント準備中。詳細はInstagramで発信します。</p>
+    </div>
+    <div class="od-event-card od-reveal" style="transition-delay:.1s">
+      <span class="od-event-tag">Trail</span>
+      <p class="od-event-title">Trail Walk</p>
+      <span class="od-event-status">Coming Soon</span>
+      <p class="od-event-desc">大自然を歩くトレイルウォーク企画中</p>
+    </div>
+  </div>
+</section>
+
+<!-- INSTAGRAM CTA -->
+<section class="od-ig-cta">
+  <div class="od-ig-bg">
+    <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1600&q=90" alt="Outdoor Landscape">
+  </div>
+  <div class="od-ig-overlay"></div>
+  <div class="od-ig-content od-reveal">
+    <p class="od-ig-tagline">絶景と大自然の遊び方を発信中</p>
+    <a href="https://www.instagram.com/ki_ki_asobi" target="_blank" class="od-ig-handle">@ki_ki_asobi</a>
+    <a href="https://www.instagram.com/ki_ki_asobi" target="_blank" class="od-ig-btn">Instagram をフォローする →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="idx-footer">
+  <img src="img/logo.png" alt="KIKI" class="idx-footer-logo">
+  <a href="https://www.instagram.com/ki_ki_asobi" target="_blank" class="idx-footer-ig">@ki_ki_asobi</a>
+  <span class="idx-footer-copy">© 2026 KIKI（奇輝）</span>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* 1. Ham toggle */
+  var ham = document.getElementById('idx-ham');
+  var overlay = document.getElementById('idx-overlay');
+  ham.addEventListener('click', function () {
+    ham.classList.toggle('open');
+    overlay.classList.toggle('open');
+    document.body.style.overflow = overlay.classList.contains('open') ? 'hidden' : '';
+  });
+  overlay.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      ham.classList.remove('open');
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    });
+  });
+
+  /* 2. Page load fade-in */
+  var cover = document.getElementById('idx-cover');
+  function fadeIn() {
+    requestAnimationFrame(function () {
+      cover.classList.add('hidden');
+    });
+  }
+  if (document.readyState === 'complete') {
+    fadeIn();
+  } else {
+    window.addEventListener('load', fadeIn);
+  }
+
+  /* 3. pageshow BFCache fix */
+  window.addEventListener('pageshow', function (e) {
+    if (e.persisted) {
+      cover.style.transition = 'none';
+      cover.classList.add('hidden');
+      requestAnimationFrame(function () {
+        cover.style.transition = '';
+      });
+    }
+  });
+
+  /* 4. Page transition fade */
+  document.querySelectorAll('a[href]').forEach(function (a) {
+    var href = a.getAttribute('href');
+    if (!href || href.charAt(0) === '#' || href.indexOf('mailto:') === 0 || a.getAttribute('target') === '_blank') return;
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      var dest = href;
+      cover.style.transition = 'opacity .45s ease';
+      cover.classList.remove('hidden');
+      cover.style.opacity = '1';
+      setTimeout(function () { window.location.href = dest; }, 480);
+    });
+  });
+
+  /* 5. Nav scroll */
+  var nav = document.getElementById('idx-nav');
+  window.addEventListener('scroll', function () {
+    if (window.scrollY > 40) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  }, { passive: true });
+
+  /* 6. IntersectionObserver for od-reveal */
+  var revealEls = document.querySelectorAll('.od-reveal');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(function (el) { io.observe(el); });
+  } else {
+    revealEls.forEach(function (el) { el.classList.add('in'); });
+  }
+
+  /* 7. Custom cursor (non-touch) */
+  var isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  if (!isTouchDevice) {
+    var dot = document.getElementById('od-cursor-dot');
+    var ring = document.getElementById('od-cursor-ring');
+    var mouseX = 0, mouseY = 0;
+    var ringX = 0, ringY = 0;
+
+    document.addEventListener('mousemove', function (e) {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      dot.style.left = mouseX + 'px';
+      dot.style.top = mouseY + 'px';
+    });
+
+    (function animateRing() {
+      ringX += (mouseX - ringX) * 0.15;
+      ringY += (mouseY - ringY) * 0.15;
+      ring.style.left = ringX + 'px';
+      ring.style.top = ringY + 'px';
+      requestAnimationFrame(animateRing);
+    })();
+
+    document.querySelectorAll('a, button').forEach(function (el) {
+      el.addEventListener('mouseenter', function () { document.body.classList.add('cursor-hover'); });
+      el.addEventListener('mouseleave', function () { document.body.classList.remove('cursor-hover'); });
+    });
+
+    document.body.style.cursor = 'none';
+  }
+})();
+</script>
+</body>
+</html>

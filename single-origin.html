@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Single Origin — KIKI Coffee</title>
+  <meta name="description" content="KIKIのシングルオリジン。産地・農園・品種・精製方法をすべて開示するコーヒー。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Shippori+Mincho+B1&display=swap" rel="stylesheet">
+  <style>
+    /* ─── RESET / BASE ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: #0d0600; }
+    body { background: #0d0600; color: #fff; }
+
+    /* ─── NAV ─── */
+    .idx-nav { position: fixed; top: 0; left: 0; right: 0; height: 60px; display: flex; align-items: center; justify-content: center; background: transparent; z-index: 100; transition: background .35s ease; }
+    .idx-nav.scrolled { background: rgba(10,4,0,.88); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    .idx-nav-logo-img { height: 34px; width: auto; filter: brightness(0) invert(1); display: block; }
+    .idx-ham { position: absolute; right: 28px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; background: none; border: none; cursor: pointer; display: flex; flex-direction: column; justify-content: center; gap: 7px; padding: 0; }
+    .idx-ham span { display: block; width: 22px; height: 1px; background: rgba(255,255,255,.75); transition: transform .3s, opacity .3s; transform-origin: center; }
+    .idx-ham.open span:nth-child(1) { transform: translateY(4px) rotate(45deg); }
+    .idx-ham.open span:nth-child(2) { transform: translateY(-4px) rotate(-45deg); }
+    .idx-overlay { display: none; position: fixed; inset: 0; background: #0a0806; z-index: 99; flex-direction: column; align-items: center; justify-content: center; gap: 44px; }
+    .idx-overlay.open { display: flex; }
+    .idx-overlay a { font-family: 'Shippori Mincho B1', serif; font-size: clamp(28px,5vw,44px); color: #fff; text-decoration: none; letter-spacing: .08em; transition: color .25s; }
+    .idx-overlay a:hover { color: #c09a3e; }
+    .idx-overlay .nav-shop { color: #c09a3e; }
+
+    /* ─── CURSOR ─── */
+    .idx-cursor { position: fixed; z-index: 9998; pointer-events: none; width: 8px; height: 8px; background: #c09a3e; border-radius: 50%; transform: translate(-50%,-50%); transition: width .25s cubic-bezier(.16,1,.3,1), height .25s cubic-bezier(.16,1,.3,1), background .25s, opacity .2s; opacity: 0; will-change: left,top; }
+    .idx-cursor.active { opacity: 1; }
+    .idx-cursor.hover { width: 32px; height: 32px; background: transparent; border: 1px solid rgba(192,154,62,.75); }
+
+    /* ─── PAGE COVER ─── */
+    #idx-cover { position: fixed; inset: 0; background: #0d0600; z-index: 9997; pointer-events: none; opacity: 1; transition: opacity .8s ease; }
+
+    /* ─── SCROLL REVEAL ─── */
+    .so-reveal { opacity: 0; transform: translateY(22px); transition: opacity .85s cubic-bezier(.16,1,.3,1), transform .85s cubic-bezier(.16,1,.3,1); }
+    .so-reveal.in { opacity: 1; transform: none; }
+    .so-reveal.d1 { transition-delay: .10s; }
+    .so-reveal.d2 { transition-delay: .20s; }
+    .so-reveal.d3 { transition-delay: .30s; }
+
+    /* ─── FOOTER ─── */
+    .idx-footer { background: #0a0806; padding: 52px 32px; display: flex; flex-direction: column; align-items: center; gap: 18px; border-top: 1px solid rgba(255,255,255,.06); }
+    .idx-footer-logo { height: 28px; width: auto; filter: brightness(0) invert(1); opacity: .6; }
+    .idx-footer-ig { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300; letter-spacing: .14em; color: #c09a3e; text-decoration: none; transition: opacity .25s; }
+    .idx-footer-ig:hover { opacity: .6; }
+    .idx-footer-copy { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 300; letter-spacing: .1em; color: rgba(255,255,255,.18); }
+
+    /* ─── HERO ─── */
+    .so-hero {
+      position: relative;
+      height: 60vh;
+      min-height: 440px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 56px 64px;
+    }
+    .so-hero-bg { position: absolute; inset: 0; }
+    .so-hero-bg img { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; }
+    .so-hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,4,0,.92) 0%, rgba(10,4,0,.40) 50%, rgba(10,4,0,.55) 100%);
+    }
+    .so-hero-body { position: relative; z-index: 2; }
+    .so-back {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .32em;
+      text-transform: uppercase; color: rgba(192,154,62,.65); text-decoration: none;
+      margin-bottom: 28px; transition: color .2s;
+    }
+    .so-back:hover { color: #c09a3e; }
+    .so-eyebrow {
+      display: block; font-family: 'Inter', sans-serif; font-size: 10px;
+      letter-spacing: .4em; text-transform: uppercase; color: rgba(192,154,62,.6);
+      margin-bottom: 14px;
+    }
+    .so-hero-title {
+      font-family: 'Shippori Mincho B1', serif;
+      font-size: clamp(40px, 7vw, 88px);
+      color: #fff;
+      letter-spacing: .08em;
+      line-height: 1.1;
+    }
+
+    /* ─── PHILOSOPHY SECTION ─── */
+    .so-philosophy {
+      background: #0d0600;
+      padding: 96px 64px;
+    }
+    .so-philosophy-inner {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+      align-items: center;
+    }
+    .so-section-label {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      letter-spacing: .45em;
+      text-transform: uppercase;
+      color: rgba(192,154,62,.5);
+      margin-bottom: 24px;
+    }
+    .so-philosophy-title {
+      font-family: 'Shippori Mincho B1', serif;
+      font-size: clamp(28px, 3.6vw, 52px);
+      color: #fff;
+      letter-spacing: .06em;
+      line-height: 1.5;
+      margin-bottom: 36px;
+    }
+    .so-philosophy-text {
+      font-family: 'Shippori Mincho B1', serif;
+      font-size: 14px;
+      color: rgba(255,255,255,.52);
+      line-height: 2.5;
+      letter-spacing: .04em;
+    }
+    .so-philosophy-img {
+      overflow: hidden;
+      aspect-ratio: 3/4;
+    }
+    .so-philosophy-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ─── COMMITMENT SECTION ─── */
+    .so-commitment {
+      background: #0a0500;
+      padding: 96px 64px;
+    }
+    .so-commitment-head {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .so-commitment-eyebrow {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      letter-spacing: .45em;
+      text-transform: uppercase;
+      color: #c09a3e;
+      margin-bottom: 20px;
+    }
+    .so-commitment-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .so-commitment-item {
+      padding: 48px 40px;
+      background: rgba(255,255,255,.02);
+      border: 1px solid rgba(192,154,62,.1);
+      transition: background .3s, border-color .3s;
+    }
+    .so-commitment-item:hover {
+      background: rgba(192,154,62,.04);
+      border-color: rgba(192,154,62,.25);
+    }
+    .so-commitment-num {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: .35em;
+      color: rgba(192,154,62,.4);
+      margin-bottom: 20px;
+      display: block;
+    }
+    .so-commitment-title {
+      font-family: 'Shippori Mincho B1', serif;
+      font-size: 20px;
+      color: #fff;
+      letter-spacing: .06em;
+      margin-bottom: 18px;
+      line-height: 1.4;
+    }
+    .so-commitment-desc {
+      font-family: 'Shippori Mincho B1', serif;
+      font-size: 13px;
+      color: rgba(255,255,255,.45);
+      line-height: 2.2;
+      letter-spacing: .04em;
+    }
+
+    /* ─── PRODUCTS SECTION ─── */
+    .so-products {
+      background: #0d0600;
+      padding: 96px 64px;
+      border-top: 1px solid rgba(192,154,62,.08);
+    }
+    .so-products-head {
+      margin-bottom: 56px;
+    }
+    .so-products-eyebrow {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      letter-spacing: .45em;
+      text-transform: uppercase;
+      color: #c09a3e;
+      margin-bottom: 18px;
+    }
+    .so-products-title {
+      font-family: 'Shippori Mincho B1', serif;
+      font-size: clamp(22px, 3vw, 38px);
+      color: #fff;
+      letter-spacing: .08em;
+    }
+    .so-products-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+      max-width: 1000px;
+    }
+
+    /* Product card */
+    .so-prod-card {
+      display: block;
+      text-decoration: none;
+      background: #110700;
+      border: 1px solid rgba(192,154,62,.1);
+      transition: border-color .35s;
+      overflow: hidden;
+    }
+    .so-prod-card:hover { border-color: rgba(192,154,62,.4); }
+    .so-prod-card-img {
+      overflow: hidden;
+      aspect-ratio: 4/3;
+    }
+    .so-prod-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .7s cubic-bezier(.25,.46,.45,.94);
+    }
+    .so-prod-card:hover .so-prod-card-img img { transform: scale(1.04); }
+    .so-prod-card-body { padding: 28px 28px 32px; }
+    .so-prod-card-tag {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      letter-spacing: .32em;
+      text-transform: uppercase;
+      color: rgba(192,154,62,.7);
+      margin-bottom: 10px;
+      display: block;
+    }
+    .so-prod-card-name {
+      font-family: 'Shippori Mincho B1', serif;
+      font-size: clamp(18px, 2vw, 24px);
+      color: #fff;
+      letter-spacing: .04em;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+    .so-prod-card-desc {
+      font-family: 'Shippori Mincho B1', serif;
+      font-size: 12px;
+      color: rgba(255,255,255,.38);
+      line-height: 1.9;
+      letter-spacing: .04em;
+      margin-bottom: 20px;
+    }
+    .so-prod-card-link {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: #c09a3e;
+      text-decoration: none;
+      transition: opacity .2s;
+    }
+    .so-prod-card-link:hover { opacity: .65; }
+
+    /* Coming Soon card */
+    .so-prod-coming {
+      background: #0a0500;
+      border: 1px solid rgba(192,154,62,.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 32px;
+      min-height: 320px;
+      text-align: center;
+      gap: 16px;
+    }
+    .so-prod-coming-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      letter-spacing: .45em;
+      text-transform: uppercase;
+      color: rgba(192,154,62,.35);
+    }
+    .so-prod-coming-text {
+      font-family: 'Shippori Mincho B1', serif;
+      font-size: 16px;
+      color: rgba(255,255,255,.28);
+      letter-spacing: .06em;
+      line-height: 1.8;
+    }
+    .so-prod-coming-dot {
+      width: 32px;
+      height: 1px;
+      background: rgba(192,154,62,.25);
+      display: block;
+    }
+
+    /* ─── BACK LINK ─── */
+    .so-back-wrap {
+      background: #0d0600;
+      padding: 48px 64px 72px;
+      text-align: center;
+    }
+    .so-back-link {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: rgba(192,154,62,.6);
+      text-decoration: none;
+      transition: color .25s;
+    }
+    .so-back-link:hover { color: #c09a3e; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1024px) {
+      .so-philosophy-inner { gap: 56px; }
+      .so-commitment-item { padding: 36px 28px; }
+    }
+    @media (max-width: 900px) {
+      .so-philosophy-inner { grid-template-columns: 1fr; }
+      .so-philosophy-img { aspect-ratio: 16/9; max-width: 560px; }
+      .so-commitment-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .idx-ham { right: 20px; }
+      .so-hero { padding: 40px 24px; height: 56vh; min-height: 380px; }
+      .so-philosophy { padding: 64px 24px; }
+      .so-commitment { padding: 64px 24px; }
+      .so-products { padding: 64px 24px; }
+      .so-products-grid { grid-template-columns: 1fr; }
+      .so-back-wrap { padding: 40px 20px 60px; }
+      .so-prod-coming { min-height: 220px; padding: 48px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="idx-nav">
+  <a href="index.html"><img src="img/logo.png" alt="KIKI" class="idx-nav-logo-img"></a>
+  <button class="idx-ham" id="idx-ham"><span></span><span></span></button>
+</nav>
+<div class="idx-overlay" id="idx-overlay">
+  <a href="coffee.html">Coffee</a>
+  <a href="apparel.html">Apparel</a>
+  <a href="outdoor.html">Outdoor</a>
+  <a href="about.html">Story</a>
+  <a href="shop.html" class="nav-shop">Shop</a>
+</div>
+
+<!-- HERO -->
+<section class="so-hero">
+  <div class="so-hero-bg">
+    <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1800&q=90" alt="Single Origin Coffee">
+  </div>
+  <div class="so-hero-overlay"></div>
+  <div class="so-hero-body">
+    <a href="qualities.html" class="so-back">← Our Qualities</a>
+    <span class="so-eyebrow">Our Qualities · Single Origin</span>
+    <h1 class="so-hero-title">Single<br>Origin</h1>
+  </div>
+</section>
+
+<!-- PHILOSOPHY SECTION -->
+<section class="so-philosophy">
+  <div class="so-philosophy-inner">
+
+    <div class="so-reveal">
+      <span class="so-section-label">What is Single Origin</span>
+      <h2 class="so-philosophy-title">一つの農園、<br>一つの物語。</h2>
+      <p class="so-philosophy-text">
+        Single Origin（シングルオリジン）とは、特定の農園、または特定の産地から収穫されたコーヒーだけを使用した豆のことです。<br><br>
+        複数の産地を混ぜ合わせるブレンドと異なり、シングルオリジンは一つの場所が持つ気候・土壌・品種・精製方法の個性をそのままカップに閉じ込めます。<br><br>
+        KIKIは、すべてのシングルオリジン豆について産地・農園・品種・精製方法を完全に開示します。それがKIKIの約束です。
+      </p>
+    </div>
+
+    <div class="so-philosophy-img so-reveal d1">
+      <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=900&q=90" alt="Coffee Farm" loading="lazy">
+    </div>
+
+  </div>
+</section>
+
+<!-- COMMITMENT SECTION -->
+<section class="so-commitment">
+  <div class="so-commitment-head so-reveal">
+    <span class="so-commitment-eyebrow">KIKIのこだわり</span>
+  </div>
+  <div class="so-commitment-grid">
+
+    <div class="so-commitment-item so-reveal">
+      <span class="so-commitment-num">01</span>
+      <h3 class="so-commitment-title">産地の開示</h3>
+      <p class="so-commitment-desc">農園名・産地名・標高まで記載。ごまかしのない透明性。</p>
+    </div>
+
+    <div class="so-commitment-item so-reveal d1">
+      <span class="so-commitment-num">02</span>
+      <h3 class="so-commitment-title">品種の選定</h3>
+      <p class="so-commitment-desc">その産地でしか育たない固有品種を優先。Heirloom・Geisha・Bourbon など。</p>
+    </div>
+
+    <div class="so-commitment-item so-reveal d2">
+      <span class="so-commitment-num">03</span>
+      <h3 class="so-commitment-title">精製方法</h3>
+      <p class="so-commitment-desc">ウォッシュド・ナチュラル・ハニー。精製方法が風味を決める。</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- PRODUCTS SECTION -->
+<section class="so-products">
+  <div class="so-products-head so-reveal">
+    <span class="so-products-eyebrow">Products</span>
+    <h2 class="so-products-title">現在取り扱い中のシングルオリジン</h2>
+  </div>
+
+  <div class="so-products-grid">
+
+    <!-- Ethiopia Yirgacheffe -->
+    <a href="shop.html" class="so-prod-card so-reveal">
+      <div class="so-prod-card-img">
+        <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=800&q=90" alt="Ethiopia Yirgacheffe" loading="lazy">
+      </div>
+      <div class="so-prod-card-body">
+        <span class="so-prod-card-tag">Ethiopia · Light Roast</span>
+        <p class="so-prod-card-name">Ethiopia Yirgacheffe</p>
+        <p class="so-prod-card-desc">ブルーベリー・ジャスミン・はちみつ</p>
+        <span class="so-prod-card-link">詳細を見る →</span>
+      </div>
+    </a>
+
+    <!-- Coming Soon -->
+    <div class="so-prod-coming so-reveal d1">
+      <span class="so-prod-coming-dot"></span>
+      <span class="so-prod-coming-label">Coming Soon</span>
+      <p class="so-prod-coming-text">次のシングルオリジン準備中</p>
+      <span class="so-prod-coming-dot"></span>
+    </div>
+
+  </div>
+</section>
+
+<!-- BACK LINK -->
+<div class="so-back-wrap">
+  <a href="qualities.html" class="so-back-link">← Our Qualities に戻る</a>
+</div>
+
+<!-- FOOTER -->
+<footer class="idx-footer">
+  <img src="img/logo.png" alt="KIKI" class="idx-footer-logo">
+  <a href="https://www.instagram.com/ki_ki_asobi" target="_blank" class="idx-footer-ig">@ki_ki_asobi</a>
+  <span class="idx-footer-copy">© 2026 KIKI（奇輝）</span>
+</footer>
+
+<div id="idx-cover"></div>
+
+<script>
+  /* ── Hamburger ── */
+  const ham = document.getElementById('idx-ham');
+  const ov  = document.getElementById('idx-overlay');
+  ham.addEventListener('click', () => { ham.classList.toggle('open'); ov.classList.toggle('open'); });
+  ov.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { ham.classList.remove('open'); ov.classList.remove('open'); }));
+
+  /* ── Page load ── */
+  const cover = document.getElementById('idx-cover');
+  requestAnimationFrame(() => { cover.style.opacity = '0'; });
+
+  /* ── pageshow BFCache ── */
+  window.addEventListener('pageshow', () => {
+    const c = document.getElementById('idx-cover'); if (!c) return;
+    c.style.transition = 'none'; c.style.opacity = '0'; c.style.pointerEvents = 'none';
+    requestAnimationFrame(() => { c.style.transition = 'opacity .8s ease'; });
+  });
+
+  /* ── Page transitions ── */
+  document.querySelectorAll('a[href]').forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('mailto:') || link.target === '_blank') return;
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      cover.style.transition = 'opacity .4s ease'; cover.style.opacity = '1'; cover.style.pointerEvents = 'auto';
+      setTimeout(() => { window.location.href = href; }, 420);
+    });
+  });
+
+  /* ── Nav scroll ── */
+  window.addEventListener('scroll', () => { document.querySelector('.idx-nav').classList.toggle('scrolled', window.scrollY > 40); }, { passive: true });
+
+  /* ── Scroll reveal ── */
+  const revealIO = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revealIO.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.so-reveal').forEach(el => revealIO.observe(el));
+
+  /* ── Custom cursor ── */
+  if (!window.matchMedia('(hover: none)').matches) {
+    const cur = document.createElement('div'); cur.className = 'idx-cursor'; document.body.appendChild(cur);
+    let mx = 0, my = 0, cx = 0, cy = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cur.classList.add('active'); });
+    document.addEventListener('mouseleave', () => cur.classList.remove('active'));
+    (function lerp() { cx += (mx-cx)*.14; cy += (my-cy)*.14; cur.style.left = cx+'px'; cur.style.top = cy+'px'; requestAnimationFrame(lerp); })();
+    document.querySelectorAll('a, button').forEach(el => { el.addEventListener('mouseenter', () => cur.classList.add('hover')); el.addEventListener('mouseleave', () => cur.classList.remove('hover')); });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KIKI</title>
+  <meta name="description" content="常識の外側に、生き方を創る。">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ── INDEX ─────────────────────────── */
+    body { background: #0a0806; }
+
+    /* NAV */
+    .idx-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 60px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .idx-nav-logo-img {
+      height: 34px; width: auto;
+      filter: brightness(0) invert(1);
+    }
+    .idx-ham {
+      position: absolute; right: 28px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      display: flex; flex-direction: column; gap: 7px; padding: 6px;
+    }
+    .idx-ham span {
+      display: block; width: 22px; height: 1px;
+      background: rgba(255,255,255,.75);
+      transition: transform .3s, opacity .3s;
+    }
+    .idx-ham.open span:first-child { transform: translateY(8px) rotate(45deg); }
+    .idx-ham.open span:last-child  { transform: translateY(-8px) rotate(-45deg); }
+
+    /* OVERLAY */
+    .idx-overlay {
+      display: none; position: fixed; inset: 0; z-index: 190;
+      background: #0a0806;
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 44px;
+    }
+    .idx-overlay.open { display: flex; }
+    .idx-overlay a {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(28px, 5vw, 44px);
+      color: #fff; letter-spacing: .06em; text-decoration: none;
+      transition: color .2s;
+    }
+    .idx-overlay a:hover { color: #c09a3e; }
+    .idx-overlay .nav-shop { color: #c09a3e; }
+
+    /* HERO */
+    .idx-hero {
+      height: 100vh; min-height: 500px;
+      background: #0a0806;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 28px;
+    }
+    .idx-hero-logo {
+      height: clamp(72px, 12vw, 148px); width: auto;
+      filter: brightness(0) invert(1);
+    }
+    .idx-hero-copy {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(11px, 1.5vw, 15px);
+      color: rgba(255,255,255,.32); letter-spacing: .24em;
+    }
+
+    /* CATEGORY SECTIONS */
+    .idx-cat {
+      display: block; position: relative;
+      height: 100vh; min-height: 400px;
+      overflow: hidden; cursor: pointer; text-decoration: none;
+    }
+    .idx-cat-bg { position: absolute; inset: 0; }
+    .idx-cat-bg img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform .9s cubic-bezier(.25,.46,.45,.94);
+    }
+    .idx-cat:hover .idx-cat-bg img { transform: scale(1.04); }
+
+    .idx-cat-shade {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,.30);
+      transition: background .4s;
+    }
+    .idx-cat:hover .idx-cat-shade { background: rgba(0,0,0,.52); }
+
+    .idx-cat-label {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      color: #fff; z-index: 2; white-space: nowrap;
+      pointer-events: none; user-select: none;
+    }
+    /* Coffee: 明朝 / 高級感 */
+    .idx-cat-label--coffee {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(52px, 9vw, 112px); letter-spacing: .14em;
+    }
+    /* Apparel: ゴシック / カジュアル */
+    .idx-cat-label--apparel {
+      font-family: 'Noto Sans JP', sans-serif; font-weight: 400;
+      font-size: clamp(52px, 9vw, 112px); letter-spacing: .04em;
+    }
+    /* Outdoor: Inter / 力強い */
+    .idx-cat-label--outdoor {
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: clamp(52px, 9vw, 112px);
+      letter-spacing: .1em; text-transform: uppercase;
+    }
+
+    /* FOOTER */
+    .idx-footer {
+      background: #0a0806; padding: 52px 32px;
+      display: flex; flex-direction: column; align-items: center; gap: 18px;
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    .idx-footer-logo {
+      height: 28px; width: auto;
+      filter: brightness(0) invert(1); opacity: .60;
+    }
+    .idx-footer-ig {
+      font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300;
+      letter-spacing: .14em; color: #c09a3e; text-decoration: none;
+      transition: opacity .2s;
+    }
+    .idx-footer-ig:hover { opacity: .6; }
+    .idx-footer-copy {
+      font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 300;
+      letter-spacing: .1em; color: rgba(255,255,255,.18);
+    }
+
+    /* CURSOR */
+    .idx-cursor {
+      position: fixed; z-index: 9998; pointer-events: none;
+      width: 8px; height: 8px;
+      background: #c09a3e; border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width .25s cubic-bezier(.16,1,.3,1),
+                  height .25s cubic-bezier(.16,1,.3,1),
+                  background .25s, opacity .2s;
+      opacity: 0; will-change: left, top;
+    }
+    .idx-cursor.active { opacity: 1; }
+    .idx-cursor.hover {
+      width: 32px; height: 32px;
+      background: transparent;
+      border: 1px solid rgba(192,154,62,.75);
+    }
+
+    /* PAGE COVER */
+    #idx-cover {
+      position: fixed; inset: 0; background: #0a0806;
+      z-index: 9997; pointer-events: none;
+      opacity: 1;
+      transition: opacity .8s ease;
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      .idx-ham { right: 20px; }
+      .idx-hero { gap: 20px; }
+      .idx-hero-copy { letter-spacing: .14em; }
+      .idx-cat { min-height: 60vh; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="idx-nav">
+  <a href="index.html">
+    <img src="img/logo.png" alt="KIKI" class="idx-nav-logo-img">
+  </a>
+  <button class="idx-ham" id="idx-ham" aria-label="Menu">
+    <span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE OVERLAY -->
+<div class="idx-overlay" id="idx-overlay">
+  <a href="coffee.html">Coffee</a>
+  <a href="apparel.html">Apparel</a>
+  <a href="outdoor.html">Outdoor</a>
+  <a href="about.html">Story</a>
+  <a href="shop.html" class="nav-shop">Shop</a>
+</div>
+
+<!-- HERO -->
+<section class="idx-hero">
+  <img src="img/logo.png" alt="KIKI" class="idx-hero-logo">
+  <p class="idx-hero-copy">常識の外側に、生き方を創る。</p>
+</section>
+
+<!-- COFFEE -->
+<a href="coffee.html" class="idx-cat">
+  <div class="idx-cat-bg">
+    <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1600&q=90" alt="Coffee">
+  </div>
+  <div class="idx-cat-shade"></div>
+  <span class="idx-cat-label idx-cat-label--coffee">Coffee</span>
+</a>
+
+<!-- APPAREL -->
+<a href="apparel.html" class="idx-cat">
+  <div class="idx-cat-bg">
+    <img src="https://images.unsplash.com/photo-1523398002811-999ca8dec234?w=1600&q=90" alt="Apparel">
+  </div>
+  <div class="idx-cat-shade"></div>
+  <span class="idx-cat-label idx-cat-label--apparel">Apparel</span>
+</a>
+
+<!-- OUTDOOR -->
+<a href="outdoor.html" class="idx-cat">
+  <div class="idx-cat-bg">
+    <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=1600&q=90" alt="Outdoor">
+  </div>
+  <div class="idx-cat-shade"></div>
+  <span class="idx-cat-label idx-cat-label--outdoor">Outdoor</span>
+</a>
+
+<!-- FOOTER -->
+<footer class="idx-footer">
+  <img src="img/logo.png" alt="KIKI" class="idx-footer-logo">
+  <a href="https://www.instagram.com/ki_ki_asobi" target="_blank" class="idx-footer-ig">@ki_ki_asobi</a>
+  <span class="idx-footer-copy">© 2026 KIKI（奇輝）</span>
+</footer>
+
+<div id="idx-cover"></div>
+
+<script>
+  /* ── Hamburger ── */
+  const ham = document.getElementById('idx-ham');
+  const ov  = document.getElementById('idx-overlay');
+  ham.addEventListener('click', () => {
+    ham.classList.toggle('open');
+    ov.classList.toggle('open');
+  });
+  ov.querySelectorAll('a').forEach(a =>
+    a.addEventListener('click', () => {
+      ham.classList.remove('open');
+      ov.classList.remove('open');
+    })
+  );
+
+  /* ── Page load fade-in (cover fades out in 0.8s) ── */
+  const cover = document.getElementById('idx-cover');
+  requestAnimationFrame(() => {
+    cover.style.opacity = '0';
+  });
+
+  /* ── 戻るボタン / BFCache 復元時にオーバーレイをリセット ── */
+  window.addEventListener('pageshow', (e) => {
+    const cover = document.getElementById('idx-cover');
+    if (!cover) return;
+    cover.style.transition = 'none';
+    cover.style.opacity = '0';
+    cover.style.pointerEvents = 'none';
+    requestAnimationFrame(() => {
+      cover.style.transition = 'opacity .8s ease';
+    });
+  });
+
+  /* ── Page transition fade-out on .idx-cat click ── */
+  document.querySelectorAll('.idx-cat').forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const href = link.getAttribute('href');
+      cover.style.transition = 'opacity .4s ease';
+      cover.style.opacity = '1';
+      cover.style.pointerEvents = 'auto';
+      setTimeout(() => { window.location.href = href; }, 420);
+    });
+  });
+
+  /* ── Hero scroll fade (logo + copy only) ── */
+  const heroLogo = document.querySelector('.idx-hero-logo');
+  const heroCopy = document.querySelector('.idx-hero-copy');
+  function onHeroScroll() {
+    const p = Math.min(1, window.scrollY / (window.innerHeight * 0.55));
+    const op = (1 - p).toFixed(3);
+    if (heroLogo) heroLogo.style.opacity = op;
+    if (heroCopy) heroCopy.style.opacity = op;
+  }
+  window.addEventListener('scroll', onHeroScroll, { passive: true });
+
+  /* ── Custom cursor (non-touch only) ── */
+  if (!window.matchMedia('(hover: none)').matches) {
+    const cur = document.createElement('div');
+    cur.className = 'idx-cursor';
+    document.body.appendChild(cur);
+
+    let mx = 0, my = 0, cx = 0, cy = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cur.classList.add('active');
+    });
+    document.addEventListener('mouseleave', () => cur.classList.remove('active'));
+
+    (function lerpCursor() {
+      cx += (mx - cx) * 0.14;
+      cy += (my - cy) * 0.14;
+      cur.style.left = cx + 'px';
+      cur.style.top  = cy + 'px';
+      requestAnimationFrame(lerpCursor);
+    })();
+
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => cur.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cur.classList.remove('hover'));
+    });
+  }
+</script>
+</body>
+</html>
