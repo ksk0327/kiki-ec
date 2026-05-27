@@ -89,6 +89,7 @@
     .hub-item--future .hub-item-bg  { background-image: url('https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=70'); }
     .hub-item--member .hub-item-bg  { background-image: url('https://images.unsplash.com/photo-1529656285421-1a22e67f2be0?w=800&q=70'); }
     .hub-item--project .hub-item-bg { background-image: url('https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=800&q=70'); }
+    .hub-item--story .hub-item-bg   { background-image: url('https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=800&q=70'); }
     .hub-item-en {
       font-family: 'Inter', sans-serif; font-weight: 300;
       font-size: clamp(9px, 1vw, 11px); letter-spacing: .28em;
@@ -144,6 +145,7 @@
     /* PAGE COVER */
     #cover { position: fixed; inset: 0; background: #0a0806; z-index: 9997; pointer-events: none; opacity: 1; transition: opacity .8s ease; }
 
+    .hub-item--story { grid-column: 1 / -1; }
     @media (max-width: 600px) {
       .hub-grid { grid-template-columns: 1fr; }
       .hub-item { padding: 60px 24px; }
@@ -164,14 +166,12 @@
 
 <!-- OVERLAY -->
 <div class="nav-overlay" id="nav-overlay">
-  <div class="nav-kiki-wrap">
-    <button class="nav-kiki-toggle" id="nav-kiki-toggle">KIKI</button>
-    <div class="nav-kiki-sub" id="nav-kiki-sub">
-      <a href="vision.html">Vision</a>
-      <a href="future.html">Future</a>
-      <a href="member.html">Member</a>
-      <a href="project.html">Project</a>
-    </div>
+  <a href="coffee.html">Coffee</a>
+  <a href="apparel.html">Apparel</a>
+  <a href="outdoor.html">Outdoor</a>
+  <a href="kiki.html">KIKI</a>
+  <a href="shop.html" class="nav-shop">Shop</a>
+</div>
   </div>
   <a href="coffee.html">Coffee</a>
   <a href="apparel.html">Apparel</a>
@@ -214,6 +214,13 @@
     <span class="hub-item-en">Project</span>
     <span class="hub-item-ja">プロジェクト</span>
     <span class="hub-item-desc">COFFEEとAPPARELから<br>始まる物語</span>
+    <span class="hub-arrow">→</span>
+  </a>
+  <a href="about.html" class="hub-item hub-item--story">
+    <div class="hub-item-bg"></div>
+    <span class="hub-item-en">Story</span>
+    <span class="hub-item-ja">ストーリー</span>
+    <span class="hub-item-desc">KIKIが歩んできた<br>道と、これからの物語</span>
     <span class="hub-arrow">→</span>
   </a>
 </div>
