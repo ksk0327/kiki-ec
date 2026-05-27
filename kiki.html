@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KIKI — 奇輝</title>
+  <meta name="description" content="常識の外側に、生き方を創る。KIKIのすべて。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;500&family=Inter:wght@300;400&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: #0a0806; margin: 0; }
+
+    /* NAV */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 60px; display: flex; align-items: center; justify-content: center;
+    }
+    .nav-logo-img { height: 34px; width: auto; filter: brightness(0) invert(1); }
+    .nav-ham {
+      position: absolute; right: 28px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      display: flex; flex-direction: column; gap: 7px; padding: 6px;
+    }
+    .nav-ham span {
+      display: block; width: 22px; height: 1px;
+      background: rgba(255,255,255,.75);
+      transition: transform .3s, opacity .3s;
+    }
+    .nav-ham.open span:first-child { transform: translateY(8px) rotate(45deg); }
+    .nav-ham.open span:last-child  { transform: translateY(-8px) rotate(-45deg); }
+
+    /* OVERLAY */
+    .nav-overlay {
+      display: none; position: fixed; inset: 0; z-index: 190;
+      background: #0a0806;
+      flex-direction: column; align-items: center; justify-content: center; gap: 36px;
+    }
+    .nav-overlay.open { display: flex; }
+    .nav-overlay a {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(24px, 4.5vw, 40px);
+      color: #fff; letter-spacing: .06em; text-decoration: none; transition: color .2s;
+    }
+    .nav-overlay a:hover { color: #c09a3e; }
+    .nav-overlay .nav-shop { color: #c09a3e; }
+
+    /* HERO */
+    .hero {
+      height: 100vh; min-height: 500px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 20px;
+    }
+    .hero-logo { height: clamp(60px, 10vw, 120px); width: auto; filter: brightness(0) invert(1); }
+    .hero-sub {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(10px, 1.3vw, 13px);
+      color: rgba(255,255,255,.28); letter-spacing: .28em;
+    }
+
+    /* GRID */
+    .hub-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px; background: rgba(255,255,255,.06);
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    .hub-item {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 16px;
+      padding: 80px 32px;
+      background: #0a0806;
+      text-decoration: none;
+      transition: background .4s;
+      cursor: pointer;
+    }
+    .hub-item:hover { background: rgba(192,154,62,.06); }
+    .hub-item-en {
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: clamp(9px, 1vw, 11px); letter-spacing: .28em;
+      color: #c09a3e; text-transform: uppercase;
+    }
+    .hub-item-ja {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(22px, 3.5vw, 38px); letter-spacing: .1em;
+      color: #fff;
+    }
+    .hub-item-desc {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(10px, 1.1vw, 12px); letter-spacing: .18em;
+      color: rgba(255,255,255,.3); line-height: 1.9;
+      text-align: center; max-width: 260px;
+    }
+    .hub-arrow {
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 11px; letter-spacing: .2em;
+      color: rgba(192,154,62,.5);
+      margin-top: 8px;
+    }
+
+    /* FOOTER */
+    .footer {
+      background: #0a0806; padding: 52px 32px;
+      display: flex; flex-direction: column; align-items: center; gap: 18px;
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    .footer-logo { height: 28px; width: auto; filter: brightness(0) invert(1); opacity: .60; }
+    .footer-ig {
+      font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300;
+      letter-spacing: .14em; color: #c09a3e; text-decoration: none; transition: opacity .2s;
+    }
+    .footer-ig:hover { opacity: .6; }
+    .footer-copy {
+      font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 300;
+      letter-spacing: .1em; color: rgba(255,255,255,.18);
+    }
+
+    /* CURSOR */
+    .cursor {
+      position: fixed; z-index: 9998; pointer-events: none;
+      width: 8px; height: 8px; background: #c09a3e; border-radius: 50%;
+      transform: translate(-50%,-50%);
+      transition: width .25s cubic-bezier(.16,1,.3,1), height .25s cubic-bezier(.16,1,.3,1),
+                  background .25s, opacity .2s;
+      opacity: 0; will-change: left, top;
+    }
+    .cursor.active { opacity: 1; }
+    .cursor.hover { width: 32px; height: 32px; background: transparent; border: 1px solid rgba(192,154,62,.75); }
+
+    /* PAGE COVER */
+    #cover { position: fixed; inset: 0; background: #0a0806; z-index: 9997; pointer-events: none; opacity: 1; transition: opacity .8s ease; }
+
+    @media (max-width: 600px) {
+      .hub-grid { grid-template-columns: 1fr; }
+      .hub-item { padding: 60px 24px; }
+      .nav-ham { right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cover"></div>
+<div class="cursor" id="cursor"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html"><img src="img/logo.png" alt="KIKI" class="nav-logo-img"></a>
+  <button class="nav-ham" id="nav-ham" aria-label="Menu"><span></span><span></span></button>
+</nav>
+
+<!-- OVERLAY -->
+<div class="nav-overlay" id="nav-overlay">
+  <a href="kiki.html">KIKI</a>
+  <a href="coffee.html">Coffee</a>
+  <a href="apparel.html">Apparel</a>
+  <a href="outdoor.html">Outdoor</a>
+  <a href="about.html">Story</a>
+  <a href="shop.html" class="nav-shop">Shop</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <img src="img/logo.png" alt="KIKI" class="hero-logo">
+  <p class="hero-sub">常識の外側に、生き方を創る。</p>
+</section>
+
+<!-- HUB GRID -->
+<div class="hub-grid">
+  <a href="vision.html" class="hub-item">
+    <span class="hub-item-en">Vision</span>
+    <span class="hub-item-ja">理念</span>
+    <span class="hub-item-desc">KIKIが描く世界観と<br>存在の意味</span>
+    <span class="hub-arrow">→</span>
+  </a>
+  <a href="future.html" class="hub-item">
+    <span class="hub-item-en">Future</span>
+    <span class="hub-item-ja">未来構想</span>
+    <span class="hub-item-desc">CAFE、GUILD、BASEへと<br>広がる次のかたち</span>
+    <span class="hub-arrow">→</span>
+  </a>
+  <a href="member.html" class="hub-item">
+    <span class="hub-item-en">Member</span>
+    <span class="hub-item-ja">メンバー</span>
+    <span class="hub-item-desc">KIKIを創る<br>三人の人間</span>
+    <span class="hub-arrow">→</span>
+  </a>
+  <a href="project.html" class="hub-item">
+    <span class="hub-item-en">Project</span>
+    <span class="hub-item-ja">プロジェクト</span>
+    <span class="hub-item-desc">COFFEEとAPPARELから<br>始まる物語</span>
+    <span class="hub-arrow">→</span>
+  </a>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <img src="img/logo.png" alt="KIKI" class="footer-logo">
+  <a href="https://www.instagram.com/ki_ki_asobi" target="_blank" class="footer-ig">@ki_ki_asobi</a>
+  <span class="footer-copy">© 2026 KIKI（奇輝）</span>
+</footer>
+
+<script>
+  // Cover fade
+  window.addEventListener('load', () => {
+    const cover = document.getElementById('cover');
+    requestAnimationFrame(() => { cover.style.opacity = '0'; });
+    setTimeout(() => cover.remove(), 900);
+  });
+
+  // Hamburger
+  const ham = document.getElementById('nav-ham');
+  const overlay = document.getElementById('nav-overlay');
+  ham.addEventListener('click', () => {
+    ham.classList.toggle('open');
+    overlay.classList.toggle('open');
+  });
+
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  let cx = 0, cy = 0;
+  document.addEventListener('mousemove', e => {
+    cx = e.clientX; cy = e.clientY;
+    cursor.style.left = cx + 'px'; cursor.style.top = cy + 'px';
+    cursor.classList.add('active');
+  });
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+  });
+</script>
+</body>
+</html>

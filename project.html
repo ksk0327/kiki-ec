@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project — KIKI</title>
+  <meta name="description" content="COFFEE / APPAREL — KIKIのプロジェクト。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;500&family=Inter:wght@300;400&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: #0a0806; margin: 0; }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 60px; display: flex; align-items: center; justify-content: center;
+    }
+    .nav-logo-img { height: 34px; width: auto; filter: brightness(0) invert(1); }
+    .nav-ham {
+      position: absolute; right: 28px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      display: flex; flex-direction: column; gap: 7px; padding: 6px;
+    }
+    .nav-ham span { display: block; width: 22px; height: 1px; background: rgba(255,255,255,.75); transition: transform .3s, opacity .3s; }
+    .nav-ham.open span:first-child { transform: translateY(8px) rotate(45deg); }
+    .nav-ham.open span:last-child  { transform: translateY(-8px) rotate(-45deg); }
+    .nav-overlay {
+      display: none; position: fixed; inset: 0; z-index: 190; background: #0a0806;
+      flex-direction: column; align-items: center; justify-content: center; gap: 36px;
+    }
+    .nav-overlay.open { display: flex; }
+    .nav-overlay a {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(24px, 4.5vw, 40px);
+      color: #fff; letter-spacing: .06em; text-decoration: none; transition: color .2s;
+    }
+    .nav-overlay a:hover { color: #c09a3e; }
+    .nav-overlay .nav-shop { color: #c09a3e; }
+
+    /* HERO */
+    .hero {
+      height: 100vh; min-height: 500px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 24px; text-align: center; padding: 0 32px;
+    }
+    .hero-label { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 10px; letter-spacing: .36em; color: #c09a3e; text-transform: uppercase; }
+    .hero-heading {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(28px, 5vw, 58px); color: #fff; letter-spacing: .1em; line-height: 1.5;
+    }
+    .hero-line { width: 40px; height: 1px; background: rgba(192,154,62,.4); }
+    .hero-sub {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(11px, 1.3vw, 13px); letter-spacing: .2em;
+      color: rgba(255,255,255,.32); line-height: 2.2;
+    }
+
+    /* PROJECT SECTIONS */
+    .project {
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    .project-visual {
+      position: relative; overflow: hidden;
+      background: rgba(255,255,255,.02);
+      display: flex; align-items: flex-end;
+      min-height: 500px;
+    }
+    .project-visual-bg {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      transition: transform 1s cubic-bezier(.25,.46,.45,.94);
+    }
+    .project:hover .project-visual-bg { transform: scale(1.04); }
+    .project-visual-shade {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,8,6,.8) 0%, transparent 60%);
+    }
+    .project-visual-label {
+      position: relative; z-index: 2;
+      padding: 32px;
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: clamp(48px, 8vw, 96px); letter-spacing: .04em;
+      color: rgba(255,255,255,.08); line-height: 1;
+    }
+    .project-visual--coffee .project-visual-bg {
+      background-image: url('https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=800&q=80');
+    }
+    .project-visual--apparel .project-visual-bg {
+      background-image: url('https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=800&q=80');
+    }
+
+    .project-info {
+      padding: clamp(48px, 6vw, 96px) clamp(32px, 5vw, 72px);
+      display: flex; flex-direction: column; justify-content: center; gap: 24px;
+      border-left: 1px solid rgba(255,255,255,.06);
+    }
+    .project-num { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 10px; letter-spacing: .3em; color: #c09a3e; }
+    .project-title {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(28px, 4vw, 46px); color: #fff; letter-spacing: .1em; line-height: 1.3;
+    }
+    .project-tagline {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(11px, 1.2vw, 13px); letter-spacing: .2em;
+      color: rgba(192,154,62,.6); line-height: 1.8;
+    }
+    .project-divider { width: 32px; height: 1px; background: rgba(255,255,255,.1); }
+    .project-body {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(12px, 1.3vw, 14px); color: rgba(255,255,255,.45);
+      line-height: 2.4; letter-spacing: .06em;
+    }
+    .project-body p { margin: 0 0 1.2em; }
+    .project-link {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: .28em;
+      color: #c09a3e; text-decoration: none; text-transform: uppercase;
+      transition: opacity .2s; margin-top: 8px;
+    }
+    .project-link:hover { opacity: .65; }
+
+    /* STATUS TAGS */
+    .project-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+    .project-tag {
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 9px; letter-spacing: .22em;
+      color: rgba(255,255,255,.28); border: 1px solid rgba(255,255,255,.1);
+      padding: 4px 12px; text-transform: uppercase;
+    }
+    .project-tag--active { color: rgba(192,154,62,.65); border-color: rgba(192,154,62,.25); }
+
+    /* BACK / FOOTER */
+    .back-link {
+      display: block; text-align: center; padding: 52px 32px;
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: .28em;
+      color: rgba(192,154,62,.5); text-decoration: none; text-transform: uppercase; transition: color .2s;
+    }
+    .back-link:hover { color: #c09a3e; }
+    .footer {
+      background: #0a0806; padding: 52px 32px;
+      display: flex; flex-direction: column; align-items: center; gap: 18px;
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    .footer-logo { height: 28px; width: auto; filter: brightness(0) invert(1); opacity: .60; }
+    .footer-ig { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300; letter-spacing: .14em; color: #c09a3e; text-decoration: none; transition: opacity .2s; }
+    .footer-ig:hover { opacity: .6; }
+    .footer-copy { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 300; letter-spacing: .1em; color: rgba(255,255,255,.18); }
+
+    .cursor {
+      position: fixed; z-index: 9998; pointer-events: none;
+      width: 8px; height: 8px; background: #c09a3e; border-radius: 50%;
+      transform: translate(-50%,-50%);
+      transition: width .25s cubic-bezier(.16,1,.3,1), height .25s cubic-bezier(.16,1,.3,1), background .25s, opacity .2s;
+      opacity: 0;
+    }
+    .cursor.active { opacity: 1; }
+    .cursor.hover { width: 32px; height: 32px; background: transparent; border: 1px solid rgba(192,154,62,.75); }
+    #cover { position: fixed; inset: 0; background: #0a0806; z-index: 9997; pointer-events: none; opacity: 1; transition: opacity .8s ease; }
+
+    @media (max-width: 768px) {
+      .nav-ham { right: 20px; }
+      .project { grid-template-columns: 1fr; }
+      .project-info { border-left: none; border-top: 1px solid rgba(255,255,255,.06); padding: 48px 24px; }
+      .project-visual { min-height: 320px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cover"></div>
+<div class="cursor" id="cursor"></div>
+
+<nav class="nav">
+  <a href="index.html"><img src="img/logo.png" alt="KIKI" class="nav-logo-img"></a>
+  <button class="nav-ham" id="nav-ham" aria-label="Menu"><span></span><span></span></button>
+</nav>
+<div class="nav-overlay" id="nav-overlay">
+  <a href="kiki.html">KIKI</a>
+  <a href="coffee.html">Coffee</a>
+  <a href="apparel.html">Apparel</a>
+  <a href="outdoor.html">Outdoor</a>
+  <a href="about.html">Story</a>
+  <a href="shop.html" class="nav-shop">Shop</a>
+</div>
+
+<section class="hero">
+  <span class="hero-label">Project</span>
+  <h1 class="hero-heading">ものをつくることが<br>生き方の表現だ。</h1>
+  <div class="hero-line"></div>
+  <p class="hero-sub">KIKIのすべての活動は<br>プロジェクトとして動いている。</p>
+</section>
+
+<!-- COFFEE -->
+<div class="project">
+  <div class="project-visual project-visual--coffee">
+    <div class="project-visual-bg"></div>
+    <div class="project-visual-shade"></div>
+    <span class="project-visual-label">Coffee</span>
+  </div>
+  <div class="project-info">
+    <span class="project-num">01</span>
+    <h2 class="project-title">KIKI COFFEE</h2>
+    <p class="project-tagline">静けさを、一杯に込める。</p>
+    <div class="project-divider"></div>
+    <div class="project-body">
+      <p>生豆の選定から焙煎、パッケージ、販売まで一貫して手がける自家焙煎コーヒーブランド。産地の個性を尊重しながら、KIKIの世界観に合う味を追い求める。</p>
+      <p>100gの袋に入った豆には、焙煎した人間の哲学が宿っている。飲む人が、その静けさを感じてくれたなら。</p>
+    </div>
+    <div class="project-tags">
+      <span class="project-tag project-tag--active">Active</span>
+      <span class="project-tag">Roastery</span>
+      <span class="project-tag">Online Shop</span>
+      <span class="project-tag">Single Origin</span>
+    </div>
+    <a href="coffee.html" class="project-link">View Coffee →</a>
+  </div>
+</div>
+
+<!-- APPAREL -->
+<div class="project">
+  <div class="project-visual project-visual--apparel">
+    <div class="project-visual-bg"></div>
+    <div class="project-visual-shade"></div>
+    <span class="project-visual-label">Apparel</span>
+  </div>
+  <div class="project-info">
+    <span class="project-num">02</span>
+    <h2 class="project-title">KIKI APPAREL</h2>
+    <p class="project-tagline">着ることで、自分になる。</p>
+    <div class="project-divider"></div>
+    <div class="project-body">
+      <p>KIKIのアパレルは、ファッションではなく装備だ。その人の生き方を支え、体温を持った素材で作られた服。</p>
+      <p>余計なロゴはいらない。着た人間の在り方そのものが、デザインになる。少量生産、高品質。それがKIKIの服に対する答えだ。</p>
+    </div>
+    <div class="project-tags">
+      <span class="project-tag project-tag--active">Active</span>
+      <span class="project-tag">Limited</span>
+      <span class="project-tag">Minimal</span>
+      <span class="project-tag">Craft</span>
+    </div>
+    <a href="apparel.html" class="project-link">View Apparel →</a>
+  </div>
+</div>
+
+<a href="kiki.html" class="back-link">← Back to KIKI</a>
+
+<footer class="footer">
+  <img src="img/logo.png" alt="KIKI" class="footer-logo">
+  <a href="https://www.instagram.com/ki_ki_asobi" target="_blank" class="footer-ig">@ki_ki_asobi</a>
+  <span class="footer-copy">© 2026 KIKI（奇輝）</span>
+</footer>
+
+<script>
+  window.addEventListener('load', () => {
+    const cover = document.getElementById('cover');
+    requestAnimationFrame(() => { cover.style.opacity = '0'; });
+    setTimeout(() => cover.remove(), 900);
+  });
+  const ham = document.getElementById('nav-ham');
+  const overlay = document.getElementById('nav-overlay');
+  ham.addEventListener('click', () => { ham.classList.toggle('open'); overlay.classList.toggle('open'); });
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
+    cursor.classList.add('active');
+  });
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+  });
+</script>
+</body>
+</html>

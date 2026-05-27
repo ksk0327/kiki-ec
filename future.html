@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Future — KIKI</title>
+  <meta name="description" content="KIKI CAFE / GUILD / BASE — KIKIの未来構想。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;500&family=Inter:wght@300;400&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: #0a0806; margin: 0; }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 60px; display: flex; align-items: center; justify-content: center;
+    }
+    .nav-logo-img { height: 34px; width: auto; filter: brightness(0) invert(1); }
+    .nav-ham {
+      position: absolute; right: 28px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      display: flex; flex-direction: column; gap: 7px; padding: 6px;
+    }
+    .nav-ham span { display: block; width: 22px; height: 1px; background: rgba(255,255,255,.75); transition: transform .3s, opacity .3s; }
+    .nav-ham.open span:first-child { transform: translateY(8px) rotate(45deg); }
+    .nav-ham.open span:last-child  { transform: translateY(-8px) rotate(-45deg); }
+    .nav-overlay {
+      display: none; position: fixed; inset: 0; z-index: 190; background: #0a0806;
+      flex-direction: column; align-items: center; justify-content: center; gap: 36px;
+    }
+    .nav-overlay.open { display: flex; }
+    .nav-overlay a {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(24px, 4.5vw, 40px);
+      color: #fff; letter-spacing: .06em; text-decoration: none; transition: color .2s;
+    }
+    .nav-overlay a:hover { color: #c09a3e; }
+    .nav-overlay .nav-shop { color: #c09a3e; }
+
+    /* HERO */
+    .hero {
+      height: 100vh; min-height: 500px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 24px; text-align: center; padding: 0 32px;
+    }
+    .hero-label { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 10px; letter-spacing: .36em; color: #c09a3e; text-transform: uppercase; }
+    .hero-heading {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(28px, 5vw, 58px); color: #fff; letter-spacing: .1em; line-height: 1.5;
+    }
+    .hero-line { width: 40px; height: 1px; background: rgba(192,154,62,.4); }
+    .hero-sub {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(11px, 1.3vw, 13px); letter-spacing: .2em;
+      color: rgba(255,255,255,.32); line-height: 2.2; max-width: 460px;
+    }
+
+    /* FUTURE CARDS */
+    .future-section { padding: 0; }
+    .future-card {
+      min-height: 90vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 100px clamp(32px, 8vw, 120px);
+      border-top: 1px solid rgba(255,255,255,.06);
+      position: relative; overflow: hidden;
+    }
+    .future-card::before {
+      content: attr(data-num);
+      position: absolute; right: clamp(20px, 5vw, 80px); top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: clamp(80px, 15vw, 160px); letter-spacing: -.02em;
+      color: rgba(255,255,255,.03); pointer-events: none; line-height: 1;
+    }
+    .future-card-label {
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: .32em; color: #c09a3e;
+      text-transform: uppercase; margin-bottom: 24px;
+    }
+    .future-card-title {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(32px, 5vw, 56px); color: #fff;
+      letter-spacing: .1em; margin-bottom: 40px; line-height: 1.3;
+    }
+    .future-card-body {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(13px, 1.4vw, 15px); color: rgba(255,255,255,.5);
+      line-height: 2.4; letter-spacing: .06em; max-width: 580px;
+    }
+    .future-card-body p { margin: 0 0 1.4em; }
+    .future-card-status {
+      margin-top: 48px;
+      display: inline-block;
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 9px; letter-spacing: .3em;
+      color: rgba(192,154,62,.5); border: 1px solid rgba(192,154,62,.2);
+      padding: 6px 18px; text-transform: uppercase;
+    }
+
+    /* BACK / FOOTER */
+    .back-link {
+      display: block; text-align: center; padding: 52px 32px;
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: .28em;
+      color: rgba(192,154,62,.5); text-decoration: none; text-transform: uppercase; transition: color .2s;
+    }
+    .back-link:hover { color: #c09a3e; }
+    .footer {
+      background: #0a0806; padding: 52px 32px;
+      display: flex; flex-direction: column; align-items: center; gap: 18px;
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    .footer-logo { height: 28px; width: auto; filter: brightness(0) invert(1); opacity: .60; }
+    .footer-ig { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300; letter-spacing: .14em; color: #c09a3e; text-decoration: none; transition: opacity .2s; }
+    .footer-ig:hover { opacity: .6; }
+    .footer-copy { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 300; letter-spacing: .1em; color: rgba(255,255,255,.18); }
+
+    .cursor {
+      position: fixed; z-index: 9998; pointer-events: none;
+      width: 8px; height: 8px; background: #c09a3e; border-radius: 50%;
+      transform: translate(-50%,-50%);
+      transition: width .25s cubic-bezier(.16,1,.3,1), height .25s cubic-bezier(.16,1,.3,1), background .25s, opacity .2s;
+      opacity: 0;
+    }
+    .cursor.active { opacity: 1; }
+    .cursor.hover { width: 32px; height: 32px; background: transparent; border: 1px solid rgba(192,154,62,.75); }
+    #cover { position: fixed; inset: 0; background: #0a0806; z-index: 9997; pointer-events: none; opacity: 1; transition: opacity .8s ease; }
+
+    @media (max-width: 600px) {
+      .nav-ham { right: 20px; }
+      .future-card { padding: 72px 24px; min-height: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cover"></div>
+<div class="cursor" id="cursor"></div>
+
+<nav class="nav">
+  <a href="index.html"><img src="img/logo.png" alt="KIKI" class="nav-logo-img"></a>
+  <button class="nav-ham" id="nav-ham" aria-label="Menu"><span></span><span></span></button>
+</nav>
+<div class="nav-overlay" id="nav-overlay">
+  <a href="kiki.html">KIKI</a>
+  <a href="coffee.html">Coffee</a>
+  <a href="apparel.html">Apparel</a>
+  <a href="outdoor.html">Outdoor</a>
+  <a href="about.html">Story</a>
+  <a href="shop.html" class="nav-shop">Shop</a>
+</div>
+
+<section class="hero">
+  <span class="hero-label">Future</span>
+  <h1 class="hero-heading">次のかたちへ。</h1>
+  <div class="hero-line"></div>
+  <p class="hero-sub">コーヒーと服の先にある<br>KIKIが描く三つの未来</p>
+</section>
+
+<div class="future-section">
+
+  <div class="future-card" data-num="01">
+    <p class="future-card-label">01 — Kiki Cafe</p>
+    <h2 class="future-card-title">KIKI CAFE</h2>
+    <div class="future-card-body">
+      <p>ただ美味しいコーヒーを出す場所ではない。KIKIが焙煎した豆、KIKIが設計した空間、KIKIが選んだ音楽と光。</p>
+      <p>一杯のコーヒーが、その人の一日に静かな核をつくる。そういう場所をKIKIは創る。</p>
+      <p>都市の中に、余白がある。焦らなくていい時間がある。それだけで、人は少し変わる。</p>
+    </div>
+    <span class="future-card-status">Coming Soon</span>
+  </div>
+
+  <div class="future-card" data-num="02">
+    <p class="future-card-label">02 — Kiki Guild</p>
+    <h2 class="future-card-title">KIKI GUILD</h2>
+    <div class="future-card-body">
+      <p>常識の外側で生きようとしている人間が、孤独にならなくていい場所。KIKIは、そういうコミュニティを設計する。</p>
+      <p>ギルドとは、同じ志を持つ職人たちの集まりだ。肩書きではなく、生き方で繋がる人間の集合体。</p>
+      <p>スキルを交換し、プロジェクトを共創し、互いの生き方を尊重する。それがKIKI GUILDの設計思想だ。</p>
+    </div>
+    <span class="future-card-status">Designing</span>
+  </div>
+
+  <div class="future-card" data-num="03">
+    <p class="future-card-label">03 — Kiki Base</p>
+    <h2 class="future-card-title">KIKI BASE</h2>
+    <div class="future-card-body">
+      <p>拠点を持つ。それは単なる場所の話ではなく、生き方の宣言だ。</p>
+      <p>KIKI BASEは、コーヒーを焙煎し、服をつくり、人が集まり、思想が生まれる物理的な場所。カフェでも工房でもコミュニティスペースでもある、KIKIの核。</p>
+      <p>山でも街でも、どこかにある。その場所から、KIKIの次が始まる。</p>
+    </div>
+    <span class="future-card-status">In Vision</span>
+  </div>
+
+</div>
+
+<a href="kiki.html" class="back-link">← Back to KIKI</a>
+
+<footer class="footer">
+  <img src="img/logo.png" alt="KIKI" class="footer-logo">
+  <a href="https://www.instagram.com/ki_ki_asobi" target="_blank" class="footer-ig">@ki_ki_asobi</a>
+  <span class="footer-copy">© 2026 KIKI（奇輝）</span>
+</footer>
+
+<script>
+  window.addEventListener('load', () => {
+    const cover = document.getElementById('cover');
+    requestAnimationFrame(() => { cover.style.opacity = '0'; });
+    setTimeout(() => cover.remove(), 900);
+  });
+  const ham = document.getElementById('nav-ham');
+  const overlay = document.getElementById('nav-overlay');
+  ham.addEventListener('click', () => { ham.classList.toggle('open'); overlay.classList.toggle('open'); });
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
+    cursor.classList.add('active');
+  });
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Member — KIKI</title>
+  <meta name="description" content="KIKIを創る三人のメンバー。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;500&family=Inter:wght@300;400&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: #0a0806; margin: 0; }
+
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 60px; display: flex; align-items: center; justify-content: center;
+    }
+    .nav-logo-img { height: 34px; width: auto; filter: brightness(0) invert(1); }
+    .nav-ham {
+      position: absolute; right: 28px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      display: flex; flex-direction: column; gap: 7px; padding: 6px;
+    }
+    .nav-ham span { display: block; width: 22px; height: 1px; background: rgba(255,255,255,.75); transition: transform .3s, opacity .3s; }
+    .nav-ham.open span:first-child { transform: translateY(8px) rotate(45deg); }
+    .nav-ham.open span:last-child  { transform: translateY(-8px) rotate(-45deg); }
+    .nav-overlay {
+      display: none; position: fixed; inset: 0; z-index: 190; background: #0a0806;
+      flex-direction: column; align-items: center; justify-content: center; gap: 36px;
+    }
+    .nav-overlay.open { display: flex; }
+    .nav-overlay a {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(24px, 4.5vw, 40px);
+      color: #fff; letter-spacing: .06em; text-decoration: none; transition: color .2s;
+    }
+    .nav-overlay a:hover { color: #c09a3e; }
+    .nav-overlay .nav-shop { color: #c09a3e; }
+
+    /* HERO */
+    .hero {
+      height: 100vh; min-height: 500px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 24px; text-align: center; padding: 0 32px;
+    }
+    .hero-label { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 10px; letter-spacing: .36em; color: #c09a3e; text-transform: uppercase; }
+    .hero-heading {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(28px, 5vw, 58px); color: #fff; letter-spacing: .1em; line-height: 1.5;
+    }
+    .hero-line { width: 40px; height: 1px; background: rgba(192,154,62,.4); }
+    .hero-sub {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(11px, 1.3vw, 13px); letter-spacing: .2em;
+      color: rgba(255,255,255,.32); line-height: 2.2;
+    }
+
+    /* MEMBERS */
+    .members { padding: 0; }
+    .member-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 80vh;
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    .member-card:nth-child(even) { direction: rtl; }
+    .member-card:nth-child(even) .member-info { direction: ltr; }
+    .member-img {
+      background: rgba(255,255,255,.03);
+      display: flex; align-items: center; justify-content: center;
+      min-height: 400px; overflow: hidden;
+    }
+    .member-img-placeholder {
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 11px; letter-spacing: .24em;
+      color: rgba(255,255,255,.12); text-transform: uppercase;
+    }
+    .member-info {
+      padding: clamp(48px, 6vw, 96px) clamp(32px, 6vw, 80px);
+      display: flex; flex-direction: column; justify-content: center; gap: 20px;
+    }
+    .member-num {
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: .3em; color: #c09a3e;
+    }
+    .member-name-en {
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: clamp(18px, 2.5vw, 26px); letter-spacing: .14em;
+      color: #fff;
+    }
+    .member-name-ja {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(13px, 1.5vw, 16px); letter-spacing: .16em;
+      color: rgba(255,255,255,.36); margin-top: -8px;
+    }
+    .member-role {
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: .24em;
+      color: rgba(192,154,62,.65); text-transform: uppercase;
+      border-left: 1px solid rgba(192,154,62,.3); padding-left: 14px;
+    }
+    .member-divider { width: 32px; height: 1px; background: rgba(255,255,255,.1); }
+    .member-bio {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(12px, 1.3vw, 14px); color: rgba(255,255,255,.45);
+      line-height: 2.3; letter-spacing: .06em;
+    }
+    .member-keywords {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px;
+    }
+    .member-kw {
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 9px; letter-spacing: .22em;
+      color: rgba(255,255,255,.25); border: 1px solid rgba(255,255,255,.1);
+      padding: 4px 12px; text-transform: uppercase;
+    }
+
+    /* BACK / FOOTER */
+    .back-link {
+      display: block; text-align: center; padding: 52px 32px;
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: .28em;
+      color: rgba(192,154,62,.5); text-decoration: none; text-transform: uppercase; transition: color .2s;
+    }
+    .back-link:hover { color: #c09a3e; }
+    .footer {
+      background: #0a0806; padding: 52px 32px;
+      display: flex; flex-direction: column; align-items: center; gap: 18px;
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    .footer-logo { height: 28px; width: auto; filter: brightness(0) invert(1); opacity: .60; }
+    .footer-ig { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300; letter-spacing: .14em; color: #c09a3e; text-decoration: none; transition: opacity .2s; }
+    .footer-ig:hover { opacity: .6; }
+    .footer-copy { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 300; letter-spacing: .1em; color: rgba(255,255,255,.18); }
+
+    .cursor {
+      position: fixed; z-index: 9998; pointer-events: none;
+      width: 8px; height: 8px; background: #c09a3e; border-radius: 50%;
+      transform: translate(-50%,-50%);
+      transition: width .25s cubic-bezier(.16,1,.3,1), height .25s cubic-bezier(.16,1,.3,1), background .25s, opacity .2s;
+      opacity: 0;
+    }
+    .cursor.active { opacity: 1; }
+    .cursor.hover { width: 32px; height: 32px; background: transparent; border: 1px solid rgba(192,154,62,.75); }
+    #cover { position: fixed; inset: 0; background: #0a0806; z-index: 9997; pointer-events: none; opacity: 1; transition: opacity .8s ease; }
+
+    @media (max-width: 768px) {
+      .nav-ham { right: 20px; }
+      .member-card { grid-template-columns: 1fr; direction: ltr !important; }
+      .member-img { min-height: 280px; }
+      .member-info { padding: 48px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cover"></div>
+<div class="cursor" id="cursor"></div>
+
+<nav class="nav">
+  <a href="index.html"><img src="img/logo.png" alt="KIKI" class="nav-logo-img"></a>
+  <button class="nav-ham" id="nav-ham" aria-label="Menu"><span></span><span></span></button>
+</nav>
+<div class="nav-overlay" id="nav-overlay">
+  <a href="kiki.html">KIKI</a>
+  <a href="coffee.html">Coffee</a>
+  <a href="apparel.html">Apparel</a>
+  <a href="outdoor.html">Outdoor</a>
+  <a href="about.html">Story</a>
+  <a href="shop.html" class="nav-shop">Shop</a>
+</div>
+
+<section class="hero">
+  <span class="hero-label">Member</span>
+  <h1 class="hero-heading">KIKIを創る<br>三人の人間</h1>
+  <div class="hero-line"></div>
+  <p class="hero-sub">肩書きではなく、生き方で動く。</p>
+</section>
+
+<div class="members">
+
+  <!-- Daiki Kuwahara -->
+  <div class="member-card">
+    <div class="member-img">
+      <span class="member-img-placeholder">Photo</span>
+    </div>
+    <div class="member-info">
+      <span class="member-num">01</span>
+      <div>
+        <p class="member-name-en">Daiki Kuwahara</p>
+        <p class="member-name-ja">桑原 大輝</p>
+      </div>
+      <span class="member-role">Co-Founder</span>
+      <div class="member-divider"></div>
+      <p class="member-bio">KIKIの世界観と方向性を描く。常識の外側に出ることへの確信と、そこに美しさを見出す感性でKIKIを引っ張る。言葉よりも在り方で示す人間。</p>
+      <div class="member-keywords">
+        <span class="member-kw">Vision</span>
+        <span class="member-kw">Design</span>
+        <span class="member-kw">Strategy</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kiseki Tatebe -->
+  <div class="member-card">
+    <div class="member-img">
+      <span class="member-img-placeholder">Photo</span>
+    </div>
+    <div class="member-info">
+      <span class="member-num">02</span>
+      <div>
+        <p class="member-name-en">Kiseki Tatebe</p>
+        <p class="member-name-ja">建部 輝汐</p>
+      </div>
+      <span class="member-role">Co-Founder</span>
+      <div class="member-divider"></div>
+      <p class="member-bio">コーヒーの焙煎と事業の設計を担う。豆の声を聞くように、ビジネスの本質を掘り下げる。美しいものをつくり、それを届けるための仕組みを創る。</p>
+      <div class="member-keywords">
+        <span class="member-kw">Coffee</span>
+        <span class="member-kw">Business</span>
+        <span class="member-kw">Build</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hiroya Hoshihara -->
+  <div class="member-card">
+    <div class="member-img">
+      <span class="member-img-placeholder">Photo</span>
+    </div>
+    <div class="member-info">
+      <span class="member-num">03</span>
+      <div>
+        <p class="member-name-en">Hiroya Hoshihara</p>
+        <p class="member-name-ja">星原 大也</p>
+      </div>
+      <span class="member-role">Co-Founder</span>
+      <div class="member-divider"></div>
+      <p class="member-bio">アパレルとものづくりの軸を担う。素材を選び、形を考え、着る人の感覚に届くものを丁寧に積み上げる。KIKIの手触りをつくる人間。</p>
+      <div class="member-keywords">
+        <span class="member-kw">Apparel</span>
+        <span class="member-kw">Craft</span>
+        <span class="member-kw">Creative</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<a href="kiki.html" class="back-link">← Back to KIKI</a>
+
+<footer class="footer">
+  <img src="img/logo.png" alt="KIKI" class="footer-logo">
+  <a href="https://www.instagram.com/ki_ki_asobi" target="_blank" class="footer-ig">@ki_ki_asobi</a>
+  <span class="footer-copy">© 2026 KIKI（奇輝）</span>
+</footer>
+
+<script>
+  window.addEventListener('load', () => {
+    const cover = document.getElementById('cover');
+    requestAnimationFrame(() => { cover.style.opacity = '0'; });
+    setTimeout(() => cover.remove(), 900);
+  });
+  const ham = document.getElementById('nav-ham');
+  const overlay = document.getElementById('nav-overlay');
+  ham.addEventListener('click', () => { ham.classList.toggle('open'); overlay.classList.toggle('open'); });
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
+    cursor.classList.add('active');
+  });
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+  });
+</script>
+</body>
+</html>
