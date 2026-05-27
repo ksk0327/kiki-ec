@@ -4,1230 +4,278 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Coffee — KIKI</title>
-  <meta name="description" content="産地と農園を明かしたスペシャルティコーヒー。Ethiopia、スマイルカップブレンド、GIFT BOX。">
+  <meta name="description" content="KIKIのコーヒー。産地と農園を明かしたスペシャルティコーヒー。自家焙煎・シングルオリジン・ブレンド。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;500&family=Inter:wght@300;400&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css?v=20260527">
   <style>
-    /* ===== RESET / BASE ===== */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { background: #0d0600; }
-    body { background: #0d0600; color: #ffffff; }
+    body { background: #0a0806; margin: 0; }
 
-    /* ===== NAV ===== */
+    /* NAV */
     .idx-nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: transparent;
-      z-index: 100;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 60px; display: flex; align-items: center; justify-content: center;
     }
-    .idx-nav-logo-img {
-      height: 34px;
-      width: auto;
-      filter: brightness(0) invert(1);
-      display: block;
-    }
+    .idx-nav-logo-img { height: 34px; width: auto; filter: brightness(0) invert(1); }
     .idx-ham {
-      position: absolute;
-      right: 28px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 22px;
-      height: 22px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 7px;
-      padding: 0;
+      position: absolute; right: 28px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      display: flex; flex-direction: column; gap: 7px; padding: 6px;
     }
-    .idx-ham span {
-      display: block;
-      width: 22px;
-      height: 1px;
-      background: rgba(255,255,255,.75);
-      transition: transform .3s ease, opacity .3s ease;
-      transform-origin: center;
-    }
-    .idx-ham.open span:nth-child(1) {
-      transform: translateY(4px) rotate(45deg);
-    }
-    .idx-ham.open span:nth-child(2) {
-      transform: translateY(-4px) rotate(-45deg);
-    }
+    .idx-ham span { display: block; width: 22px; height: 1px; background: rgba(255,255,255,.75); transition: transform .3s, opacity .3s; }
+    .idx-ham.open span:first-child { transform: translateY(8px) rotate(45deg); }
+    .idx-ham.open span:last-child  { transform: translateY(-8px) rotate(-45deg); }
     .idx-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: #0a0806;
-      z-index: 99;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 44px;
+      display: none; position: fixed; inset: 0; z-index: 190; background: #0a0806;
+      flex-direction: column; align-items: center; justify-content: center; gap: 36px;
     }
-    .idx-overlay.open {
-      display: flex;
-    }
+    .idx-overlay.open { display: flex; }
     .idx-overlay a {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: clamp(28px, 5vw, 44px);
-      color: #ffffff;
-      text-decoration: none;
-      letter-spacing: .08em;
-      transition: color .25s;
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(24px, 4.5vw, 40px);
+      color: #fff; letter-spacing: .06em; text-decoration: none; transition: color .2s;
     }
-    .idx-overlay a:hover {
-      color: #c09a3e;
-    }
+    .idx-overlay a:hover { color: #c09a3e; }
     .idx-overlay .nav-shop { color: #c09a3e; }
 
-    /* ===== HERO ===== */
-    .cf-hero {
-      position: relative;
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+    /* HERO */
+    .hero {
+      position: relative; height: 100vh; min-height: 560px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 28px; text-align: center; padding: 0 32px; overflow: hidden;
     }
-    .cf-hero-bg {
-      position: absolute;
-      inset: 0;
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background-image: url('https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1600&q=80');
+      background-size: cover; background-position: center;
+      filter: brightness(.25) saturate(.6);
     }
-    .cf-hero-bg img {
-      width: 100%;
-      height: 110%;
-      object-fit: cover;
-      will-change: transform;
+    .hero > * { position: relative; z-index: 1; }
+    .hero-label {
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: .4em; color: #c09a3e; text-transform: uppercase;
     }
-    .cf-hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        to bottom,
-        rgba(10,4,0,.55) 0%,
-        rgba(10,4,0,.40) 50%,
-        rgba(10,4,0,.75) 100%
-      );
+    .hero-heading {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(28px, 5vw, 60px); color: #fff;
+      letter-spacing: .08em; line-height: 1.5;
     }
-    .cf-hero-body {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      padding: 0 24px;
+    .hero-line { width: 40px; height: 1px; background: rgba(192,154,62,.4); }
+    .hero-sub {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(11px, 1.3vw, 14px); letter-spacing: .2em;
+      color: rgba(255,255,255,.38); line-height: 2.4;
     }
-    .cf-hero-eyebrow {
-      display: block;
-      font-family: 'Inter', sans-serif;
-      font-size: 10px;
-      letter-spacing: .45em;
-      text-transform: uppercase;
-      color: #c09a3e;
-      margin-bottom: 28px;
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: .28em; color: #c09a3e;
+      text-decoration: none; text-transform: uppercase; margin-top: 8px;
+      transition: opacity .2s;
     }
-    .cf-hero-title {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: clamp(42px, 8vw, 96px);
-      color: #ffffff;
-      letter-spacing: .12em;
-      line-height: 1.1;
-    }
-    .cf-hero-sub {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: clamp(12px, 1.4vw, 14px);
-      color: rgba(255,255,255,.48);
-      letter-spacing: .1em;
-      line-height: 2;
-      margin-top: 24px;
-    }
-    .cf-hero-scroll {
-      position: absolute;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 2;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
-    .cf-hero-scroll span {
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      letter-spacing: .35em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.28);
-    }
-    .cf-hero-scroll-line {
-      width: 1px;
-      height: 48px;
-      background: linear-gradient(to bottom, rgba(192,154,62,.7), transparent);
-      animation: scroll-pulse 2.2s ease-in-out infinite;
-    }
-    @keyframes scroll-pulse {
-      0%   { transform: scaleY(0); transform-origin: top; opacity: 1; }
-      100% { transform: scaleY(1); transform-origin: top; opacity: 0; }
-    }
+    .hero-cta:hover { opacity: .65; }
 
-    /* ===== BRAND STORY ===== */
-    .cf-story {
-      display: grid;
-      grid-template-columns: 55% 45%;
-      min-height: 640px;
+    /* SECTION HEADER */
+    .sec-header {
+      text-align: center; padding: 100px 32px 64px;
     }
-    .cf-story-body {
-      background: #0d0600;
-      padding: 100px 80px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+    .sec-label {
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 9px; letter-spacing: .4em; color: #c09a3e; text-transform: uppercase;
     }
-    .cf-story-eyebrow {
-      display: block;
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      letter-spacing: .45em;
-      text-transform: uppercase;
-      color: #c09a3e;
-      margin-bottom: 32px;
+    .sec-title {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(22px, 3.5vw, 38px); color: #fff;
+      letter-spacing: .1em; line-height: 1.5; margin-top: 16px;
     }
-    .cf-story-title {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: clamp(26px, 3.2vw, 44px);
-      color: #ffffff;
-      line-height: 1.6;
-      letter-spacing: .06em;
-      margin-bottom: 36px;
-    }
-    .cf-story-text {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: 14px;
-      color: rgba(255,255,255,.5);
-      line-height: 2.3;
-      letter-spacing: .04em;
-      max-width: 440px;
-    }
-    .cf-story-img {
-      overflow: hidden;
-    }
-    .cf-story-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .sec-line { width: 32px; height: 1px; background: rgba(192,154,62,.35); margin: 20px auto 0; }
 
-    /* ===== OUR QUALITIES ===== */
-    .cf-ql {
-      background: #0a0500;
-      padding: 112px 64px;
-    }
-    .cf-ql-head {
-      text-align: center;
-      margin-bottom: 72px;
-    }
-    .cf-ql-eyebrow {
-      display: block;
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      letter-spacing: .45em;
-      text-transform: uppercase;
-      color: #c09a3e;
-      margin-bottom: 20px;
-    }
-    .cf-ql-title {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: clamp(22px, 3vw, 38px);
-      color: #ffffff;
-      letter-spacing: .1em;
-    }
-    .cf-ql-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      border: 1px solid rgba(192,154,62,.15);
-    }
-    .cf-ql-card {
-      padding: 48px 32px;
-      border-right: 1px solid rgba(192,154,62,.15);
-      display: flex;
-      flex-direction: column;
-      text-decoration: none;
-      transition: background .3s, transform .4s cubic-bezier(.16,1,.3,1);
-    }
-    .cf-ql-card:last-child {
-      border-right: none;
-    }
-    .cf-ql-card:hover {
-      background: rgba(192,154,62,.05);
-      transform: translateY(-6px);
-    }
-    .cf-ql-num {
-      font-family: 'Inter', sans-serif;
-      font-size: 10px;
-      color: rgba(192,154,62,.5);
-      letter-spacing: .2em;
-      margin-bottom: 24px;
-    }
-    .cf-ql-name {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: 18px;
-      color: #ffffff;
-      letter-spacing: .06em;
-      line-height: 1.5;
-      margin-bottom: 14px;
-    }
-    .cf-ql-desc {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: 12px;
-      color: rgba(255,255,255,.38);
-      line-height: 1.9;
-      flex: 1;
-    }
-    .cf-ql-arrow {
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      color: #c09a3e;
-      margin-top: 32px;
-      display: inline-block;
-      transition: transform .2s;
-    }
-    .cf-ql-card:hover .cf-ql-arrow {
-      transform: translateX(5px);
-    }
-
-    /* ===== PRODUCTS ===== */
-    .cf-products {
-      background: #1a0a00;
-      padding: 112px 64px;
-    }
-    .cf-prod-head {
-      margin-bottom: 64px;
-    }
-    .cf-prod-eyebrow {
-      display: block;
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      letter-spacing: .45em;
-      text-transform: uppercase;
-      color: #c09a3e;
-      margin-bottom: 20px;
-    }
-    .cf-prod-title {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: clamp(24px, 3.2vw, 42px);
-      color: #ffffff;
-      letter-spacing: .08em;
-    }
-    .cf-prod-grid {
+    /* QUALITIES GRID */
+    .qualities { padding: 0 clamp(20px, 4vw, 64px) 100px; }
+    .qual-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 2px;
+      max-width: 1200px; margin: 0 auto;
     }
-    .cf-prod-card {
-      background: #0d0600;
-      display: flex;
-      flex-direction: column;
-      transition: box-shadow .4s ease;
-    }
-    .cf-prod-card:hover {
-      box-shadow: inset 0 0 0 1px rgba(192,154,62,.55);
-    }
-    .cf-prod-img {
-      overflow: hidden;
-      aspect-ratio: 4/5;
-      position: relative;
-      display: block;
-      cursor: pointer;
-    }
-    .cf-prod-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform .7s cubic-bezier(.25,.46,.45,.94);
-    }
-    .cf-prod-card:hover .cf-prod-img img {
-      transform: scale(1.04);
-    }
-    .cf-prod-img-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(10,4,0,.48);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity .35s ease;
-      pointer-events: none;
-    }
-    .cf-prod-img:hover .cf-prod-img-overlay { opacity: 1; }
-    .cf-prod-img-overlay span {
-      font-family: 'Inter', sans-serif;
-      font-size: 10px;
-      letter-spacing: .32em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.9);
-    }
-    .cf-prod-name-link {
-      color: inherit;
+    .qual-card {
+      position: relative; overflow: hidden;
+      aspect-ratio: 3/4;
+      display: flex; flex-direction: column; justify-content: flex-end;
       text-decoration: none;
-      display: block;
-      transition: color .2s;
+      background: #111;
     }
-    .cf-prod-name-link:hover { color: #c09a3e; }
-    .cf-prod-body {
-      padding: 32px 28px 36px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      cursor: pointer;
+    .qual-card-bg {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      transition: transform 1s cubic-bezier(.25,.46,.45,.94);
+      filter: brightness(.45) saturate(.7);
     }
-    .cf-prod-tag {
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      letter-spacing: .3em;
-      text-transform: uppercase;
-      color: rgba(192,154,62,.7);
-      margin-bottom: 10px;
-      cursor: pointer;
+    .qual-card:hover .qual-card-bg { transform: scale(1.06); }
+    .qual-card-shade {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(10,8,6,.9) 0%, transparent 55%);
     }
-    .cf-prod-name {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: clamp(18px, 2vw, 24px);
-      color: #ffffff;
-      letter-spacing: .04em;
-      line-height: 1.45;
-      margin-bottom: 12px;
-      flex: 1;
+    .qual-card-body {
+      position: relative; z-index: 2;
+      padding: 24px 20px;
     }
-    .cf-prod-price {
-      font-family: 'Inter', sans-serif;
-      font-size: 16px;
-      font-weight: 300;
-      color: #c09a3e;
-      letter-spacing: .06em;
-      margin-bottom: 24px;
+    .qual-card-en {
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 9px; letter-spacing: .3em; color: #c09a3e; text-transform: uppercase;
+      display: block; margin-bottom: 8px;
     }
-    .cf-prod-price small {
-      font-size: 10px;
-      color: rgba(192,154,62,.6);
+    .qual-card-title {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(14px, 1.8vw, 18px); color: #fff; letter-spacing: .08em;
+      line-height: 1.5; display: block; margin-bottom: 8px;
     }
-    .cf-buy-btn {
-      display: block;
-      padding: 13px 20px;
-      border: 1px solid #c09a3e;
-      background: #c09a3e;
-      color: #0d0600;
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      font-weight: 300;
-      letter-spacing: .3em;
-      text-transform: uppercase;
-      text-align: center;
-      text-decoration: none;
-      transition: background .25s, color .25s, border-color .25s, box-shadow .25s;
+    .qual-card-desc {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: 11px; color: rgba(255,255,255,.38); letter-spacing: .06em;
+      line-height: 1.8; display: block;
     }
-    .cf-buy-btn:hover {
-      background: #d4ad50;
-      border-color: #d4ad50;
-      color: #0d0600;
-      box-shadow: 0 0 28px rgba(192,154,62,.40);
+    .qual-arrow {
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 11px; color: rgba(192,154,62,.5);
+      display: block; margin-top: 12px; transition: color .2s;
     }
+    .qual-card:hover .qual-arrow { color: #c09a3e; }
 
-    /* ===== ROAST BAR ===== */
-    .cf-roast {
-      margin-top: 8px;
-      margin-bottom: 16px;
-      cursor: pointer;
+    /* INVENTORY */
+    .inventory { padding: 0 clamp(20px, 4vw, 64px) 100px; }
+    .inv-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 2px; max-width: 1200px; margin: 0 auto;
     }
-    .cf-roast-label {
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      letter-spacing: .22em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.28);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 7px;
+    .inv-card {
+      background: rgba(255,255,255,.02);
+      border: 1px solid rgba(255,255,255,.06);
+      padding: 28px 24px;
+      display: flex; flex-direction: column; gap: 12px;
     }
-    .cf-roast-level {
-      color: rgba(192,154,62,.7);
-      letter-spacing: .15em;
-    }
-    .cf-roast-dots {
-      display: flex;
-      gap: 7px;
-    }
-    .cf-roast-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      border: 1px solid rgba(192,154,62,.35);
-      background: transparent;
-    }
-    .cf-roast-dot.on {
-      background: #c09a3e;
-      border-color: #c09a3e;
-      box-shadow: 0 0 5px rgba(192,154,62,.45);
-    }
-    .cf-roast-select {
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      letter-spacing: .15em;
-      color: rgba(192,154,62,.6);
-      border: 1px solid rgba(192,154,62,.25);
-      padding: 3px 10px;
-      border-radius: 10px;
-    }
-
-    /* ===== FLAVOR TAGS ===== */
-    .cf-flavor-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 20px;
-      cursor: pointer;
-    }
-    .cf-flavor-tag {
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      letter-spacing: .06em;
-      padding: 4px 11px;
-      border-radius: 20px;
-      background: rgba(192,154,62,.10);
-      color: rgba(192,154,62,.8);
-      border: 1px solid rgba(192,154,62,.20);
-      transition: background .2s, border-color .2s, color .2s;
-    }
-    .cf-flavor-tag:hover {
-      background: rgba(192,154,62,.22);
-      border-color: rgba(192,154,62,.5);
-      color: #c09a3e;
-    }
-
-    /* ===== ACCORDION ===== */
-    .cf-accordion {
-      margin-bottom: 20px;
-      border-top: 1px solid rgba(192,154,62,.12);
-    }
-    .cf-accordion-trigger {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 11px 0;
-      cursor: pointer;
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      letter-spacing: .22em;
-      text-transform: uppercase;
-      color: rgba(192,154,62,.55);
-      background: none;
-      border: none;
-      width: 100%;
-      text-align: left;
-      transition: color .2s;
-    }
-    .cf-accordion-trigger:hover { color: #c09a3e; }
-    .cf-accordion-arrow {
+    .inv-badge {
       display: inline-block;
-      transition: transform .28s ease;
-      font-size: 9px;
-      line-height: 1;
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 8px; letter-spacing: .26em; text-transform: uppercase;
+      padding: 4px 10px;
     }
-    .cf-accordion.open .cf-accordion-arrow { transform: rotate(180deg); }
-    .cf-accordion-body {
-      overflow: hidden;
-      max-height: 0;
-      transition: max-height .32s cubic-bezier(.16,1,.3,1);
+    .inv-badge--in  { color: rgba(192,154,62,.8); border: 1px solid rgba(192,154,62,.3); }
+    .inv-badge--low { color: rgba(220,100,50,.8); border: 1px solid rgba(220,100,50,.3); }
+    .inv-badge--out { color: rgba(255,255,255,.25); border: 1px solid rgba(255,255,255,.1); }
+    .inv-name {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(14px, 1.6vw, 16px); color: #fff; letter-spacing: .08em; line-height: 1.5;
     }
-    .cf-accordion.open .cf-accordion-body { max-height: 200px; }
-    .cf-spec-row {
-      display: flex;
-      gap: 14px;
-      padding: 5px 0;
+    .inv-grams {
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: .14em; color: rgba(255,255,255,.3);
     }
-    .cf-spec-key {
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      letter-spacing: .12em;
-      color: rgba(255,255,255,.22);
-      min-width: 64px;
-      flex-shrink: 0;
-      padding-top: 2px;
+    .inv-shop-link {
+      margin-top: auto;
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 9px; letter-spacing: .26em; color: #c09a3e;
+      text-decoration: none; text-transform: uppercase; transition: opacity .2s;
     }
-    .cf-spec-val {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: 12px;
-      color: rgba(255,255,255,.58);
-      line-height: 1.7;
+    .inv-shop-link:hover { opacity: .6; }
+    .inv-loading {
+      text-align: center; padding: 60px 32px;
+      font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: .2em;
+      color: rgba(255,255,255,.2); text-transform: uppercase;
     }
-    .cf-spec-inner { padding-bottom: 14px; }
-
-    /* ===== SHOP CTA ===== */
-    .cf-shop-cta {
-      background: #1a0a00;
-      padding: 112px 64px;
-      text-align: center;
-    }
-    .cf-shop-cta-eyebrow {
-      display: block;
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      letter-spacing: .45em;
-      text-transform: uppercase;
-      color: #c09a3e;
-      margin-bottom: 28px;
-    }
-    .cf-shop-cta-title {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: clamp(26px, 3.5vw, 48px);
-      color: #ffffff;
-      letter-spacing: .08em;
-      margin-bottom: 24px;
-    }
-    .cf-shop-cta-text {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: 14px;
-      color: rgba(255,255,255,.4);
-      line-height: 2.2;
-      letter-spacing: .05em;
-      margin-bottom: 48px;
-    }
-    .cf-shop-cta-btn {
-      display: inline-block;
-      padding: 16px 48px;
-      border: 1px solid rgba(192,154,62,.6);
-      color: #c09a3e;
-      font-family: 'Inter', sans-serif;
-      font-size: 11px;
-      font-weight: 300;
-      letter-spacing: .3em;
-      text-transform: uppercase;
-      text-decoration: none;
-      transition: background .25s, color .25s, border-color .25s, box-shadow .25s;
-    }
-    .cf-shop-cta-btn:hover {
-      background: #c09a3e;
-      color: #0d0600;
-      border-color: #c09a3e;
-      box-shadow: 0 0 32px rgba(192,154,62,.35);
-    }
-    @media (max-width: 768px) {
-      .cf-shop-cta { padding: 72px 24px; }
+    .inv-updated {
+      text-align: center; padding: 24px 32px;
+      font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: .16em;
+      color: rgba(255,255,255,.15);
     }
 
-    /* ===== STOCK STATUS ===== */
-    .cf-stock {
-      background: #0d0600;
-      padding: 96px 64px;
-      border-top: 1px solid rgba(192,154,62,.12);
+    /* B2B */
+    .b2b {
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding: 100px clamp(20px, 6vw, 96px);
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; align-items: center;
+      max-width: 1200px; margin: 0 auto;
     }
-    .cf-stock-head {
-      text-align: center;
-      margin-bottom: 56px;
+    .b2b-label {
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 9px; letter-spacing: .4em; color: #c09a3e; text-transform: uppercase;
+      margin-bottom: 20px; display: block;
     }
-    .cf-stock-eyebrow {
-      display: block;
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      letter-spacing: .45em;
-      text-transform: uppercase;
-      color: #c09a3e;
-      margin-bottom: 20px;
+    .b2b-title {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(22px, 3vw, 34px); color: #fff; letter-spacing: .1em; line-height: 1.6;
     }
-    .cf-stock-title {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: clamp(22px, 3vw, 38px);
-      color: #ffffff;
-      letter-spacing: .08em;
-      margin-bottom: 16px;
+    .b2b-body {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(12px, 1.3vw, 14px); color: rgba(255,255,255,.42);
+      line-height: 2.4; letter-spacing: .06em; margin-top: 24px;
     }
-    .cf-stock-updated {
-      font-family: 'Inter', sans-serif;
-      font-size: 10px;
-      color: rgba(255,255,255,.25);
-      letter-spacing: .12em;
+    .b2b-body p { margin: 0 0 1em; }
+    .b2b-contact {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 10px; letter-spacing: .28em; color: #c09a3e;
+      text-decoration: none; text-transform: uppercase; margin-top: 28px;
+      transition: opacity .2s;
     }
-    .cf-stock-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 2px;
-      max-width: 960px;
-      margin: 0 auto;
+    .b2b-contact:hover { opacity: .65; }
+    .b2b-items { display: flex; flex-direction: column; gap: 2px; }
+    .b2b-item {
+      background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.06);
+      padding: 20px 24px; display: flex; flex-direction: column; gap: 6px;
     }
-    .cf-stock-card {
-      background: #110700;
-      padding: 36px 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      opacity: 0;
-      transform: translateY(16px);
-      transition: opacity .5s ease, transform .5s ease;
+    .b2b-item-title {
+      font-family: 'Inter', sans-serif; font-weight: 300;
+      font-size: 9px; letter-spacing: .28em; color: #c09a3e; text-transform: uppercase;
     }
-    .cf-stock-card.loaded {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .cf-stock-card:nth-child(2) { transition-delay: .08s; }
-    .cf-stock-card:nth-child(3) { transition-delay: .16s; }
-    .cf-stock-card:nth-child(4) { transition-delay: .24s; }
-    .cf-stock-id {
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      letter-spacing: .35em;
-      color: rgba(255,255,255,.2);
-    }
-    .cf-stock-name {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: 14px;
-      color: #ffffff;
-      letter-spacing: .06em;
-      text-align: center;
-      line-height: 1.6;
-    }
-    .cf-stock-badge {
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      font-weight: 500;
-      letter-spacing: .22em;
-      text-transform: uppercase;
-      padding: 5px 14px;
-      border-radius: 2px;
-    }
-    .cf-stock-badge--in {
-      background: rgba(74,163,87,.15);
-      color: #6ecb7a;
-      border: 1px solid rgba(74,163,87,.3);
-    }
-    .cf-stock-badge--low {
-      background: rgba(192,154,62,.12);
-      color: #c09a3e;
-      border: 1px solid rgba(192,154,62,.3);
-    }
-    .cf-stock-badge--out {
-      background: rgba(255,255,255,.06);
-      color: rgba(255,255,255,.3);
-      border: 1px solid rgba(255,255,255,.1);
-    }
-    .cf-stock-grams {
-      font-family: 'Inter', sans-serif;
-      font-size: 10px;
-      color: rgba(255,255,255,.2);
-      letter-spacing: .1em;
-    }
-    .cf-stock-loading {
-      text-align: center;
-      font-family: 'Inter', sans-serif;
-      font-size: 10px;
-      letter-spacing: .3em;
-      color: rgba(255,255,255,.2);
-      padding: 48px 0;
-    }
-    @media (max-width: 768px) {
-      .cf-stock { padding: 72px 24px; }
-      .cf-stock-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 480px) {
-      .cf-stock-grid { grid-template-columns: 1fr; }
+    .b2b-item-desc {
+      font-family: 'Shippori Mincho B1', serif; font-weight: 400;
+      font-size: clamp(12px, 1.2vw, 13px); color: rgba(255,255,255,.42); letter-spacing: .08em; line-height: 1.8;
     }
 
-    /* ===== FROM THE ORIGIN ===== */
-    .cf-origin {
-      background: #0d0600;
-      padding: 112px 64px;
-    }
-    .cf-origin-head {
-      text-align: center;
-      margin-bottom: 64px;
-    }
-    .cf-origin-eyebrow {
-      display: block;
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      letter-spacing: .45em;
-      text-transform: uppercase;
-      color: #c09a3e;
-      margin-bottom: 20px;
-    }
-    .cf-origin-title {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: clamp(24px, 3.2vw, 42px);
-      color: #ffffff;
-      letter-spacing: .08em;
-      margin-bottom: 16px;
-    }
-    .cf-origin-sub {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: 13px;
-      color: rgba(255,255,255,.4);
-      letter-spacing: .06em;
-      line-height: 2;
-    }
-    .cf-origin-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2px;
-      height: 72vh;
-      min-height: 460px;
-    }
-    .cf-origin-item {
-      position: relative;
-      overflow: hidden;
-    }
-    .cf-origin-item-bg {
-      position: absolute;
-      inset: 0;
-    }
-    .cf-origin-item-bg img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform .9s cubic-bezier(.25,.46,.45,.94);
-    }
-    .cf-origin-item:hover .cf-origin-item-bg img {
-      transform: scale(1.05);
-    }
-    .cf-origin-shade {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,.72) 0%, rgba(0,0,0,.2) 60%, transparent 100%);
-    }
-    .cf-origin-info {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 32px 28px;
-      z-index: 2;
-    }
-    .cf-origin-code {
-      display: block;
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      letter-spacing: .4em;
-      text-transform: uppercase;
-      color: rgba(192,154,62,.7);
-      margin-bottom: 8px;
-    }
-    .cf-origin-country {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: clamp(20px, 2.4vw, 30px);
-      color: #ffffff;
-      letter-spacing: .08em;
-    }
-
-    /* ===== FOOTER ===== */
-    .idx-footer {
-      background: #0a0806;
-      padding: 52px 32px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 18px;
+    /* FOOTER */
+    .footer {
+      background: #0a0806; padding: 52px 32px;
+      display: flex; flex-direction: column; align-items: center; gap: 18px;
       border-top: 1px solid rgba(255,255,255,.06);
     }
-    .idx-footer-logo {
-      height: 28px;
-      width: auto;
-      filter: brightness(0) invert(1);
-      opacity: .60;
-    }
-    .idx-footer-ig {
-      font-family: 'Inter', sans-serif;
-      font-size: 11px;
-      font-weight: 300;
-      letter-spacing: .14em;
-      color: #c09a3e;
-      text-decoration: none;
-      transition: opacity .25s;
-    }
-    .idx-footer-ig:hover {
-      opacity: .6;
-    }
-    .idx-footer-copy {
-      font-family: 'Inter', sans-serif;
-      font-size: 10px;
-      font-weight: 300;
-      letter-spacing: .1em;
-      color: rgba(255,255,255,.18);
-    }
+    .footer-logo { height: 28px; width: auto; filter: brightness(0) invert(1); opacity: .60; }
+    .footer-ig { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 300; letter-spacing: .14em; color: #c09a3e; text-decoration: none; transition: opacity .2s; }
+    .footer-ig:hover { opacity: .6; }
+    .footer-copy { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 300; letter-spacing: .1em; color: rgba(255,255,255,.18); }
 
-    /* ===== CURSOR ===== */
-    .idx-cursor {
+    /* CURSOR */
+    .cursor {
       position: fixed; z-index: 9998; pointer-events: none;
-      width: 8px; height: 8px;
-      background: #c09a3e; border-radius: 50%;
-      transform: translate(-50%, -50%);
-      transition: width .25s cubic-bezier(.16,1,.3,1),
-                  height .25s cubic-bezier(.16,1,.3,1),
-                  background .25s, opacity .2s;
-      opacity: 0; will-change: left, top;
-    }
-    .idx-cursor.active { opacity: 1; }
-    .idx-cursor.hover {
-      width: 32px; height: 32px;
-      background: transparent;
-      border: 1px solid rgba(192,154,62,.75);
-    }
-
-    /* ===== NAV SCROLL ===== */
-    .idx-nav { transition: background .35s ease; }
-    .idx-nav.scrolled {
-      background: rgba(10,4,0,.88);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-    }
-
-    /* ===== PRICE FLASH ===== */
-    @keyframes price-flash {
-      0%   { color: #c09a3e; }
-      35%  { color: #ffe08a; text-shadow: 0 0 14px rgba(255,224,138,.7); }
-      100% { color: #c09a3e; text-shadow: none; }
-    }
-    .cf-prod-price.flash { animation: price-flash .55s ease; }
-
-    /* ===== DETAIL LINK ===== */
-    .cf-detail-link {
-      display: block; text-align: center;
-      font-family: 'Inter', sans-serif; font-size: 9px;
-      letter-spacing: .25em; text-transform: uppercase;
-      color: rgba(192,154,62,.55); text-decoration: none;
-      margin-bottom: 10px;
-      transition: color .2s;
-    }
-    .cf-detail-link:hover { color: #c09a3e; }
-
-    /* ===== PAGE COVER ===== */
-    #idx-cover {
-      position: fixed; inset: 0; background: #0d0600;
-      z-index: 9997; pointer-events: none;
-      opacity: 1;
-      transition: opacity .8s ease;
-    }
-
-    /* ===== SCROLL REVEAL ===== */
-    .cf-reveal {
+      width: 8px; height: 8px; background: #c09a3e; border-radius: 50%;
+      transform: translate(-50%,-50%);
+      transition: width .25s cubic-bezier(.16,1,.3,1), height .25s cubic-bezier(.16,1,.3,1), background .25s, opacity .2s;
       opacity: 0;
-      transform: translateY(22px);
-      transition: opacity .85s cubic-bezier(.16,1,.3,1),
-                  transform .85s cubic-bezier(.16,1,.3,1);
     }
-    .cf-reveal.in { opacity: 1; transform: none; }
-    .cf-reveal.d1 { transition-delay: .10s; }
-    .cf-reveal.d2 { transition-delay: .20s; }
-    .cf-reveal.d3 { transition-delay: .30s; }
-    .cf-reveal.d4 { transition-delay: .40s; }
-    .cf-reveal.d5 { transition-delay: .50s; }
+    .cursor.active { opacity: 1; }
+    .cursor.hover { width: 32px; height: 32px; background: transparent; border: 1px solid rgba(192,154,62,.75); }
+    #cover { position: fixed; inset: 0; background: #0a0806; z-index: 9997; pointer-events: none; opacity: 1; transition: opacity .8s ease; }
 
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 1024px) {
-      .cf-ql { padding: 80px 40px; }
-      .cf-products { padding: 80px 40px; }
-      .cf-origin { padding: 80px 40px; }
+    @media (max-width: 900px) {
+      .qual-grid { grid-template-columns: repeat(2, 1fr); }
+      .b2b { grid-template-columns: 1fr; gap: 40px; }
     }
-    /* scroll-margin でスティッキーナビ分オフセット */
-    #sec-story, #sec-qualities, #sec-products, #sec-shipping {
-      scroll-margin-top: 100px;
-    }
-
-    @media (max-width: 768px) {
+    @media (max-width: 600px) {
+      .qual-grid { grid-template-columns: 1fr; }
       .idx-ham { right: 20px; }
-      .cf-story { grid-template-columns: 1fr; }
-      .cf-story-img { order: -1; height: 60vw; min-height: 260px; }
-      .cf-story-body { padding: 64px 24px; }
-      .cf-ql { padding: 72px 20px; }
-      .cf-ql-grid { grid-template-columns: 1fr; border: none; }
-      /* モバイルでは横パディングを確保 */
-      .cf-ql-card { border-right: none; border-bottom: 1px solid rgba(192,154,62,.15); padding: 32px 20px; }
-      .cf-ql-card:last-child { border-bottom: none; }
-      .cf-ql-name { font-size: 17px; }
-      .cf-ql-desc { font-size: 13px; line-height: 1.8; }
-      .cf-products { padding: 72px 20px; }
-      .cf-prod-grid { grid-template-columns: 1fr; }
-      .cf-origin { padding: 72px 20px; }
-      .cf-origin-grid { grid-template-columns: 1fr; height: auto; }
-      .cf-origin-item { height: auto; min-height: 280px; }
-      .cf-page-nav-link { padding: 12px 14px; letter-spacing: .18em; }
-      .cf-page-nav-link::after { left: 14px; right: 14px; }
-    }
-    @media (max-width: 480px) {
-      .cf-shipping-grid { grid-template-columns: 1fr; }
-      /* 3番目のアイテムのボーダー底を復活させる */
-      .cf-shipping-item:nth-child(3) { border-bottom: 1px solid rgba(192,154,62,.08); }
-      .cf-shipping-item:last-child { border-bottom: none; }
-      /* ページ内ナビを少し小さく */
-      .cf-page-nav-link { padding: 11px 10px; font-size: 8px; letter-spacing: .12em; }
-      .cf-page-nav-link::after { left: 10px; right: 10px; }
-    }
-
-    /* ===== PAGE IN-NAV ===== */
-    .cf-page-nav {
-      background: rgba(10,5,0,.94);
-      border-bottom: 1px solid rgba(192,154,62,.12);
-      position: sticky;
-      top: 60px;
-      z-index: 90;
-      display: flex;
-      justify-content: center;
-    }
-    .cf-page-nav-link {
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      font-weight: 300;
-      letter-spacing: .32em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,.40);
-      text-decoration: none;
-      padding: 14px 22px;
-      position: relative;
-      transition: color .25s;
-      white-space: nowrap;
-    }
-    .cf-page-nav-link::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 22px; right: 22px;
-      height: 1px;
-      background: #c09a3e;
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform .3s cubic-bezier(.16,1,.3,1);
-    }
-    .cf-page-nav-link:hover { color: #c09a3e; }
-    .cf-page-nav-link:hover::after { transform: scaleX(1); }
-    .cf-page-nav-link.active { color: #c09a3e; }
-    .cf-page-nav-link.active::after { transform: scaleX(1); }
-
-    /* ===== ORIGIN META INFO ===== */
-    .cf-origin-flag {
-      display: block;
-      font-size: 20px;
-      margin-bottom: 6px;
-      line-height: 1;
-    }
-    .cf-origin-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid rgba(255,255,255,.1);
-    }
-    .cf-origin-meta-row {
-      display: flex;
-      gap: 8px;
-      align-items: baseline;
-    }
-    .cf-origin-meta-key {
-      font-family: 'Inter', sans-serif;
-      font-size: 8px;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      color: rgba(192,154,62,.5);
-      min-width: 36px;
-      flex-shrink: 0;
-    }
-    .cf-origin-meta-val {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: 11px;
-      color: rgba(255,255,255,.55);
-      letter-spacing: .04em;
-      line-height: 1.5;
-    }
-
-    /* ===== GRAM SELECTION BUTTONS ===== */
-    .cf-gram-btns {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
-    }
-    .cf-gram-btn {
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      font-weight: 300;
-      letter-spacing: .18em;
-      padding: 6px 14px;
-      border: 1px solid rgba(192,154,62,.35);
-      background: transparent;
-      color: rgba(192,154,62,.6);
-      cursor: pointer;
-      transition: background .2s, color .2s, border-color .2s;
-    }
-    .cf-gram-btn:hover {
-      border-color: rgba(192,154,62,.7);
-      color: #c09a3e;
-    }
-    .cf-gram-btn.active {
-      background: #c09a3e;
-      border-color: #c09a3e;
-      color: #0d0600;
-    }
-
-    /* ===== PURCHASE MODAL ===== */
-    .cf-buy-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.78);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      z-index: 9000;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-    .cf-buy-modal.open { display: flex; }
-    .cf-buy-modal-box {
-      position: relative;
-      background: #0a0500;
-      border: 1px solid rgba(192,154,62,.35);
-      padding: 52px 48px 48px;
-      max-width: 440px;
-      width: 100%;
-    }
-    .cf-buy-modal-close {
-      position: absolute;
-      top: 18px; right: 20px;
-      background: none;
-      border: none;
-      color: rgba(255,255,255,.35);
-      font-size: 16px;
-      line-height: 1;
-      cursor: pointer;
-      transition: color .2s;
-    }
-    .cf-buy-modal-close:hover { color: #ffffff; }
-    .cf-buy-modal-eyebrow {
-      display: block;
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      letter-spacing: .45em;
-      text-transform: uppercase;
-      color: #c09a3e;
-      margin-bottom: 16px;
-    }
-    .cf-buy-modal-title {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: clamp(20px, 2.4vw, 28px);
-      color: #ffffff;
-      letter-spacing: .06em;
-      margin-bottom: 18px;
-    }
-    .cf-buy-modal-text {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: 13px;
-      color: rgba(255,255,255,.45);
-      line-height: 2;
-      letter-spacing: .04em;
-      margin-bottom: 36px;
-    }
-    .cf-buy-modal-links { display: flex; flex-direction: row; gap: 10px; }
-    .cf-buy-modal-link {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 14px 16px;
-      border: 1px solid transparent;
-      text-decoration: none;
-      font-family: 'Inter', sans-serif;
-      font-size: 11px;
-      letter-spacing: .08em;
-      font-weight: 300;
-      text-align: center;
-      transition: background .25s, border-color .25s, color .25s, opacity .25s;
-    }
-    /* Instagram: ゴールド塗りつぶし */
-    .cf-buy-modal-link--ig {
-      background: #c09a3e;
-      border-color: #c09a3e;
-      color: #0d0600;
-    }
-    .cf-buy-modal-link--ig .cf-buy-modal-link-icon { color: #0d0600; }
-    .cf-buy-modal-link--ig:hover { background: #d4ad50; border-color: #d4ad50; }
-    /* Mail: ゴールドボーダーのみ */
-    .cf-buy-modal-link--mail {
-      border-color: #c09a3e;
-      color: #c09a3e;
-    }
-    .cf-buy-modal-link--mail:hover { background: rgba(192,154,62,.1); }
-    .cf-buy-modal-link-icon {
-      width: 16px; height: 16px;
-      flex-shrink: 0;
-    }
-    @media (max-width: 480px) {
-      .cf-buy-modal-box { padding: 44px 28px 36px; }
-      .cf-buy-modal-links { flex-direction: column; }
-    }
-
-    /* ===== SHIPPING INFO ===== */
-    .cf-shipping {
-      background: #0a0500;
-      padding: 56px 64px;
-      border-top: 1px solid rgba(192,154,62,.08);
-    }
-    .cf-shipping-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 2px;
-      max-width: 960px;
-      margin: 0 auto;
-    }
-    .cf-shipping-item {
-      padding: 32px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      text-align: center;
-      border-right: 1px solid rgba(192,154,62,.08);
-    }
-    .cf-shipping-item:last-child { border-right: none; }
-    .cf-shipping-icon {
-      font-size: 22px;
-      display: block;
-      margin-bottom: 4px;
-    }
-    .cf-shipping-label {
-      font-family: 'Inter', sans-serif;
-      font-size: 9px;
-      letter-spacing: .22em;
-      text-transform: uppercase;
-      color: rgba(192,154,62,.55);
-    }
-    .cf-shipping-value {
-      font-family: 'Shippori Mincho B1', serif;
-      font-size: 14px;
-      color: #ffffff;
-      letter-spacing: .04em;
-      line-height: 1.6;
-    }
-    @media (max-width: 768px) {
-      .cf-shipping { padding: 48px 20px; }
-      .cf-shipping-grid { grid-template-columns: repeat(2, 1fr); }
-      .cf-shipping-item { border-right: none; border-bottom: 1px solid rgba(192,154,62,.08); }
-      .cf-shipping-item:nth-child(3),
-      .cf-shipping-item:last-child { border-bottom: none; }
     }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
+<div id="cover"></div>
+<div class="cursor" id="cursor"></div>
+
 <nav class="idx-nav">
   <a href="index.html"><img src="img/logo.png" alt="KIKI" class="idx-nav-logo-img"></a>
-  <button class="idx-ham" id="idx-ham"><span></span><span></span></button>
+  <button class="idx-ham" id="idx-ham" aria-label="Menu"><span></span><span></span></button>
 </nav>
 <div class="idx-overlay" id="idx-overlay">
   <a href="kiki.html">KIKI</a>
@@ -1236,755 +284,207 @@
   <a href="outdoor.html">Outdoor</a>
   <a href="shop.html" class="nav-shop">Shop</a>
 </div>
-  </div>
-  <a href="coffee.html">Coffee</a>
-  <a href="apparel.html">Apparel</a>
-  <a href="outdoor.html">Outdoor</a>
-  <a href="about.html">Story</a>
-  <a href="shop.html" class="nav-shop">Shop</a>
-</div>
 
 <!-- HERO -->
-<section class="cf-hero">
-  <div class="cf-hero-bg"><img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1600&q=90" alt=""></div>
-  <div class="cf-hero-overlay"></div>
-  <div class="cf-hero-body">
-    <span class="cf-hero-eyebrow">Specialty Coffee</span>
-    <h1 class="cf-hero-title">Specialty Coffee</h1>
-    <p class="cf-hero-sub">産地・農園・品種をすべて開示した、本物のコーヒー。</p>
-  </div>
-  <div class="cf-hero-scroll">
-    <span>Scroll</span>
-    <div class="cf-hero-scroll-line"></div>
-  </div>
-</section>
-
-<!-- PAGE IN-NAV -->
-<nav class="cf-page-nav" aria-label="ページ内ナビゲーション">
-  <a href="#sec-story"     class="cf-page-nav-link">Story</a>
-  <a href="#sec-qualities" class="cf-page-nav-link">Qualities</a>
-  <a href="#sec-products"  class="cf-page-nav-link">Products</a>
-  <a href="#sec-shipping"  class="cf-page-nav-link">Shipping</a>
-</nav>
-
-<!-- BRAND STORY -->
-<section class="cf-story" id="sec-story">
-  <div class="cf-story-body cf-reveal">
-    <span class="cf-story-eyebrow">Philosophy</span>
-    <h2 class="cf-story-title">どうせ高いなら、<br>本物を選ぼう。</h2>
-    <p class="cf-story-text">産地・農園・品種・精製方法をすべて開示する。価格に見合った本物の価値を届けること——それがKIKIの約束です。</p>
-  </div>
-  <div class="cf-story-img cf-reveal d1">
-    <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=900&q=90" alt="">
-  </div>
+<section class="hero">
+  <div class="hero-bg"></div>
+  <span class="hero-label">Coffee</span>
+  <h1 class="hero-heading">どうせ高いなら、<br>本物を選ぼう。</h1>
+  <div class="hero-line"></div>
+  <p class="hero-sub">産地と農園を明かした自家焙煎コーヒー。<br>スペシャルティグレード、少量生産。</p>
+  <a href="shop.html" class="hero-cta">Shop Now →</a>
 </section>
 
 <!-- OUR QUALITIES -->
-<section class="cf-ql" id="sec-qualities">
-  <div class="cf-ql-head cf-reveal">
-    <span class="cf-ql-eyebrow">Our Qualities</span>
-    <h2 class="cf-ql-title">OUR Qualities</h2>
+<section>
+  <div class="sec-header">
+    <span class="sec-label">Our Qualities</span>
+    <h2 class="sec-title">KIKIのコーヒーを<br>かたちづくるもの</h2>
+    <div class="sec-line"></div>
   </div>
-  <div class="cf-ql-grid">
-    <a href="single-origin.html" class="cf-ql-card cf-reveal d1">
-      <span class="cf-ql-num">01</span>
-      <p class="cf-ql-name">Single Origin</p>
-      <p class="cf-ql-desc">単一農園・単一産地の豆をそのまま届ける</p>
-      <span class="cf-ql-arrow">→</span>
-    </a>
-    <a href="rank.html" class="cf-ql-card cf-reveal d2">
-      <span class="cf-ql-num">02</span>
-      <p class="cf-ql-name">Rank</p>
-      <p class="cf-ql-desc">品質スコアで厳選したトップグレードの豆</p>
-      <span class="cf-ql-arrow">→</span>
-    </a>
-    <a href="roaster.html" class="cf-ql-card cf-reveal d3">
-      <span class="cf-ql-num">03</span>
-      <p class="cf-ql-name">Roaster</p>
-      <p class="cf-ql-desc">焙煎士が一杯ずつ丁寧に焼き上げた豆</p>
-      <span class="cf-ql-arrow">→</span>
-    </a>
-    <a href="blend.html" class="cf-ql-card cf-reveal d4">
-      <span class="cf-ql-num">04</span>
-      <p class="cf-ql-name">Blend</p>
-      <p class="cf-ql-desc">複数産地を絶妙なバランスでブレンド</p>
-      <span class="cf-ql-arrow">→</span>
-    </a>
-    <a href="break-stand.html" class="cf-ql-card cf-reveal d5">
-      <span class="cf-ql-num">05</span>
-      <p class="cf-ql-name">KIKI Break Stand</p>
-      <p class="cf-ql-desc">毎日飲みたい、日常に寄り添う一杯</p>
-      <span class="cf-ql-arrow">→</span>
-    </a>
-  </div>
-</section>
+  <div class="qualities">
+    <div class="qual-grid">
 
-<!-- PRODUCTS -->
-<section class="cf-products" id="sec-products">
-  <div class="cf-prod-head cf-reveal">
-    <span class="cf-prod-eyebrow">Products</span>
-    <h2 class="cf-prod-title">商品ラインアップ</h2>
-  </div>
-  <div class="cf-prod-grid" id="cf-prod-grid">
-    <!-- JS で動的生成 -->
-  </div>
-</section>
-
-<!-- SHIPPING INFO -->
-<section class="cf-shipping" id="sec-shipping">
-  <div class="cf-shipping-grid">
-    <div class="cf-shipping-item cf-reveal">
-      <span class="cf-shipping-icon">🚚</span>
-      <p class="cf-shipping-label">全国一律送料</p>
-      <p class="cf-shipping-value">¥500</p>
-    </div>
-    <div class="cf-shipping-item cf-reveal d1">
-      <span class="cf-shipping-icon">📦</span>
-      <p class="cf-shipping-label">送料無料</p>
-      <p class="cf-shipping-value">¥5,000以上のご購入</p>
-    </div>
-    <div class="cf-shipping-item cf-reveal d2">
-      <span class="cf-shipping-icon">📅</span>
-      <p class="cf-shipping-label">お届け目安</p>
-      <p class="cf-shipping-value">3〜5営業日</p>
-    </div>
-    <div class="cf-shipping-item cf-reveal d3">
-      <span class="cf-shipping-icon">✓</span>
-      <p class="cf-shipping-label">配送業者</p>
-      <p class="cf-shipping-value">ヤマト運輸</p>
-    </div>
-  </div>
-</section>
-
-<!-- SHOP CTA -->
-<section class="cf-shop-cta cf-reveal">
-  <span class="cf-shop-cta-eyebrow">Shop</span>
-  <h2 class="cf-shop-cta-title">すべての商品を見る</h2>
-  <p class="cf-shop-cta-text">Ethiopia、スマイルカップ ブレンド、GIFT BOX。<br>詳細な情報・購入はオンラインショップにて。</p>
-  <a href="shop.html" class="cf-shop-cta-btn">Shop へ →</a>
-</section>
-
-<!-- STOCK STATUS -->
-<section class="cf-stock cf-reveal">
-  <div class="cf-stock-head">
-    <span class="cf-stock-eyebrow">Stock</span>
-    <h2 class="cf-stock-title">現在の在庫状況</h2>
-    <p class="cf-stock-updated" id="cf-stock-ts">読み込み中...</p>
-  </div>
-  <div class="cf-stock-grid" id="cf-stock-grid">
-    <p class="cf-stock-loading">— loading —</p>
-  </div>
-</section>
-
-<!-- FROM THE ORIGIN -->
-<section class="cf-origin">
-  <div class="cf-origin-head cf-reveal">
-    <span class="cf-origin-eyebrow">Transparency</span>
-    <h2 class="cf-origin-title">From the Origin</h2>
-    <p class="cf-origin-sub">私たちは産地・農園・品種・精製方法をすべて公開しています。</p>
-  </div>
-  <div class="cf-origin-grid">
-    <div class="cf-origin-item cf-reveal d1">
-      <div class="cf-origin-item-bg">
-        <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=800&q=90&fit=crop&crop=top" alt="Ethiopia">
-      </div>
-      <div class="cf-origin-shade"></div>
-      <div class="cf-origin-info">
-        <span class="cf-origin-flag">🇪🇹</span>
-        <span class="cf-origin-code">ETH</span>
-        <p class="cf-origin-country">Ethiopia</p>
-        <div class="cf-origin-meta">
-          <div class="cf-origin-meta-row">
-            <span class="cf-origin-meta-key">標高</span>
-            <span class="cf-origin-meta-val">1,800〜2,200m</span>
-          </div>
-          <div class="cf-origin-meta-row">
-            <span class="cf-origin-meta-key">収穫期</span>
-            <span class="cf-origin-meta-val">10月〜1月</span>
-          </div>
+      <a href="single-origin.html" class="qual-card">
+        <div class="qual-card-bg" style="background-image:url('https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=800&q=70')"></div>
+        <div class="qual-card-shade"></div>
+        <div class="qual-card-body">
+          <span class="qual-card-en">Single Origin</span>
+          <span class="qual-card-title">産地の個性を、<br>そのままに</span>
+          <span class="qual-card-desc">農園・精製方法まで明記。<br>豆が持つ本来の声を引き出す。</span>
+          <span class="qual-arrow">→</span>
         </div>
-      </div>
-    </div>
-    <div class="cf-origin-item cf-reveal d2">
-      <div class="cf-origin-item-bg">
-        <img src="img/colombia.jpg" alt="Colombia">
-      </div>
-      <div class="cf-origin-shade"></div>
-      <div class="cf-origin-info">
-        <span class="cf-origin-flag">🇨🇴</span>
-        <span class="cf-origin-code">COL</span>
-        <p class="cf-origin-country">Colombia</p>
-        <div class="cf-origin-meta">
-          <div class="cf-origin-meta-row">
-            <span class="cf-origin-meta-key">標高</span>
-            <span class="cf-origin-meta-val">1,500〜2,000m</span>
-          </div>
-          <div class="cf-origin-meta-row">
-            <span class="cf-origin-meta-key">収穫期</span>
-            <span class="cf-origin-meta-val">4月〜6月・10月〜12月</span>
-          </div>
+      </a>
+
+      <a href="rank.html" class="qual-card">
+        <div class="qual-card-bg" style="background-image:url('https://images.unsplash.com/photo-1511920170033-f8396924c348?w=800&q=70')"></div>
+        <div class="qual-card-shade"></div>
+        <div class="qual-card-body">
+          <span class="qual-card-en">Grade</span>
+          <span class="qual-card-title">スペシャルティ<br>グレードのみ</span>
+          <span class="qual-card-desc">SCA基準80点以上。<br>品質を妥協しない選定。</span>
+          <span class="qual-arrow">→</span>
         </div>
-      </div>
-    </div>
-    <div class="cf-origin-item cf-reveal d3">
-      <div class="cf-origin-item-bg">
-        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=90&fit=crop" alt="Brazil">
-      </div>
-      <div class="cf-origin-shade"></div>
-      <div class="cf-origin-info">
-        <span class="cf-origin-flag">🇧🇷</span>
-        <span class="cf-origin-code">BRA</span>
-        <p class="cf-origin-country">Brazil</p>
-        <div class="cf-origin-meta">
-          <div class="cf-origin-meta-row">
-            <span class="cf-origin-meta-key">標高</span>
-            <span class="cf-origin-meta-val">800〜1,200m</span>
-          </div>
-          <div class="cf-origin-meta-row">
-            <span class="cf-origin-meta-key">収穫期</span>
-            <span class="cf-origin-meta-val">5月〜9月</span>
-          </div>
+      </a>
+
+      <a href="roaster.html" class="qual-card">
+        <div class="qual-card-bg" style="background-image:url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=70')"></div>
+        <div class="qual-card-shade"></div>
+        <div class="qual-card-body">
+          <span class="qual-card-en">Roastery</span>
+          <span class="qual-card-title">自家焙煎、<br>少量生産</span>
+          <span class="qual-card-desc">大量生産はしない。<br>焙煎した人間の哲学が宿る一杯。</span>
+          <span class="qual-arrow">→</span>
         </div>
+      </a>
+
+      <a href="blend.html" class="qual-card">
+        <div class="qual-card-bg" style="background-image:url('https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=800&q=70')"></div>
+        <div class="qual-card-shade"></div>
+        <div class="qual-card-body">
+          <span class="qual-card-en">Blend</span>
+          <span class="qual-card-title">KIKIの世界観を<br>一杯に込める</span>
+          <span class="qual-card-desc">シングルオリジンを組み合わせた<br>KIKI独自のブレンド。</span>
+          <span class="qual-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="shop.html" class="qual-card">
+        <div class="qual-card-bg" style="background-image:url('https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=800&q=70')"></div>
+        <div class="qual-card-shade"></div>
+        <div class="qual-card-body">
+          <span class="qual-card-en">Shop</span>
+          <span class="qual-card-title">オンラインで<br>購入する</span>
+          <span class="qual-card-desc">100g単位から。焙煎後すぐ発送。<br>ギフトにも対応。</span>
+          <span class="qual-arrow">→</span>
+        </div>
+      </a>
+
+      <a href="break-stand.html" class="qual-card">
+        <div class="qual-card-bg" style="background-image:url('https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=800&q=70')"></div>
+        <div class="qual-card-shade"></div>
+        <div class="qual-card-body">
+          <span class="qual-card-en">POP UP</span>
+          <span class="qual-card-title">KIKI BREAK<br>STAND</span>
+          <span class="qual-card-desc">不定期開催のポップアップ。<br>場所と時間をKIKIが選ぶ。</span>
+          <span class="qual-arrow">→</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- INVENTORY -->
+<section>
+  <div class="sec-header">
+    <span class="sec-label">Inventory</span>
+    <h2 class="sec-title">現在の在庫状況</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="inventory">
+    <div class="inv-grid" id="inv-grid">
+      <div class="inv-loading" id="inv-loading">Loading inventory...</div>
+    </div>
+    <p class="inv-updated" id="inv-updated"></p>
+  </div>
+</section>
+
+<!-- B2B -->
+<section style="border-top: 1px solid rgba(255,255,255,.06);">
+  <div class="b2b">
+    <div>
+      <span class="b2b-label">Business</span>
+      <h2 class="b2b-title">業務用・卸販売について</h2>
+      <div class="b2b-body">
+        <p>カフェ、レストラン、ホテル、アパレルショップなど、場の空気をつくるパートナーへ。KIKIのコーヒーを卸価格でご提供します。</p>
+        <p>ロット・焙煎度・パッケージなど、ご要望に合わせた対応が可能です。まずはメールにてご連絡ください。</p>
+      </div>
+      <a href="mailto:storestaffs@chillaxy.jp" class="b2b-contact">Contact Us →</a>
+    </div>
+    <div class="b2b-items">
+      <div class="b2b-item">
+        <span class="b2b-item-title">Wholesale</span>
+        <span class="b2b-item-desc">卸価格でのご提供。定期発注にも対応。</span>
+      </div>
+      <div class="b2b-item">
+        <span class="b2b-item-title">Custom Roast</span>
+        <span class="b2b-item-desc">焙煎度・ブレンド比率のカスタマイズ対応。</span>
+      </div>
+      <div class="b2b-item">
+        <span class="b2b-item-title">Private Label</span>
+        <span class="b2b-item-desc">オリジナルパッケージでのOEM製造。</span>
+      </div>
+      <div class="b2b-item">
+        <span class="b2b-item-title">POP UP</span>
+        <span class="b2b-item-desc">イベント・店舗へのポップアップ出店相談。</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="idx-footer">
-  <img src="img/logo.png" alt="KIKI" class="idx-footer-logo">
-  <a href="https://www.instagram.com/ki_ki_asobi" target="_blank" class="idx-footer-ig">@ki_ki_asobi</a>
-  <span class="idx-footer-copy">© 2026 KIKI（奇輝）</span>
+<footer class="footer">
+  <img src="img/logo.png" alt="KIKI" class="footer-logo">
+  <a href="https://www.instagram.com/ki_ki_asobi" target="_blank" class="footer-ig">@ki_ki_asobi</a>
+  <span class="footer-copy">© 2026 KIKI（奇輝）</span>
 </footer>
 
-<!-- PURCHASE MODAL -->
-<div class="cf-buy-modal" id="cf-buy-modal" role="dialog" aria-modal="true" aria-labelledby="cf-buy-modal-ttl">
-  <div class="cf-buy-modal-box">
-    <button class="cf-buy-modal-close" id="cf-buy-modal-close" aria-label="閉じる">✕</button>
-    <span class="cf-buy-modal-eyebrow">Order</span>
-    <h3 class="cf-buy-modal-title" id="cf-buy-modal-ttl">ご注文・お問い合わせ</h3>
-    <p class="cf-buy-modal-text">現在、ご注文はInstagramのDMまたはメールにて受け付けております。<br>お気軽にご連絡ください。</p>
-    <div class="cf-buy-modal-links">
-      <a href="https://www.instagram.com/ki_ki_asobi" target="_blank" rel="noopener noreferrer" class="cf-buy-modal-link cf-buy-modal-link--ig">
-        <svg class="cf-buy-modal-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-          <circle cx="12" cy="12" r="4"/>
-          <circle cx="17.5" cy="6.5" r=".6" fill="currentColor" stroke="none"/>
-        </svg>
-        Instagram DM
-      </a>
-      <a href="mailto:project.kiki0715@gmail.com" class="cf-buy-modal-link cf-buy-modal-link--mail">
-        <svg class="cf-buy-modal-link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="4" width="20" height="16" rx="2"/>
-          <path d="m2 7 10 7 10-7"/>
-        </svg>
-        メールで問い合わせ
-      </a>
-    </div>
-  </div>
-</div>
-
-<div id="idx-cover"></div>
-
 <script>
-  /* ── Smooth scroll ── */
-  document.documentElement.style.scrollBehavior = 'smooth';
+  window.addEventListener('load', () => {
+    const cover = document.getElementById('cover');
+    requestAnimationFrame(() => { cover.style.opacity = '0'; });
+    setTimeout(() => cover.remove(), 900);
+  });
 
-  /* ── Page nav anchor scroll (動的コンテンツ生成後に設定) ── */
-  function initPageNavScroll() {
-    document.querySelectorAll('.cf-page-nav-link').forEach(link => {
-      link.addEventListener('click', e => {
-        e.preventDefault();
-        const id = link.getAttribute('href').replace('#', '');
-        const target = document.getElementById(id);
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    });
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => setTimeout(initPageNavScroll, 0));
-  } else {
-    setTimeout(initPageNavScroll, 0);
-  }
-
-  /* ── Page nav active highlight ── */
-  (function () {
-    const links = document.querySelectorAll('.cf-page-nav-link');
-    if (!links.length) return;
-    const secIds = ['sec-story', 'sec-qualities', 'sec-products', 'sec-shipping'];
-    const secs   = secIds.map(id => document.getElementById(id)).filter(Boolean);
-
-    function update() {
-      let current = '';
-      secs.forEach(sec => {
-        if (window.scrollY + 120 >= sec.offsetTop) current = sec.id;
-      });
-      links.forEach(l => {
-        l.classList.toggle('active', l.getAttribute('href') === '#' + current);
-      });
-    }
-    window.addEventListener('scroll', update, { passive: true });
-    update();
-  })();
-
-  /* ── Nav scroll background ── */
-  window.addEventListener('scroll', () => {
-    document.querySelector('.idx-nav').classList.toggle('scrolled', window.scrollY > 40);
-  }, { passive: true });
-
-  /* ── Hamburger ── */
   const ham = document.getElementById('idx-ham');
-  const ov  = document.getElementById('idx-overlay');
-  ham.addEventListener('click', () => {
-    ham.classList.toggle('open');
-    ov.classList.toggle('open');
-  });
-  ov.querySelectorAll('a').forEach(a =>
-    a.addEventListener('click', () => {
-      ham.classList.remove('open');
-      ov.classList.remove('open');
-    })
-  );
+  const overlay = document.getElementById('idx-overlay');
+  ham.addEventListener('click', () => { ham.classList.toggle('open'); overlay.classList.toggle('open'); });
 
-  /* ── Page load fade-in (cover fades out in 0.8s) ── */
-  const cover = document.getElementById('idx-cover');
-  requestAnimationFrame(() => {
-    cover.style.opacity = '0';
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
+    cursor.classList.add('active');
+  });
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
   });
 
-  /* ── 戻るボタン / BFCache 復元時にオーバーレイをリセット ── */
-  window.addEventListener('pageshow', (e) => {
-    const cover = document.getElementById('idx-cover');
-    if (!cover) return;
-    cover.style.transition = 'none';
-    cover.style.opacity = '0';
-    cover.style.pointerEvents = 'none';
-    requestAnimationFrame(() => {
-      cover.style.transition = 'opacity .8s ease';
-    });
-  });
-
-  /* ── Page transition fade-out on link click ── */
-  document.querySelectorAll('a[href]').forEach(link => {
-    const href = link.getAttribute('href');
-    if (!href || href.startsWith('#') || href.startsWith('mailto:') || link.target === '_blank') return;
-    link.addEventListener('click', e => {
-      e.preventDefault();
-      cover.style.transition = 'opacity .4s ease';
-      cover.style.opacity = '1';
-      cover.style.pointerEvents = 'auto';
-      setTimeout(() => { window.location.href = href; }, 420);
-    });
-  });
-
-  /* ── Scroll reveal (Intersection Observer) ── */
-  const revealIO = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('in');
-        revealIO.unobserve(e.target);
+  // Inventory
+  (async () => {
+    const API = 'https://kiki-inventory.onrender.com/api/inventory';
+    const grid = document.getElementById('inv-grid');
+    const loading = document.getElementById('inv-loading');
+    const updatedEl = document.getElementById('inv-updated');
+    try {
+      const res = await fetch(API);
+      const data = await res.json();
+      loading.remove();
+      if (!data.ok || !data.inventory?.length) {
+        grid.innerHTML = '<div class="inv-loading">在庫情報を取得できませんでした</div>';
+        return;
       }
-    });
-  }, { threshold: 0.08 });
-  document.querySelectorAll('.cf-reveal').forEach(el => revealIO.observe(el));
-
-  /* ── Hero parallax ── */
-  const heroBgImg = document.querySelector('.cf-hero-bg img');
-  if (heroBgImg) {
-    function updateParallax() {
-      heroBgImg.style.transform = `translateY(${window.scrollY * 0.28}px)`;
-    }
-    window.addEventListener('scroll', updateParallax, { passive: true });
-  }
-
-  /* ── Inventory status (coffee.html) ── */
-  (function () {
-    const API = (window.KIKI_INVENTORY_URL || 'https://kiki-inventory.onrender.com') + '/api/inventory';
-    const LABEL_MAP = { in_stock: '在庫あり', low: '残りわずか', sold_out: 'SOLD OUT' };
-    const CLASS_MAP = { in_stock: 'cf-stock-badge--in', low: 'cf-stock-badge--low', sold_out: 'cf-stock-badge--out' };
-    const grid = document.getElementById('cf-stock-grid');
-    const ts   = document.getElementById('cf-stock-ts');
-
-    function renderCards(items) {
-      grid.innerHTML = '';
-      items.forEach((item, i) => {
+      data.inventory.forEach(item => {
+        const status = item.status === 'in_stock' ? 'in' : item.status === 'low_stock' ? 'low' : 'out';
+        const label  = status === 'in' ? 'In Stock' : status === 'low' ? 'Low Stock' : 'Out of Stock';
+        const grams  = item.remainGrams != null ? `${item.remainGrams}g 在庫あり` : '';
         const card = document.createElement('div');
-        card.className = 'cf-stock-card';
+        card.className = 'inv-card';
         card.innerHTML = `
-          <span class="cf-stock-id">${item.blendId || ''}</span>
-          <span class="cf-stock-name">${item.blendName}</span>
-          <span class="cf-stock-badge ${CLASS_MAP[item.status] || ''}">${LABEL_MAP[item.status] || item.statusLabel}</span>
-          ${item.status !== 'sold_out' ? `<span class="cf-stock-grams">${item.remainGrams.toLocaleString()} g</span>` : ''}
-        `;
+          <span class="inv-badge inv-badge--${status}">${label}</span>
+          <span class="inv-name">${item.blendName}</span>
+          ${grams ? `<span class="inv-grams">${grams}</span>` : ''}
+          <a href="shop.html" class="inv-shop-link">Shop →</a>`;
         grid.appendChild(card);
-        requestAnimationFrame(() => {
-          setTimeout(() => card.classList.add('loaded'), i * 80);
-        });
       });
-    }
-
-    async function fetchStock() {
-      try {
-        const r = await fetch(API, { cache: 'no-cache' });
-        if (!r.ok) throw new Error(r.status);
-        const d = await r.json();
-        if (d.ok && d.inventory) {
-          renderCards(d.inventory);
-          ts.textContent = '更新: ' + new Date(d.updatedAt).toLocaleTimeString('ja-JP');
-        }
-      } catch {
-        if (grid.querySelector('.cf-stock-loading')) {
-          grid.innerHTML = '<p class="cf-stock-loading">— サーバー接続待ち —</p>';
-        }
+      if (data.updatedAt) {
+        const d = new Date(data.updatedAt);
+        updatedEl.textContent = `Updated: ${d.toLocaleString('ja-JP')}`;
       }
+    } catch(e) {
+      if (loading) loading.textContent = '在庫情報を取得できませんでした';
     }
-
-    fetchStock();
-    setInterval(fetchStock, 5 * 60 * 1000);
   })();
-
-  /* ═══════════════════════════════════════════════════════
-     CONFIG — 商品データ・画像URLの一元管理
-     ───────────────────────────────────────────────────────
-     写真を差し替えるときは、各商品の imageUrl だけ変更してください。
-     他のデザインには一切影響しません。
-  ═══════════════════════════════════════════════════════ */
-  const CF_GRAM_OPTIONS = [
-    { g: 100, price: 2000 },
-    { g: 200, price: 3800 },
-    { g: 500, price: 8500 },
-  ];
-
-  const CF_PRODUCTS = [
-    {
-      imageUrl: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=600&q=90',
-      origin:   'エチオピア・イルガチェフェ',
-      name:     'Ethiopia Yirgacheffe',
-      roast:    1,   // 1=Light  2=Medium  3=Dark  0=選べる
-      flavors:  ['ブルーベリー', 'ジャスミン', 'はちみつ'],
-      farm:     'Kochere農園',
-      variety:  'Heirloom',
-      process:  'ナチュラル',
-      price:    '¥2,000',
-      unit:     '/ 100g',
-      buyLink:  'shop.html',
-      detailLink: 'shop.html',
-      gramOptions: CF_GRAM_OPTIONS,
-    },
-    {
-      imageUrl: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&q=90',
-      origin:   'コロンビア・エチオピア・ブラジル',
-      name:     'スマイルカップ ブレンド',
-      roast:    2,
-      flavors:  ['キャラメル', 'オレンジ', 'ナッツ'],
-      farm:     '複数農園',
-      variety:  'ブレンド',
-      process:  'ウォッシュド・ナチュラル',
-      price:    '¥2,000',
-      unit:     '/ 100g',
-      buyLink:  'shop.html',
-      detailLink: 'shop.html',
-      gramOptions: CF_GRAM_OPTIONS,
-    },
-    {
-      imageUrl: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&q=90',
-      origin:   '選りすぐりの産地',
-      name:     'GIFT BOX',
-      roast:    0,
-      flavors:  ['季節のセレクション'],
-      farm:     '季節の厳選農園',
-      variety:  '季節により変動',
-      process:  '季節により変動',
-      price:    '¥4,000',
-      unit:     '/ セット',
-      buyLink:  'shop.html',
-      detailLink: 'shop.html',
-    },
-  ];
-
-  /* ── 商品カード描画 ── */
-  (function () {
-    const ROAST_NAME = ['選べる焙煎度', 'Light Roast', 'Medium Roast', 'Dark Roast'];
-
-    function roastHtml(level) {
-      if (level === 0) {
-        return `<div class="cf-roast">
-          <div class="cf-roast-label">
-            <span>Roast</span>
-            <span class="cf-roast-select">${ROAST_NAME[0]}</span>
-          </div>
-        </div>`;
-      }
-      let dots = '';
-      for (let i = 1; i <= 3; i++) {
-        dots += `<span class="cf-roast-dot${i <= level ? ' on' : ''}"></span>`;
-      }
-      return `<div class="cf-roast">
-        <div class="cf-roast-label">
-          <span>Roast</span>
-          <span class="cf-roast-level">${ROAST_NAME[level]}</span>
-        </div>
-        <div class="cf-roast-dots">${dots}</div>
-      </div>`;
-    }
-
-    function cardHtml(p, idx) {
-      const delay = idx > 0 ? ` d${idx}` : '';
-      const tags  = p.flavors.map(f => `<span class="cf-flavor-tag">${f}</span>`).join('');
-      const gramBtns = p.gramOptions
-        ? `<div class="cf-gram-btns">${p.gramOptions.map((opt, i) =>
-            `<button class="cf-gram-btn${i === 0 ? ' active' : ''}" data-price="${opt.price}" data-g="${opt.g}">${opt.g}g</button>`
-          ).join('')}</div>`
-        : '';
-      const initPrice = p.gramOptions ? '¥' + p.gramOptions[0].price.toLocaleString('ja-JP') : p.price;
-      const initUnit  = p.gramOptions ? `/ ${p.gramOptions[0].g}g` : p.unit;
-      const dl = p.detailLink || '#';
-      return `
-        <div class="cf-prod-card cf-reveal${delay}">
-          <a href="${dl}" class="cf-prod-img">
-            <img src="${p.imageUrl}" alt="${p.name}" loading="lazy">
-            <div class="cf-prod-img-overlay"><span>詳細を見る →</span></div>
-          </a>
-          <div class="cf-prod-body">
-            <p class="cf-prod-tag">${p.origin}</p>
-            <a href="${dl}" class="cf-prod-name cf-prod-name-link">${p.name}</a>
-            ${roastHtml(p.roast)}
-            <div class="cf-flavor-tags">${tags}</div>
-            <div class="cf-accordion">
-              <button class="cf-accordion-trigger" aria-expanded="false">
-                スペック詳細 <span class="cf-accordion-arrow">▼</span>
-              </button>
-              <div class="cf-accordion-body" aria-hidden="true">
-                <div class="cf-spec-inner">
-                  <div class="cf-spec-row">
-                    <span class="cf-spec-key">農園</span>
-                    <span class="cf-spec-val">${p.farm}</span>
-                  </div>
-                  <div class="cf-spec-row">
-                    <span class="cf-spec-key">品種</span>
-                    <span class="cf-spec-val">${p.variety}</span>
-                  </div>
-                  <div class="cf-spec-row">
-                    <span class="cf-spec-key">精製方法</span>
-                    <span class="cf-spec-val">${p.process}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            ${gramBtns}
-            <p class="cf-prod-price">${initPrice} <small>${initUnit}（税込）</small></p>
-            <a href="${dl}" class="cf-detail-link">詳細を見る →</a>
-            <a href="${p.buyLink}" class="cf-buy-btn">購入する</a>
-          </div>
-        </div>`;
-    }
-
-    const grid = document.getElementById('cf-prod-grid');
-    if (!grid) return;
-
-    grid.innerHTML = CF_PRODUCTS.map((p, i) => cardHtml(p, i)).join('');
-
-    /* アコーディオン */
-    grid.querySelectorAll('.cf-accordion-trigger').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const acc    = btn.closest('.cf-accordion');
-        const isOpen = acc.classList.toggle('open');
-        btn.setAttribute('aria-expanded', String(isOpen));
-        btn.nextElementSibling.setAttribute('aria-hidden', String(!isOpen));
-      });
-    });
-
-    /* グラム選択ボタン */
-    grid.querySelectorAll('.cf-gram-btns').forEach(btns => {
-      const card    = btns.closest('.cf-prod-card');
-      const priceEl = card.querySelector('.cf-prod-price');
-      btns.querySelectorAll('.cf-gram-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          btns.querySelectorAll('.cf-gram-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          const price = Number(btn.dataset.price).toLocaleString('ja-JP');
-          const g     = btn.dataset.g;
-          const small = priceEl.querySelector('small');
-          if (priceEl.firstChild) priceEl.firstChild.textContent = '¥' + price + ' ';
-          if (small) small.textContent = `/ ${g}g（税込）`;
-          priceEl.classList.remove('flash');
-          void priceEl.offsetWidth;
-          priceEl.classList.add('flash');
-        });
-      });
-    });
-
-    /* 購入ボタン → モーダル（Square 外部リンクの場合はスルー） */
-    const buyModal = document.getElementById('cf-buy-modal');
-    grid.addEventListener('click', e => {
-      const btn  = e.target.closest('.cf-buy-btn');
-      if (!btn) return;
-      const href = btn.getAttribute('href') || '';
-      if (href.startsWith('http') || href.startsWith('//')) return;
-      e.preventDefault();
-      if (buyModal) buyModal.classList.add('open');
-    });
-
-    /* 画像・商品名・詳細リンククリック → 詳細ページへフェード遷移 */
-    grid.querySelectorAll('.cf-prod-img, .cf-prod-name-link, .cf-detail-link').forEach(el => {
-      const href = el.getAttribute('href');
-      if (!href || href === '#') return;
-      el.addEventListener('click', e => {
-        e.preventDefault();
-        cover.style.transition = 'opacity .4s ease';
-        cover.style.opacity = '1';
-        cover.style.pointerEvents = 'auto';
-        setTimeout(() => { window.location.href = href; }, 420);
-      });
-    });
-
-    /* 産地・焙煎度・フレーバータグなどクリック → 詳細ページへ遷移 */
-    grid.addEventListener('click', e => {
-      if (e.target.closest('.cf-gram-btn, .cf-buy-btn, .cf-accordion-trigger, .cf-accordion-body, a')) return;
-      const card = e.target.closest('.cf-prod-card');
-      if (!card) return;
-      const imgLink = card.querySelector('.cf-prod-img');
-      const href = imgLink && imgLink.getAttribute('href');
-      if (!href || href === '#') return;
-      cover.style.transition = 'opacity .4s ease';
-      cover.style.opacity = '1';
-      cover.style.pointerEvents = 'auto';
-      setTimeout(() => { window.location.href = href; }, 420);
-    });
-
-    /* スクロールリビール（動的生成要素を再オブザーブ） */
-    const prodIO = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('in');
-          prodIO.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.08 });
-    grid.querySelectorAll('.cf-reveal').forEach(el => prodIO.observe(el));
-  })();
-
-  /* ── Purchase modal close ── */
-  (function () {
-    const modal    = document.getElementById('cf-buy-modal');
-    const closeBtn = document.getElementById('cf-buy-modal-close');
-    if (!modal) return;
-    closeBtn.addEventListener('click', () => modal.classList.remove('open'));
-    modal.addEventListener('click', e => {
-      if (e.target === modal) modal.classList.remove('open');
-    });
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') modal.classList.remove('open');
-    });
-  })();
-
-  /* ── Square 商品データ自動連携（5分ごと更新）── */
-  (function () {
-    const API = (window.KIKI_INVENTORY_URL || 'https://kiki-inventory.onrender.com') + '/api/square/catalog';
-
-    // 商品名の正規化（スペース・記号を除去して小文字化）
-    function norm(s) {
-      return (s || '').toLowerCase().replace(/[\s　・]/g, '');
-    }
-
-    // Square の price（整数円）→ 表示文字列
-    function fmtPrice(amount) {
-      return '¥' + Number(amount).toLocaleString('ja-JP');
-    }
-
-    async function syncSquare() {
-      try {
-        const res = await fetch(API, { cache: 'no-cache' });
-        if (!res.ok) return;
-        const { ok, products } = await res.json();
-        if (!ok || !products?.length) return;
-
-        const cards = document.querySelectorAll('#cf-prod-grid .cf-prod-card');
-        if (!cards.length) return;
-
-        products.forEach(sq => {
-          // 商品名の部分一致でカードを検索
-          const card = [...cards].find(c => {
-            const nameEl = c.querySelector('.cf-prod-name');
-            if (!nameEl) return false;
-            const a = norm(sq.name);
-            const b = norm(nameEl.textContent);
-            return a.includes(b) || b.includes(a);
-          });
-          if (!card) return;
-
-          // ── 画像 ──
-          if (sq.imageUrl) {
-            const img = card.querySelector('.cf-prod-img img');
-            if (img && img.src !== sq.imageUrl) img.src = sq.imageUrl;
-          }
-
-          // ── 価格 ──
-          if (sq.price != null) {
-            const priceEl = card.querySelector('.cf-prod-price');
-            if (priceEl) {
-              const small = priceEl.querySelector('small');
-              priceEl.innerHTML = fmtPrice(sq.price) + ' ';
-              if (small) priceEl.appendChild(small);
-            }
-          }
-
-          // ── 購入ボタン ──
-          const buyBtn = card.querySelector('.cf-buy-btn');
-          if (!buyBtn) return;
-
-          if (sq.stock === 0) {
-            // 在庫切れ
-            buyBtn.textContent      = 'SOLD OUT';
-            buyBtn.style.opacity    = '0.38';
-            buyBtn.style.pointerEvents = 'none';
-            buyBtn.removeAttribute('href');
-          } else if (sq.buyUrl) {
-            // Square 決済ページへ
-            buyBtn.href             = sq.buyUrl;
-            buyBtn.target           = '_blank';
-            buyBtn.rel              = 'noopener noreferrer';
-            buyBtn.textContent      = '購入する';
-            buyBtn.style.opacity    = '';
-            buyBtn.style.pointerEvents = '';
-          }
-        });
-      } catch {
-        // サーバー未起動 or ネットワーク不可 → 静的データのまま表示
-      }
-    }
-
-    // ページ表示後すぐに同期し、以降 5 分ごとに繰り返す
-    syncSquare();
-    setInterval(syncSquare, 5 * 60 * 1000);
-  })();
-
-  /* ── Custom cursor (non-touch only) ── */
-  if (!window.matchMedia('(hover: none)').matches) {
-    const cur = document.createElement('div');
-    cur.className = 'idx-cursor';
-    document.body.appendChild(cur);
-
-    let mx = 0, my = 0, cx = 0, cy = 0;
-    document.addEventListener('mousemove', e => {
-      mx = e.clientX; my = e.clientY;
-      cur.classList.add('active');
-    });
-    document.addEventListener('mouseleave', () => cur.classList.remove('active'));
-
-    (function lerpCursor() {
-      cx += (mx - cx) * 0.14;
-      cy += (my - cy) * 0.14;
-      cur.style.left = cx + 'px';
-      cur.style.top  = cy + 'px';
-      requestAnimationFrame(lerpCursor);
-    })();
-
-    document.querySelectorAll('a, button').forEach(el => {
-      el.addEventListener('mouseenter', () => cur.classList.add('hover'));
-      el.addEventListener('mouseleave', () => cur.classList.remove('hover'));
-    });
-  }
 </script>
 </body>
 </html>
