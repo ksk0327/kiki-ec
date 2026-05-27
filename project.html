@@ -43,7 +43,15 @@
       height: 100vh; min-height: 500px;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       gap: 24px; text-align: center; padding: 0 32px;
+      position: relative; overflow: hidden;
     }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background-image: url('https://images.unsplash.com/photo-1511537190424-bbbab87ac5eb?w=1600&q=80');
+      background-size: cover; background-position: center;
+      filter: brightness(.22) saturate(.5);
+    }
+    .hero > * { position: relative; z-index: 1; }
     .hero-label { font-family: 'Inter', sans-serif; font-weight: 300; font-size: 10px; letter-spacing: .36em; color: #c09a3e; text-transform: uppercase; }
     .hero-heading {
       font-family: 'Shippori Mincho B1', serif; font-weight: 400;
@@ -189,6 +197,7 @@
 </div>
 
 <section class="hero">
+  <div class="hero-bg"></div>
   <span class="hero-label">Project</span>
   <h1 class="hero-heading">ものをつくることが<br>生き方の表現だ。</h1>
   <div class="hero-line"></div>

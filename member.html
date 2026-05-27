@@ -67,14 +67,13 @@
     .member-card:nth-child(even) { direction: rtl; }
     .member-card:nth-child(even) .member-info { direction: ltr; }
     .member-img {
-      background: rgba(255,255,255,.03);
+      background: #0d0b09;
       display: flex; align-items: center; justify-content: center;
       min-height: 400px; overflow: hidden;
     }
-    .member-img-placeholder {
-      font-family: 'Inter', sans-serif; font-weight: 300;
-      font-size: 11px; letter-spacing: .24em;
-      color: rgba(255,255,255,.12); text-transform: uppercase;
+    .member-img img {
+      width: 100%; height: 100%; object-fit: cover; object-position: center top;
+      display: block;
     }
     .member-info {
       padding: clamp(48px, 6vw, 96px) clamp(32px, 6vw, 80px);
@@ -183,7 +182,7 @@
   <!-- Daiki Kuwahara -->
   <div class="member-card">
     <div class="member-img">
-      <span class="member-img-placeholder">Photo</span>
+      <img src="https://static.wixstatic.com/media/cf11d4_fa53ec6559e34439a2ce24a5b6e1b1e6~mv2.jpg" alt="Daiki Kuwahara">
     </div>
     <div class="member-info">
       <span class="member-num">01</span>
@@ -205,7 +204,7 @@
   <!-- Kiseki Tatebe -->
   <div class="member-card">
     <div class="member-img">
-      <span class="member-img-placeholder">Photo</span>
+      <img src="https://static.wixstatic.com/media/cf11d4_2a055d923911444f8f48ee5d2bbcc042~mv2.jpg" alt="Kiseki Tatebe">
     </div>
     <div class="member-info">
       <span class="member-num">02</span>
@@ -227,7 +226,7 @@
   <!-- Hiroya Hoshihara -->
   <div class="member-card">
     <div class="member-img">
-      <span class="member-img-placeholder">Photo</span>
+      <img src="https://static.wixstatic.com/media/cf11d4_40d95e721bf543798b409a34fabe52b0~mv2.jpg" alt="Hiroya Hoshihara">
     </div>
     <div class="member-info">
       <span class="member-num">03</span>

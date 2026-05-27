@@ -75,8 +75,20 @@
       text-decoration: none;
       transition: background .4s;
       cursor: pointer;
+      position: relative; overflow: hidden;
     }
-    .hub-item:hover { background: rgba(192,154,62,.06); }
+    .hub-item-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background-size: cover; background-position: center;
+      filter: brightness(.18) saturate(.5);
+      transition: filter .5s, transform .9s cubic-bezier(.25,.46,.45,.94);
+    }
+    .hub-item:hover .hub-item-bg { filter: brightness(.26) saturate(.6); transform: scale(1.04); }
+    .hub-item > *:not(.hub-item-bg) { position: relative; z-index: 1; }
+    .hub-item--vision .hub-item-bg  { background-image: url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800&q=70'); }
+    .hub-item--future .hub-item-bg  { background-image: url('https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=70'); }
+    .hub-item--member .hub-item-bg  { background-image: url('https://images.unsplash.com/photo-1529656285421-1a22e67f2be0?w=800&q=70'); }
+    .hub-item--project .hub-item-bg { background-image: url('https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=800&q=70'); }
     .hub-item-en {
       font-family: 'Inter', sans-serif; font-weight: 300;
       font-size: clamp(9px, 1vw, 11px); letter-spacing: .28em;
@@ -168,25 +180,29 @@
 
 <!-- HUB GRID -->
 <div class="hub-grid">
-  <a href="vision.html" class="hub-item">
+  <a href="vision.html" class="hub-item hub-item--vision">
+    <div class="hub-item-bg"></div>
     <span class="hub-item-en">Vision</span>
     <span class="hub-item-ja">理念</span>
     <span class="hub-item-desc">KIKIが描く世界観と<br>存在の意味</span>
     <span class="hub-arrow">→</span>
   </a>
-  <a href="future.html" class="hub-item">
+  <a href="future.html" class="hub-item hub-item--future">
+    <div class="hub-item-bg"></div>
     <span class="hub-item-en">Future</span>
     <span class="hub-item-ja">未来構想</span>
     <span class="hub-item-desc">CAFE、GUILD、BASEへと<br>広がる次のかたち</span>
     <span class="hub-arrow">→</span>
   </a>
-  <a href="member.html" class="hub-item">
+  <a href="member.html" class="hub-item hub-item--member">
+    <div class="hub-item-bg"></div>
     <span class="hub-item-en">Member</span>
     <span class="hub-item-ja">メンバー</span>
     <span class="hub-item-desc">KIKIを創る<br>三人の人間</span>
     <span class="hub-arrow">→</span>
   </a>
-  <a href="project.html" class="hub-item">
+  <a href="project.html" class="hub-item hub-item--project">
+    <div class="hub-item-bg"></div>
     <span class="hub-item-en">Project</span>
     <span class="hub-item-ja">プロジェクト</span>
     <span class="hub-item-desc">COFFEEとAPPARELから<br>始まる物語</span>
