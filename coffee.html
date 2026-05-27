@@ -1592,7 +1592,7 @@
 
   /* ── Inventory status (coffee.html) ── */
   (function () {
-    const API = (window.KIKI_INVENTORY_URL || 'http://localhost:3001') + '/api/inventory';
+    const API = (window.KIKI_INVENTORY_URL || 'https://kiki-inventory.onrender.com') + '/api/inventory';
     const LABEL_MAP = { in_stock: '在庫あり', low: '残りわずか', sold_out: 'SOLD OUT' };
     const CLASS_MAP = { in_stock: 'cf-stock-badge--in', low: 'cf-stock-badge--low', sold_out: 'cf-stock-badge--out' };
     const grid = document.getElementById('cf-stock-grid');
@@ -1873,7 +1873,7 @@
 
   /* ── Square 商品データ自動連携（5分ごと更新）── */
   (function () {
-    const API = (window.KIKI_INVENTORY_URL || 'http://localhost:3001') + '/api/square/catalog';
+    const API = (window.KIKI_INVENTORY_URL || 'https://kiki-inventory.onrender.com') + '/api/square/catalog';
 
     // 商品名の正規化（スペース・記号を除去して小文字化）
     function norm(s) {
